@@ -22,7 +22,6 @@ class EmployeeFactory extends Factory
             'state_id' => State::factory(),
             'city_id' => City::factory(),
             'department_id' => Department::factory(),
-            'designation_id' => $this->faker->optional()->randomElement(Designation::pluck('id')->toArray()),
             'first_name' => $this->faker->firstName(),
             'middle_name' => $this->faker->optional()->firstName(),
             'last_name' => $this->faker->lastName(),

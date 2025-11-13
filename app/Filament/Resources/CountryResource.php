@@ -45,7 +45,6 @@ class CountryResource extends Resource
                 ->label('Código do País'),
             Forms\Components\TextInput::make('phonecode')
                 ->required()
-                ->numeric()
                 ->maxLength(10)
                 ->label('Código de Telefone'),
         ]);

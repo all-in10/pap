@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContractResource\Pages;
 use App\Models\Contract;
+use App\Models\Designation;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,7 +23,7 @@ class ContractResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            // Relação com Funcionário
+            // Seleção do funcionário
             Forms\Components\Select::make('employee_id')
                 ->label('Funcionário')
                 ->relationship('employee', 'first_name')
@@ -31,7 +32,22 @@ class ContractResource extends Resource
                 ->nullable()
                 ->helperText('Será criado automaticamente se vazio.'),
 
-            // Tipo de Contrato
+            // Seleção da designação
+            Forms\Components\Select::make('designation_id')
+                ->label('Cargo / Designação')
+                ->relationship('designation', 'name')
+                ->searchable()
+                ->preload()
+                ->nullable()
+                ->reactive()
+                ->afterStateUpdated(function ($state, callable $set) {
+                    if ($state) {
+                        $designation = Designation::find($state);
+                        $set('salary', $designation?->base_salary ?? 0);
+                    }
+                }),
+
+            // Tipo de contrato
             Forms\Components\Select::make('contract_type')
                 ->label('Tipo de Contrato')
                 ->options([
@@ -50,24 +66,19 @@ class ContractResource extends Resource
                 ->numeric()
                 ->required(),
 
-            // Datas
+            // Data de início
             Forms\Components\DatePicker::make('start_date')
                 ->label('Data de Início')
                 ->required()
                 ->default(fn($get) => $get('employee.date_hired') ?? now()),
 
+            // Data de fim
             Forms\Components\DatePicker::make('end_date')
                 ->label('Data de Fim')
-                ->visible(
-                    fn(callable $get) =>
-                    in_array($get('contract_type'), ['temporary', 'internship'])
-                )
-                ->required(
-                    fn(callable $get) =>
-                    $get('contract_type') === 'temporary'
-                )
-                ->helperText('Obrigatório apenas para contratos temporários.')
-                ->nullable(),
+                ->visible(fn($get) => in_array($get('contract_type'), ['temporary', 'internship']))
+                ->required(fn($get) => $get('contract_type') === 'temporary')
+                ->nullable()
+                ->helperText('Obrigatório apenas para contratos temporários.'),
 
             // Status
             Forms\Components\Select::make('status')
@@ -80,7 +91,7 @@ class ContractResource extends Resource
                 ->default('active')
                 ->required(),
 
-            // Data de Contratação
+            // Data de contratação
             Forms\Components\DatePicker::make('date_hired')
                 ->label('Data de Contratação')
                 ->required()
@@ -97,13 +108,18 @@ class ContractResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('designation.name')
+                    ->label('Cargo / Designação')
+                    ->sortable()
+                    ->searchable(),
+
                 Tables\Columns\TextColumn::make('contract_type')
                     ->label('Tipo de Contrato')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('salary')
                     ->label('Salário')
-                    ->money('BRL', true),
+                    ->money('EUR', true),
 
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Início')
@@ -117,7 +133,7 @@ class ContractResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->color(fn(string $state): string => match ($state) {
+                    ->color(fn(string $state) => match ($state) {
                         'active'     => 'success',
                         'terminated' => 'danger',
                         'suspended'  => 'warning',

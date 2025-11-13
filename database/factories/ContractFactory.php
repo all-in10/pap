@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Employee;
-
+use App\Models\Designation;
 class ContractFactory extends Factory
 {
     /**
@@ -24,6 +24,7 @@ class ContractFactory extends Factory
         $endDate = $this->faker->optional()->dateTimeBetween($startDate, '+2 years');
 
         return [
+            'designation_id' => $this->faker->optional()->randomElement(Designation::pluck('id')->toArray()),
             'employee_id' => Employee::factory(),
             'contract_type' => $this->faker->randomElement($contractTypes),
             'salary' => $this->faker->randomFloat(2, 1000, 10000),

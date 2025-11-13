@@ -31,67 +31,63 @@ class EmployeeResource extends Resource
                     Forms\Components\Select::make('country_id')
                         ->relationship('country', 'name')
                         ->searchable()
-                        ->required()
                         ->preload()
+                        ->required()
                         ->label('País'),
 
                     Forms\Components\Select::make('state_id')
-                        ->options(
-                            fn($get) =>
-                            $get('country_id')
-                                ? \App\Models\State::where('country_id', $get('country_id'))->pluck('name', 'id')
-                                : []
-                        )
+                        ->options(fn($get) => $get('country_id') 
+                            ? \App\Models\State::where('country_id', $get('country_id'))->pluck('name', 'id') 
+                            : [])
                         ->searchable()
-                        ->required()
                         ->preload()
+                        ->required()
                         ->label('Estado'),
 
                     Forms\Components\Select::make('city_id')
-                        ->options(
-                            fn($get) =>
-                            $get('state_id')
-                                ? \App\Models\City::where('state_id', $get('state_id'))->pluck('name', 'id')
-                                : []
-                        )
+                        ->options(fn($get) => $get('state_id') 
+                            ? \App\Models\City::where('state_id', $get('state_id'))->pluck('name', 'id') 
+                            : [])
                         ->searchable()
-                        ->required()
                         ->preload()
+                        ->required()
                         ->label('Cidade'),
 
                     Forms\Components\Select::make('department_id')
                         ->relationship('department', 'name')
                         ->searchable()
-                        ->required(),
+                        ->preload()
+                        ->required()
+                        ->label('Departamento'),
 
                     Forms\Components\Select::make('designation_id')
                         ->relationship('designation', 'name')
                         ->searchable()
-                        ->nullable()
                         ->preload()
-                        ->label('Cargo / Designação'),
+                        ->required()
+                        ->label('Designação'),
                 ])
                 ->columns(2),
 
             Forms\Components\Section::make('Dados Pessoais')
                 ->schema([
                     Forms\Components\TextInput::make('first_name')->label('Primeiro Nome')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('middle_name')->label('Nome do Meio')->maxLength(255),
+                    Forms\Components\TextInput::make('middle_name')->label('Nome do Meio')->maxLength(255)->nullable(),
                     Forms\Components\TextInput::make('last_name')->label('Último Nome')->required()->maxLength(255),
                     Forms\Components\Select::make('gender')
+                        ->label('Gênero')
                         ->options([
                             'male' => 'Masculino',
                             'female' => 'Feminino',
                             'n/a' => 'N/A',
                         ])
                         ->required()
-                        ->label('Gênero')
                         ->native(false),
                     Forms\Components\TextInput::make('email')->label('E-mail')->email()->required()->unique(ignoreRecord: true),
                     Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(20),
-                    Forms\Components\TextInput::make('nif')->label('NIF')->maxLength(20),
-                    Forms\Components\TextInput::make('phone_number')->label('Telefone')->maxLength(20),
-                    Forms\Components\Textarea::make('observations')->label('Observações')->rows(3),
+                    Forms\Components\TextInput::make('nif')->label('NIF')->maxLength(20)->nullable(),
+                    Forms\Components\TextInput::make('phone_number')->label('Telefone')->maxLength(20)->nullable(),
+                    Forms\Components\Textarea::make('observations')->label('Observações')->rows(3)->nullable(),
                 ])
                 ->columns(2),
 
@@ -133,6 +129,7 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('last_name')->label('Último Nome')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('email')->label('E-mail')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('department.name')->label('Departamento')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('designation.name')->label('Designação')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('date_hired')->label('Data de Contratação')->date()->sortable(),
             ])
             ->actions([
@@ -153,6 +150,7 @@ class EmployeeResource extends Resource
                 TextEntry::make('last_name')->label('Último Nome'),
                 TextEntry::make('email')->label('E-mail'),
                 TextEntry::make('department.name')->label('Departamento'),
+                TextEntry::make('designation.name')->label('Designação'),
                 TextEntry::make('date_hired')->label('Data de Contratação'),
             ])->columns(2),
         ]);
@@ -161,7 +159,7 @@ class EmployeeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Aqui você pode adicionar ContractsRelationManager::class quando criar a relação
+            // Aqui você pode adicionar ContractsRelationManager::class
         ];
     }
 
