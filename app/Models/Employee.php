@@ -84,4 +84,14 @@ class Employee extends Model
     {
         return $this->hasMany(Contract::class);
     }
+
+    public function hoursbank()
+    {
+        return $this->hasOne(Hoursbank::class);
+    }
+
+    public function worklogs()
+    {
+        return $this->hasMany(Worklog::class);
+    }
 }
