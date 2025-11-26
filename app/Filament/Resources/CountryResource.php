@@ -21,13 +21,9 @@ class CountryResource extends Resource
     protected static ?string $model = Country::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
-
     protected static ?string $navigationLabel = 'Country';
-
     protected static ?string $modelLabel = 'Employees Country';
-
     protected static ?string $navigationGroup = 'System Management';
-
     protected static ?int $navigationSort = 1;
 
     // protected static ?string $slug = 'employees-countries';
@@ -63,7 +59,9 @@ class CountryResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('phonecode')
-                    ->label('Phone Code'),
+                    ->label('Phone Code')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->searchable()

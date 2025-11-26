@@ -15,6 +15,8 @@ class CountryFactory extends Factory
             'name' => $this->faker->country(),
             'code' => strtoupper($this->faker->unique()->lexify('??')), // exemplo: US, BR
             'phonecode' => $this->faker->numberBetween(1, 999),
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

@@ -20,6 +20,7 @@ class WorklogResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clock';
     protected static ?string $navigationLabel = 'Registros de Horas';
     protected static ?string $pluralModelLabel = 'Registros de Horas';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';  
     protected static ?string $modelLabel = 'Registro de Hora';
 
     public static function form(Form $form): Form

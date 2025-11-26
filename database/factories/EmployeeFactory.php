@@ -16,12 +16,14 @@ class EmployeeFactory extends Factory
     public function definition(): array
     {
         $genders = ['male', 'female', 'n/a'];
+        $country = Country::inRandomOrder()->first() ?? Country::factory()->create();
 
         return [
-            'country_id' => Country::factory(),
+            'country_id' => $country->id,
             'state_id' => State::factory(),
             'city_id' => City::factory(),
             'department_id' => Department::factory(),
+            'designation_id' => Designation::factory(),
             'first_name' => $this->faker->firstName(),
             'middle_name' => $this->faker->optional()->firstName(),
             'last_name' => $this->faker->lastName(),
@@ -29,7 +31,7 @@ class EmployeeFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'nss' => $this->faker->unique()->numerify('##########'),
             'nif' => $this->faker->unique()->numerify('##########'),
-            'phone_number' => $this->faker->phoneNumber(),
+            'phone_number' => '+' . $country->phonecode . ' ' . $this->faker->numerify('### ### ###'),
             'observations' => $this->faker->optional()->sentence(),
             'address' => $this->faker->address(),
             'zip_code' => $this->faker->postcode(),

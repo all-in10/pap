@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('designation_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('employee_id')->nullable()->constrained()->cascadeOnDelete();
-            $table->enum('contract_type', ['full_time', 'temporary', 'internship', 'non_defined'])->default('non_defined');
+            $table->foreignId('contract_type_id')->nullable()->constrained()->cascadeOnDelete();
             $table->decimal('salary', 10, 2);
             $table->date('start_date');
             $table->date('end_date')->nullable();

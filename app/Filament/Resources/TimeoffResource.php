@@ -17,6 +17,7 @@ class TimeoffResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'Pedidos de Folga';
     protected static ?string $pluralModelLabel = 'Pedidos de Folga';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Pedido de Folga';
 
     public static function form(Form $form): Form

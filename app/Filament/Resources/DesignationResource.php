@@ -17,6 +17,7 @@ class DesignationResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
     protected static ?string $navigationLabel = 'Cargos';
     protected static ?string $pluralModelLabel = 'Cargos';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Cargo';
 
     public static function form(Form $form): Form

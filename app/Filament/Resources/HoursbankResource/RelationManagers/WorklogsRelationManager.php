@@ -25,15 +25,20 @@ class WorklogsRelationManager extends RelationManager
                 Forms\Components\TimePicker::make('start_time')
                     ->label('Início')
                     ->required()
-                    ->native(false),
+                    ->displayFormat('h:i A')
+                    ->reactive()
+                    ->afterStateUpdated(fn($state, callable $set, $get) =>
+                        $set('hours_worked', $this->calculateHoursWorked($get('start_time'), $get('end_time')))
+                    ),
 
                 Forms\Components\TimePicker::make('end_time')
                     ->label('Fim')
                     ->required()
-                    ->native(false)
-                    ->afterStateUpdated(function ($state, callable $set, $get) {
-                        $set('hours_worked', $this->calculateHoursWorked($get('start_time'), $get('end_time')));
-                    }),
+                    ->displayFormat('h:i A')
+                    ->reactive()
+                    ->afterStateUpdated(fn($state, callable $set, $get) =>
+                        $set('hours_worked', $this->calculateHoursWorked($get('start_time'), $get('end_time')))
+                    ),
 
                 Forms\Components\TextInput::make('hours_worked')
                     ->label('Horas Trabalhadas')
@@ -69,7 +74,7 @@ class WorklogsRelationManager extends RelationManager
 
                 Tables\Columns\TextColumn::make('extra_hours')
                     ->label('Extras')
-                    ->formatStateUsing(fn($record) => $record->hours_worked > 8 ? round($record->hours_worked - 8, 2) . 'h' : '0h')
+                    ->formatStateUsing(fn($record) => max(0, round($record->hours_worked - 8, 2)) . 'h')
                     ->color(fn($record) => $record->hours_worked > 8 ? 'success' : 'secondary'),
             ])
             ->defaultSort('work_date', 'desc')
@@ -87,9 +92,6 @@ class WorklogsRelationManager extends RelationManager
             ]);
     }
 
-    /**
-     * Calcula horas trabalhadas entre início e fim.
-     */
     private function calculateHoursWorked(?string $startTime, ?string $endTime): float
     {
         if ($startTime && $endTime) {

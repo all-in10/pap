@@ -18,6 +18,7 @@ class HoursbankResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Banco de Horas';
     protected static ?string $pluralModelLabel = 'Bancos de Horas';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Banco de Horas';
 
     public static function form(Form $form): Form

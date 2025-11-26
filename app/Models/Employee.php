@@ -34,6 +34,17 @@ class Employee extends Model
     protected static function booted()
     {
         static::created(function ($employee) {
+            // Cria usuário relacionado
+            $defaultPassword = 'changeme123';
+            $user = \App\Models\User::create([
+                'name' => $employee->first_name . ' ' . $employee->last_name,
+                'email' => $employee->email,
+                'password' => bcrypt($defaultPassword),
+                'must_change_password' => true,
+            ]);
+            $employee->user_id = $user->id;
+            $employee->save();
+
             // Evita criação de contrato se não houver data de contratação
             if (!$employee->date_hired) {
                 return;
@@ -42,10 +53,13 @@ class Employee extends Model
             // Salário base da designação ou zero
             $baseSalary = $employee->designation?->base_salary ?? 0;
 
+            // Get the full_time contract type
+            $contractType = \App\Models\ContractType::where('name', 'Tempo completo')->first();
+
             // Cria contrato
             $employee->contracts()->create([
                 'designation_id' => $employee->designation_id,
-                'contract_type'  => 'full_time',
+                'contract_type_id' => $contractType?->id,
                 'salary'         => $baseSalary,
                 'start_date'     => $employee->date_hired,
                 'date_hired'     => $employee->date_hired,
@@ -93,5 +107,10 @@ class Employee extends Model
     public function worklogs()
     {
         return $this->hasMany(Worklog::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

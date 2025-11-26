@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Tables\Actions\Action;
 
 class ContractResource extends Resource
 {
@@ -18,12 +20,12 @@ class ContractResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Contratos';
     protected static ?string $pluralModelLabel = 'Contratos';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Contrato';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            // Seleção do funcionário
             Forms\Components\Select::make('employee_id')
                 ->label('Funcionário')
                 ->relationship('employee', 'first_name')
@@ -32,7 +34,6 @@ class ContractResource extends Resource
                 ->nullable()
                 ->helperText('Será criado automaticamente se vazio.'),
 
-            // Seleção da designação
             Forms\Components\Select::make('designation_id')
                 ->label('Cargo / Designação')
                 ->relationship('designation', 'name')
@@ -47,40 +48,29 @@ class ContractResource extends Resource
                     }
                 }),
 
-            // Tipo de contrato
-            Forms\Components\Select::make('contract_type')
+            Forms\Components\Select::make('contract_type_id')
                 ->label('Tipo de Contrato')
-                ->options([
-                    'full_time'   => 'Full Time',
-                    'temporary'   => 'Temporary',
-                    'internship'  => 'Internship',
-                    'non_defined' => 'Não Definido',
-                ])
-                ->default('non_defined')
-                ->required()
+                ->relationship('contractType', 'name')
+                ->searchable()
+                ->preload()
+                ->nullable()
                 ->reactive(),
 
-            // Salário
             Forms\Components\TextInput::make('salary')
                 ->label('Salário')
                 ->numeric()
                 ->required(),
 
-            // Data de início
             Forms\Components\DatePicker::make('start_date')
                 ->label('Data de Início')
                 ->required()
                 ->default(fn($get) => $get('employee.date_hired') ?? now()),
 
-            // Data de fim
             Forms\Components\DatePicker::make('end_date')
                 ->label('Data de Fim')
-                ->visible(fn($get) => in_array($get('contract_type'), ['temporary', 'internship']))
-                ->required(fn($get) => $get('contract_type') === 'temporary')
                 ->nullable()
-                ->helperText('Obrigatório apenas para contratos temporários.'),
+                ->helperText('Data de fim do contrato (se aplicável).'),  
 
-            // Status
             Forms\Components\Select::make('status')
                 ->label('Status')
                 ->options([
@@ -91,7 +81,6 @@ class ContractResource extends Resource
                 ->default('active')
                 ->required(),
 
-            // Data de contratação
             Forms\Components\DatePicker::make('date_hired')
                 ->label('Data de Contratação')
                 ->required()
@@ -113,7 +102,7 @@ class ContractResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('contract_type')
+                Tables\Columns\TextColumn::make('contractType.name')
                     ->label('Tipo de Contrato')
                     ->sortable(),
 
@@ -134,15 +123,27 @@ class ContractResource extends Resource
                     ->label('Status')
                     ->badge()
                     ->color(fn(string $state) => match ($state) {
-                        'active'     => 'success',
+                        'active' => 'success',
                         'terminated' => 'danger',
-                        'suspended'  => 'warning',
-                        default      => 'gray',
+                        'suspended' => 'warning',
+                        default => 'gray',
                     }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+
+                Action::make('generate_pdf')
+                    ->label('Gerar PDF')
+                    ->icon('heroicon-o-document-text')
+                    ->action(function (Contract $record) {
+                        $pdf = Pdf::loadView('pdf.contract', ['contract' => $record])
+                            ->setOptions(['isHtml5ParserEnabled' => true]);
+                        return response()->streamDownload(
+                            fn() => print($pdf->output()),
+                            "Contrato-{$record->id}.pdf"
+                        );
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

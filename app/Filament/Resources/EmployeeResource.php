@@ -20,6 +20,7 @@ class EmployeeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationLabel = 'Funcionários';
     protected static ?string $pluralModelLabel = 'Funcionários';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Funcionário';
 
     public static function form(Form $form): Form
@@ -33,7 +34,16 @@ class EmployeeResource extends Resource
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('País'),
+                        ->label('País')
+                        ->reactive()
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state) {
+                                $country = \App\Models\Country::find($state);
+                                if ($country) {
+                                    $set('phone_number', '+' . $country->phonecode);
+                                }
+                            }
+                        }),
 
                     Forms\Components\Select::make('state_id')
                         ->options(fn($get) => $get('country_id') 
@@ -86,7 +96,11 @@ class EmployeeResource extends Resource
                     Forms\Components\TextInput::make('email')->label('E-mail')->email()->required()->unique(ignoreRecord: true),
                     Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(20),
                     Forms\Components\TextInput::make('nif')->label('NIF')->maxLength(20)->nullable(),
-                    Forms\Components\TextInput::make('phone_number')->label('Telefone')->maxLength(20)->nullable(),
+                    Forms\Components\TextInput::make('phone_number')
+                        ->label('Telefone')
+                        ->maxLength(20)
+                        ->nullable()
+                        ->placeholder('Ex: +351 123 456 789'),
                     Forms\Components\Textarea::make('observations')->label('Observações')->rows(3)->nullable(),
                 ])
                 ->columns(2),
