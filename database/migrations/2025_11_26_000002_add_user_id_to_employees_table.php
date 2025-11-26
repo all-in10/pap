@@ -15,7 +15,11 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('employees', function (Blueprint $table) {
-            $table->dropForeignIdFor('users');
+            // Drop foreign key and column for `user_id` safely.
+            // Using dropConstrainedForeignId will remove the FK and the column.
+            if (Schema::hasColumn('employees', 'user_id')) {
+                $table->dropConstrainedForeignId('user_id');
+            }
         });
     }
 };
