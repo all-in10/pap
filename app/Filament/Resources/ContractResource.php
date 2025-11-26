@@ -121,13 +121,22 @@ class ContractResource extends Resource
 
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
-                    ->badge()
-                    ->color(fn(string $state) => match ($state) {
-                        'active' => 'success',
-                        'terminated' => 'danger',
-                        'suspended' => 'warning',
-                        default => 'gray',
-                    }),
+                    ->formatStateUsing(function ($state) {
+                        $map = [
+                            'active' => ['label' => 'Ativo', 'color' => '#a4ac86'],
+                            'terminated' => ['label' => 'Encerrado', 'color' => '#7f4f24'],
+                            'suspended' => ['label' => 'Suspenso', 'color' => '#b6ad90'],
+                        ];
+
+                        $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];
+
+                        return sprintf(
+                            '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: %s; color: #ffffff;">%s</span>',
+                            $entry['color'],
+                            e($entry['label'])
+                        );
+                    })
+                    ->html(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

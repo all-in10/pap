@@ -52,21 +52,23 @@ class ContractTypeResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('category')
                     ->label('Categoria')
-                    ->badge()
-                    ->formatStateUsing(fn($state) => match($state) {
-                        'full_time' => 'Tempo Completo',
-                        'temporary' => 'Temporário',
-                        'internship' => 'Estágio',
-                        'non_defined' => 'Não Definido',
-                        default => $state,
+                    ->formatStateUsing(function ($state) {
+                        $map = [
+                            'full_time' => ['label' => 'Tempo Completo', 'color' => '#a4ac86'],
+                            'temporary' => ['label' => 'Temporário', 'color' => '#b6ad90'],
+                            'internship' => ['label' => 'Estágio', 'color' => '#7f4f24'],
+                            'non_defined' => ['label' => 'Não Definido', 'color' => '#414833'],
+                        ];
+
+                        $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];
+
+                        return sprintf(
+                            '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: %s; color: #ffffff;">%s</span>',
+                            $entry['color'],
+                            e($entry['label'])
+                        );
                     })
-                    ->color(fn(string $state) => match ($state) {
-                        'full_time' => 'success',
-                        'temporary' => 'warning',
-                        'internship' => 'info',
-                        'non_defined' => 'gray',
-                        default => 'gray',
-                    }),
+                    ->html(),
                 Tables\Columns\TextColumn::make('description')
                     ->label('Descrição')
                     ->limit(50),

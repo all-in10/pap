@@ -75,14 +75,24 @@ class TimeoffResource extends Resource
             Tables\Columns\TextColumn::make('start_date')->label('Início')->date(),
             Tables\Columns\TextColumn::make('end_date')->label('Fim')->date(),
             Tables\Columns\TextColumn::make('type')->label('Tipo'),
-            Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('status')
                 ->label('Status')
-                ->badge(fn(string $state) => match ($state) {
-                    'pending'  => 'warning',
-                    'approved' => 'success',
-                    'rejected' => 'danger',
-                    default    => 'gray',
-                }),
+                ->formatStateUsing(function ($state) {
+                    $map = [
+                        'pending' => ['label' => 'Pendente', 'color' => '#b6ad90'],
+                        'approved' => ['label' => 'Aprovado', 'color' => '#a4ac86'],
+                        'rejected' => ['label' => 'Rejeitado', 'color' => '#7f4f24'],
+                    ];
+
+                    $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];
+
+                    return sprintf(
+                        '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: %s; color: #ffffff;">%s</span>',
+                        $entry['color'],
+                        e($entry['label'])
+                    );
+                })
+                ->html(),
 
             Tables\Columns\TextColumn::make('reason')->label('Motivo')->limit(50),
         ])

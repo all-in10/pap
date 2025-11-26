@@ -119,7 +119,7 @@ class WorklogResource extends Resource
                     ->label('Extras')
                     ->sortable()
                     ->formatStateUsing(fn($state) => round($state, 2) . 'h')
-                    ->color(fn($state) => $state > 0 ? 'success' : 'secondary'),
+                    ->color(fn($state) => $state > 0 ? 'danger' : 'info'),
 
                 Tables\Columns\TextColumn::make('notes')
                     ->label('Observações')

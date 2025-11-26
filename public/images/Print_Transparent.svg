@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1280" height="1024" viewBox="0 0 1280 1024" xml:space="preserve">
+<desc>Created with Fabric.js 5.3.0</desc>
+<defs>
+</defs>
+<g transform="matrix(1 0 0 1 640 512)" id="background-logo"  >
+<rect style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-opacity: 0; fill-rule: nonzero; opacity: 1;"  paint-order="stroke"  x="-640" y="-512" rx="0" ry="0" width="1280" height="1024" />
+</g>
+<g transform="matrix(2.6747908573902497 0 0 2.6747908573902497 639.679173089628 397.8565248713705)" id="logo-logo"  >
+<g style=""  paint-order="stroke"   >
+		<g transform="matrix(0.917930923744532 0 0 0.9179309237445321 0 0)"  >
+<g style=""  paint-order="stroke"   >
+		<g transform="matrix(1 0 0 1 0 0)"  >
+<polygon style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(86,53,23); fill-rule: nonzero; opacity: 1;"  paint-order="stroke"  points="100,100 0,100 0,95.12 95.12,95.12 95.12,-95.12 -95.12,-95.12 -95.12,0 -100,0 -100,-100 100,-100 100,100 " />
+</g>
+</g>
+</g>
+</g>
+</g>
+<g transform="matrix(1.9211538461538462 0 0 1.9211538461538462 636.11656830716 749.3450915766817)" id="text-logo"  >
+<g style=""  paint-order="stroke"   >
+		<g transform="matrix(1 0 0 1 0 0)" id="text-logo-path-0"  >
+<path style="stroke: rgb(255,255,255); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(86,53,23); fill-rule: nonzero; opacity: 1;"  paint-order="stroke"  transform=" translate(-214.64, 23.8)" d="M 24.48 -47.6 L 2.04 -47.6 L 2.04 -43.52 L 10.88 -43.52 L 10.88 0 L 15.64 0 L 15.64 -43.52 L 24.48 -43.52 Z M 56.98 -47.6 L 56.98 0 L 77.38 0 L 77.38 -4.08 L 61.74 -4.08 L 61.74 -21.76 L 73.3 -21.76 L 73.3 -25.84 L 61.74 -25.84 L 61.74 -43.52 L 76.7 -43.52 L 76.7 -47.6 Z M 107.17 0 L 111.93 0 L 114.65 -12.92 L 126.82 -12.92 L 129.54 0 L 134.3 0 L 124.3 -47.6 L 117.16 -47.6 Z M 115.53 -17 L 120.77 -41.96 L 126 -17 Z M 197.27 -47.6 L 190.47 -47.6 L 182.38 -18.5 L 174.28 -47.6 L 167.48 -47.6 L 167.48 0 L 172.24 0 L 172.24 -37.81 L 179.93 -10.2 L 184.82 -10.2 L 192.51 -37.81 L 192.51 0 L 197.27 0 Z M 251.87 -36.04 L 251.87 -29.24 L 256.63 -29.24 L 256.63 -37.4 C 256.63 -46.51 251.53 -48.28 245.07 -48.28 C 238.68 -48.28 233.51 -46.51 233.51 -37.4 L 233.51 -10.2 C 233.51 -1.09 238.68 0.68 245.07 0.68 C 251.53 0.68 256.63 -1.22 256.63 -10.2 L 256.63 -13.06 L 251.87 -13.06 L 251.87 -11.56 C 251.87 -5.37 249.22 -4.08 245.07 -4.08 C 240.92 -4.08 238.27 -5.37 238.27 -11.56 L 238.27 -36.04 C 238.27 -42.23 240.92 -43.52 245.07 -43.52 C 249.22 -43.52 251.87 -42.23 251.87 -36.04 Z M 291.18 -37.4 L 291.18 -10.2 C 291.18 -1.09 296.34 0.68 302.74 0.68 C 309.2 0.68 314.3 -1.22 314.3 -10.2 L 314.3 -37.4 C 314.3 -46.51 309.2 -48.28 302.74 -48.28 C 296.34 -48.28 291.18 -46.51 291.18 -37.4 Z M 295.94 -11.56 L 295.94 -36.04 C 295.94 -42.23 298.59 -43.52 302.74 -43.52 C 306.88 -43.52 309.54 -42.23 309.54 -36.04 L 309.54 -11.56 C 309.54 -5.37 306.88 -4.08 302.74 -4.08 C 298.59 -4.08 295.94 -5.37 295.94 -11.56 Z M 350.54 0 L 355.3 0 L 355.3 -17.68 L 360.06 -17.68 L 368.56 0 L 373.66 0 L 364.96 -18.22 C 368.97 -19.24 371.62 -22.03 371.62 -28.56 L 371.62 -36.72 C 371.62 -45.83 366.52 -47.6 360.06 -47.6 L 350.54 -47.6 Z M 355.3 -21.76 L 355.3 -43.52 L 360.06 -43.52 C 364.21 -43.52 366.86 -42.23 366.86 -36.04 L 366.86 -29.24 C 366.86 -23.05 364.21 -21.76 360.06 -21.76 Z M 406.84 -47.6 L 406.84 0 L 427.24 0 L 427.24 -4.08 L 411.6 -4.08 L 411.6 -21.76 L 423.16 -21.76 L 423.16 -25.84 L 411.6 -25.84 L 411.6 -43.52 L 426.56 -43.52 L 426.56 -47.6 Z" stroke-linecap="round" />
+</g>
+</g>
+</g>
+<g transform="matrix(1.9211538461538462 0 0 1.9211538461538462 639.6177605915468 401.2326494835184)" id="tagline-3a78d944-c0db-44d4-8ad5-60158c925687-logo"  >
+<g style=""  paint-order="stroke"   >
+		<g transform="matrix(1 0 0 1 0 0)" id="tagline-3a78d944-c0db-44d4-8ad5-60158c925687-logo-path-0"  >
+<path style="stroke: rgb(255,255,255); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(86,53,23); fill-rule: nonzero; opacity: 1;"  paint-order="stroke"  transform=" translate(-26.91, 48.3)" d="M 49.68 -96.6 L 4.14 -96.6 L 4.14 -88.32 L 22.08 -88.32 L 22.08 0 L 31.74 0 L 31.74 -88.32 L 49.68 -88.32 Z" stroke-linecap="round" />
+</g>
+</g>
+</g>
+</svg>
