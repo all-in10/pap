@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use App\Services\Access;
+
 
 class CityResource extends Resource
 {
@@ -110,5 +112,10 @@ public static function form(Form $form): Form
             //'view' => Pages\ViewCity::route('/{record}'),
             'edit' => Pages\EditCity::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return Access::isRoot();
     }
 }

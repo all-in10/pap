@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Services\Access;
 
 class ContractTypeResource extends Resource
 {
@@ -101,5 +102,10 @@ class ContractTypeResource extends Resource
             'create' => Pages\CreateContractType::route('/create'),
             'edit' => Pages\EditContractType::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return Access::isRoot();
     }
 }

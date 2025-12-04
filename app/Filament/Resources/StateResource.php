@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
+use App\Services\Access;
 
 class StateResource extends Resource
 {
@@ -106,5 +107,10 @@ class StateResource extends Resource
             'create' => Pages\CreateState::route('/create'),
             'edit' => Pages\EditState::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return Access::isRoot();
     }
 }

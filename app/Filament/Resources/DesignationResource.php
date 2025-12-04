@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use App\Services\Access;
 
 class DesignationResource extends Resource
 {
@@ -90,5 +91,10 @@ class DesignationResource extends Resource
             'create' => Pages\CreateDesignation::route('/create'),
             'edit' => Pages\EditDesignation::route('/{record}/edit'),
         ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return Access::isRoot();
     }
 }
