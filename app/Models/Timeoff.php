@@ -17,6 +17,11 @@ class Timeoff extends Model
         'reason',
     ];
 
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);

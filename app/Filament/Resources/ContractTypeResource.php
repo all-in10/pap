@@ -24,20 +24,20 @@ class ContractTypeResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('Nome do Tipo de Contrato')
+                    ->label('Name')
                     ->required()
                     ->unique(ContractType::class, 'name', ignoreRecord: true),
                 Forms\Components\Select::make('category')
-                    ->label('Categoria')
+                    ->label('Category')
                     ->options([
-                        'full_time' => 'Tempo Completo',
-                        'temporary' => 'Temporário',
-                        'internship' => 'Estágio',
-                        'non_defined' => 'Não Definido',
+                        'full_time' => 'Full Time',
+                        'temporary' => 'Temporary',
+                        'internship' => 'Internship',
+                        'non_defined' => 'Undefined',
                     ])
                     ->required(),
                 Forms\Components\Textarea::make('description')
-                    ->label('Descrição')
+                    ->label('Description')
                     ->nullable(),
             ]);
     }
@@ -47,17 +47,17 @@ class ContractTypeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Nome')
+                    ->label('Name')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('category')
-                    ->label('Categoria')
+                    ->label('Category')
                     ->formatStateUsing(function ($state) {
                         $map = [
-                            'full_time' => ['label' => 'Tempo Completo', 'color' => '#a4ac86'],
-                            'temporary' => ['label' => 'Temporário', 'color' => '#b6ad90'],
-                            'internship' => ['label' => 'Estágio', 'color' => '#7f4f24'],
-                            'non_defined' => ['label' => 'Não Definido', 'color' => '#414833'],
+                            'full_time' => ['label' => 'Full Time', 'color' => '#a4ac86'],
+                            'temporary' => ['label' => 'Temporary', 'color' => '#b6ad90'],
+                            'internship' => ['label' => 'Internship', 'color' => '#7f4f24'],
+                            'non_defined' => ['label' => 'Non defined', 'color' => '#414833'],
                         ];
 
                         $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];
@@ -70,7 +70,7 @@ class ContractTypeResource extends Resource
                     })
                     ->html(),
                 Tables\Columns\TextColumn::make('description')
-                    ->label('Descrição')
+                    ->label('Description')
                     ->limit(50),
             ])
             ->filters([

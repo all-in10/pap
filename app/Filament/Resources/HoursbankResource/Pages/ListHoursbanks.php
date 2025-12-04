@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\HoursbankResource\Pages;
 
 use App\Filament\Resources\HoursbankResource;
+use App\Models\Hoursbank;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ListHoursbanks extends ListRecords
 {
@@ -13,7 +15,12 @@ class ListHoursbanks extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->visible(function (): bool {
+                    /** @var \App\Models\User|null $u */
+                    $u = Auth::user();
+                    return $u !== null && $u->can('create', Hoursbank::class);
+                }),
         ];
     }
 }

@@ -14,9 +14,17 @@ class Worklog extends Model
         'employee_id',
         'work_date',
         'start_time',
+        'break_start',
+        'break_end',
         'end_time',
         'hours_worked',
         'extra_hours',
+    ];
+
+    protected $casts = [
+        'work_date' => 'date',
+        'hours_worked' => 'integer',
+        'extra_hours' => 'integer',
     ];
 
     public function employee()
@@ -29,13 +37,38 @@ class Worklog extends Model
         // Sempre que criar ou atualizar um Worklog
         static::saving(function ($worklog) {
             if ($worklog->start_time && $worklog->end_time) {
-                $start = Carbon::createFromFormat('H:i:s', $worklog->start_time);
-                $end = Carbon::createFromFormat('H:i:s', $worklog->end_time);
+                try {
+                    $start = Carbon::createFromFormat('H:i:s', $worklog->start_time);
+                    $end = Carbon::createFromFormat('H:i:s', $worklog->end_time);
+                } catch (\Exception $e) {
+                    // If times cannot be parsed, avoid changing values
+                    return;
+                }
 
-                // Calcula horas trabalhadas
-                $worklog->hours_worked = $start->floatDiffInHours($end);
+                // Total worked minutes between start and end
+                $totalMinutes = $start->diffInMinutes($end);
 
-                // Calcula extras (acima de 8h/dia)
+                // Subtract break minutes if provided and valid
+                $breakMinutes = 0;
+                if (!empty($worklog->break_start) && !empty($worklog->break_end)) {
+                    try {
+                        $bStart = Carbon::createFromFormat('H:i:s', $worklog->break_start);
+                        $bEnd = Carbon::createFromFormat('H:i:s', $worklog->break_end);
+                        $breakMinutes = $bStart->diffInMinutes($bEnd);
+                        if ($breakMinutes < 0) {
+                            $breakMinutes = 0;
+                        }
+                    } catch (\Exception $e) {
+                        $breakMinutes = 0;
+                    }
+                }
+
+                $workedMinutes = max(0, $totalMinutes - $breakMinutes);
+
+                // Store only whole hours (floor), as requested
+                $worklog->hours_worked = intdiv($workedMinutes, 60);
+
+                // Calculate extra hours (hours above daily limit)
                 $limite = 8;
                 $worklog->extra_hours = max(0, $worklog->hours_worked - $limite);
             }

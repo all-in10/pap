@@ -15,36 +15,36 @@ class DesignationResource extends Resource
     protected static ?string $model = Designation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
-    protected static ?string $navigationLabel = 'Cargos';
-    protected static ?string $pluralModelLabel = 'Cargos';
-    protected static ?string $navigationGroup = 'Gestão de Funcionários';
-    protected static ?string $modelLabel = 'Cargo';
+    protected static ?string $navigationLabel = 'Designations';
+    protected static ?string $pluralModelLabel = 'Designations';
+    protected static ?string $navigationGroup = 'Employee Management';
+    protected static ?string $modelLabel = 'Designation';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('Nome')
+                    ->label('Name')
                     ->required()
                     ->maxLength(255),
 
                 Forms\Components\Textarea::make('description')
-                    ->label('Descrição')
+                    ->label('Description')
                     ->rows(3),
 
                 Forms\Components\Select::make('level')
-                    ->label('Nível')
+                    ->label('Level')
                     ->options([
-                        'junior' => 'Júnior',
-                        'pleno' => 'Pleno',
-                        'senior' => 'Sênior',
+                        'junior' => 'Junior',
+                        'pleno' => 'Mid',
+                        'senior' => 'Senior',
                     ])
                     ->required()
                     ->native(false),
 
                 Forms\Components\TextInput::make('base_salary')
-                    ->label('Salário Base')
+                    ->label('Base Salary')
                     ->numeric()
                     ->prefix('€')
                     ->required(),
@@ -55,16 +55,19 @@ class DesignationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
-                Tables\Columns\TextColumn::make('name')->label('Nome')->searchable(),
-                Tables\Columns\TextColumn::make('level')->label('Nível')->sortable(),
+                Tables\Columns\TextColumn::make('id')
+                ->label('ID')
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('name')
+                ->label('Name')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('level')
+                ->label('Level')
+                ->sortable(),
                 Tables\Columns\TextColumn::make('base_salary')
-                    ->label('Salário Base')
+                    ->label('Base Salary')
                     ->money('EUR', true),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Criado em')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

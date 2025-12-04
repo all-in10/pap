@@ -9,44 +9,45 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class TimeoffResource extends Resource
 {
     protected static ?string $model = Timeoff::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
-    protected static ?string $navigationLabel = 'Pedidos de Folga';
-    protected static ?string $pluralModelLabel = 'Pedidos de Folga';
-    protected static ?string $navigationGroup = 'Gestão de Funcionários';
-    protected static ?string $modelLabel = 'Pedido de Folga';
+    protected static ?string $navigationLabel = 'Time Off Requests';
+    protected static ?string $pluralModelLabel = 'Time Off Requests';
+    protected static ?string $navigationGroup = 'Employee Management';
+    protected static ?string $modelLabel = 'Time Off Request';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Select::make('employee_id')
-                ->label('Funcionário')
+                ->label('Employee')
                 ->relationship('employee', 'first_name')
                 ->searchable()
                 ->preload()
                 ->required(),
 
             Forms\Components\DatePicker::make('start_date')
-                ->label('Início')
+                ->label('Start Date')
                 ->native(false)
                 ->required(),
 
             Forms\Components\DatePicker::make('end_date')
-                ->label('Fim')
+                ->label('End Date')
                 ->native(false)
                 ->required(),
 
             Forms\Components\Select::make('type')
-                ->label('Tipo de Folga')
+                ->label('Type')
                 ->options([
-                    'vacation'       => 'Férias',
-                    'sick_leave'     => 'Licença Médica',
-                    'personal_leave' => 'Licença Pessoal',
-                    'other'          => 'Outro',
+                    'vacation'       => 'Vacation',
+                    'sick_leave'     => 'Sick Leave',
+                    'personal_leave' => 'Personal Leave',
+                    'other'          => 'Other',
                 ])
                 ->native(false)
                 ->required(),
@@ -54,15 +55,15 @@ class TimeoffResource extends Resource
             Forms\Components\Select::make('status')
                 ->label('Status')
                 ->options([
-                    'pending'  => 'Pendente',
-                    'approved' => 'Aprovado',
-                    'rejected' => 'Rejeitado',
+                    'pending'  => 'Pending',
+                    'approved' => 'Approved',
+                    'rejected' => 'Rejected',
                 ])
                 ->default('pending')
                 ->required(),
 
             Forms\Components\Textarea::make('reason')
-                ->label('Motivo')
+                ->label('Reason')
                 ->rows(3)
                 ->nullable(),
         ]);
@@ -71,10 +72,10 @@ class TimeoffResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('employee.first_name')->label('Funcionário')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('start_date')->label('Início')->date(),
-            Tables\Columns\TextColumn::make('end_date')->label('Fim')->date(),
-            Tables\Columns\TextColumn::make('type')->label('Tipo'),
+            Tables\Columns\TextColumn::make('employee.first_name')->label('Employee')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('start_date')->label('Start Date')->date(),
+            Tables\Columns\TextColumn::make('end_date')->label('End Date')->date(),
+            Tables\Columns\TextColumn::make('type')->label('Type'),
                 Tables\Columns\TextColumn::make('status')
                 ->label('Status')
                 ->formatStateUsing(function ($state) {
@@ -94,11 +95,21 @@ class TimeoffResource extends Resource
                 })
                 ->html(),
 
-            Tables\Columns\TextColumn::make('reason')->label('Motivo')->limit(50),
+            Tables\Columns\TextColumn::make('reason')->label('Reason')->limit(50),
         ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('update', $record);
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('delete', $record);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),

@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\ContractTypeResource\Pages;
 
 use App\Filament\Resources\ContractTypeResource;
+use App\Models\ContractType;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Auth;
 
 class ListContractTypes extends ListRecords
 {
@@ -13,7 +15,12 @@ class ListContractTypes extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->visible(function (): bool {
+                    /** @var \App\Models\User|null $u */
+                    $u = Auth::user();
+                    return $u !== null && $u->can('create', ContractType::class);
+                }),
         ];
     }
 }

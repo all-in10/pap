@@ -34,16 +34,18 @@ class Employee extends Model
     protected static function booted()
     {
         static::created(function ($employee) {
-            // Cria usuário relacionado
-            $defaultPassword = 'changeme123';
-            $user = \App\Models\User::create([
-                'name' => $employee->first_name . ' ' . $employee->last_name,
-                'email' => $employee->email,
-                'password' => bcrypt($defaultPassword),
-                'must_change_password' => true,
-            ]);
-            $employee->user_id = $user->id;
-            $employee->save();
+            // Cria usuário relacionado apenas se não existir um user_id definido
+            if (empty($employee->user_id)) {
+                $defaultPassword = 'changeme123';
+                $user = \App\Models\User::create([
+                    'name' => $employee->first_name . ' ' . $employee->last_name,
+                    'email' => $employee->email,
+                    'password' => bcrypt($defaultPassword),
+                    'must_change_password' => true,
+                ]);
+                $employee->user_id = $user->id;
+                $employee->save();
+            }
 
             // Evita criação de contrato se não houver data de contratação
             if (!$employee->date_hired) {

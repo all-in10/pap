@@ -17,9 +17,4 @@ class Hoursbank extends Model
     {
         return $this->belongsTo(Employee::class);
     }
-
-    public function worklogs()
-    {
-        return $this->hasMany(Worklog::class, 'employee_id', 'employee_id');
-    }
 }

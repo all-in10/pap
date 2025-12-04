@@ -12,29 +12,30 @@ use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-identification';
-    protected static ?string $navigationLabel = 'Funcionários';
-    protected static ?string $pluralModelLabel = 'Funcionários';
-    protected static ?string $navigationGroup = 'Gestão de Funcionários';
-    protected static ?string $modelLabel = 'Funcionário';
+    protected static ?string $navigationLabel = 'Employees';
+    protected static ?string $pluralModelLabel = 'Employees';
+    protected static ?string $navigationGroup = 'Employee Management';
+    protected static ?string $modelLabel = 'Employee';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Localização')
-                ->description('Selecione país, estado e cidade')
+            Forms\Components\Section::make('Location')
+                ->description('Select country, state and city')
                 ->schema([
                     Forms\Components\Select::make('country_id')
                         ->relationship('country', 'name')
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('País')
+                        ->label('Country')
                         ->reactive()
                         ->afterStateUpdated(function ($state, callable $set) {
                             if ($state) {
@@ -46,81 +47,81 @@ class EmployeeResource extends Resource
                         }),
 
                     Forms\Components\Select::make('state_id')
-                        ->options(fn($get) => $get('country_id') 
-                            ? \App\Models\State::where('country_id', $get('country_id'))->pluck('name', 'id') 
+                        ->options(fn($get) => $get('country_id')
+                            ? \App\Models\State::where('country_id', $get('country_id'))->pluck('name', 'id')
                             : [])
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('Estado'),
+                        ->label('State'),
 
                     Forms\Components\Select::make('city_id')
-                        ->options(fn($get) => $get('state_id') 
-                            ? \App\Models\City::where('state_id', $get('state_id'))->pluck('name', 'id') 
+                        ->options(fn($get) => $get('state_id')
+                            ? \App\Models\City::where('state_id', $get('state_id'))->pluck('name', 'id')
                             : [])
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('Cidade'),
+                        ->label('City'),
 
                     Forms\Components\Select::make('department_id')
                         ->relationship('department', 'name')
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('Departamento'),
+                        ->label('Department'),
 
                     Forms\Components\Select::make('designation_id')
                         ->relationship('designation', 'name')
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('Designação'),
+                        ->label('Designation'),
                 ])
                 ->columns(2),
 
-            Forms\Components\Section::make('Dados Pessoais')
+            Forms\Components\Section::make('Personal Data')
                 ->schema([
-                    Forms\Components\TextInput::make('first_name')->label('Primeiro Nome')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('middle_name')->label('Nome do Meio')->maxLength(255)->nullable(),
-                    Forms\Components\TextInput::make('last_name')->label('Último Nome')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('first_name')->label('First Name')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('middle_name')->label('Middle Name')->maxLength(255)->nullable(),
+                    Forms\Components\TextInput::make('last_name')->label('Last Name')->required()->maxLength(255),
                     Forms\Components\Select::make('gender')
-                        ->label('Gênero')
+                        ->label('Gender')
                         ->options([
-                            'male' => 'Masculino',
-                            'female' => 'Feminino',
+                            'male' => 'Male',
+                            'female' => 'Female',
                             'n/a' => 'N/A',
                         ])
                         ->required()
                         ->native(false),
-                    Forms\Components\TextInput::make('email')->label('E-mail')->email()->required()->unique(ignoreRecord: true),
+                    Forms\Components\TextInput::make('email')->label('Email')->email()->required()->unique(ignoreRecord: true),
                     Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(20),
                     Forms\Components\TextInput::make('nif')->label('NIF')->maxLength(20)->nullable(),
                     Forms\Components\TextInput::make('phone_number')
-                        ->label('Telefone')
+                        ->label('Phone')
                         ->maxLength(20)
                         ->nullable()
-                        ->placeholder('Ex: +351 123 456 789'),
-                    Forms\Components\Textarea::make('observations')->label('Observações')->rows(3)->nullable(),
+                        ->placeholder('+351 123 456 789'),
+                    Forms\Components\Textarea::make('observations')->label('Notes')->rows(3)->nullable(),
                 ])
                 ->columns(2),
 
-            Forms\Components\Section::make('Endereço')
+            Forms\Components\Section::make('Address')
                 ->schema([
-                    Forms\Components\TextInput::make('address')->label('Endereço')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('zip_code')->label('Código Postal')->required()->maxLength(10),
+                    Forms\Components\TextInput::make('address')->label('Address')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('zip_code')->label('Zip Code')->required()->maxLength(10),
                 ])
                 ->columns(2),
 
-            Forms\Components\Section::make('Datas')
+            Forms\Components\Section::make('Dates')
                 ->schema([
                     Forms\Components\DatePicker::make('date_of_birth')
-                        ->label('Data de Nascimento')
+                        ->label('Date of Birth')
                         ->required()
                         ->maxDate(now()->subYears(18))
                         ->native(false),
                     Forms\Components\DatePicker::make('date_hired')
-                        ->label('Data de Contratação')
+                        ->label('Date Hired')
                         ->required()
                         ->maxDate(now())
                         ->native(false),
@@ -129,7 +130,7 @@ class EmployeeResource extends Resource
 
             Forms\Components\Section::make('Status')
                 ->schema([
-                    Forms\Components\Toggle::make('is_active')->label('Ativo')->default(true),
+                    Forms\Components\Toggle::make('is_active')->label('Active')->default(true),
                 ])
                 ->columns(1),
         ]);
@@ -139,17 +140,32 @@ class EmployeeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')->label('Primeiro Nome')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('last_name')->label('Último Nome')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('email')->label('E-mail')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('department.name')->label('Departamento')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('designation.name')->label('Designação')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('date_hired')->label('Data de Contratação')->date()->sortable(),
+                Tables\Columns\TextColumn::make('first_name')->label('First Name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('last_name')->label('Last Name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('email')->label('Email')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('department.name')->label('Department')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('designation.name')->label('Designation')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('date_hired')->label('Date Hired')->date()->sortable(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('view', $record);
+                    }),
+                Tables\Actions\EditAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('update', $record);
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('delete', $record);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -159,13 +175,13 @@ class EmployeeResource extends Resource
     public static function infolists(): Infolist
     {
         return Infolist::make()->schema([
-            Section::make('Dados Pessoais')->schema([
-                TextEntry::make('first_name')->label('Primeiro Nome'),
-                TextEntry::make('last_name')->label('Último Nome'),
-                TextEntry::make('email')->label('E-mail'),
-                TextEntry::make('department.name')->label('Departamento'),
-                TextEntry::make('designation.name')->label('Designação'),
-                TextEntry::make('date_hired')->label('Data de Contratação'),
+            Section::make('Personal Data')->schema([
+                TextEntry::make('first_name')->label('First Name'),
+                TextEntry::make('last_name')->label('Last Name'),
+                TextEntry::make('email')->label('Email'),
+                TextEntry::make('department.name')->label('Department'),
+                TextEntry::make('designation.name')->label('Designation'),
+                TextEntry::make('date_hired')->label('Date Hired'),
             ])->columns(2),
         ]);
     }
@@ -173,7 +189,7 @@ class EmployeeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            // Aqui você pode adicionar ContractsRelationManager::class
+            // You can add ContractsRelationManager::class here
         ];
     }
 

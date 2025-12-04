@@ -7,6 +7,8 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Worklog;
 use Carbon\Carbon;
 
 class WorklogsRelationManager extends RelationManager
@@ -41,13 +43,13 @@ class WorklogsRelationManager extends RelationManager
                     ),
 
                 Forms\Components\TextInput::make('hours_worked')
-                    ->label('Horas Trabalhadas')
+                    ->label('Hours Worked')
                     ->numeric()
                     ->required()
                     ->dehydrateStateUsing(fn($get) => $this->calculateHoursWorked($get('start_time'), $get('end_time'))),
 
                 Forms\Components\Textarea::make('notes')
-                    ->label('Observações')
+                    ->label('Notes')
                     ->rows(3),
             ]);
     }
@@ -69,7 +71,7 @@ class WorklogsRelationManager extends RelationManager
                     ->formatStateUsing(fn($state) => Carbon::createFromFormat('H:i:s', $state)->format('h:i A')),
 
                 Tables\Columns\TextColumn::make('hours_worked')
-                    ->label('Horas Trabalhadas')
+                    ->label('Hours Worked')
                     ->formatStateUsing(fn($state) => round($state, 2) . 'h'),
 
                 Tables\Columns\TextColumn::make('extra_hours')
@@ -79,11 +81,28 @@ class WorklogsRelationManager extends RelationManager
             ])
             ->defaultSort('work_date', 'desc')
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->visible(function (): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('create', Worklog::class);
+                    }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        if ($u === null) return false;
+                        return $u->can('update', $record);
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        if ($u === null) return false;
+                        return $u->can('delete', $record);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ContractResource\Pages;
 use App\Models\Contract;
 use App\Models\Designation;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,24 +19,24 @@ class ContractResource extends Resource
     protected static ?string $model = Contract::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Contratos';
-    protected static ?string $pluralModelLabel = 'Contratos';
-    protected static ?string $navigationGroup = 'Gestão de Funcionários';
-    protected static ?string $modelLabel = 'Contrato';
+    protected static ?string $navigationLabel = 'Contracts';
+    protected static ?string $pluralModelLabel = 'Contracts';
+    protected static ?string $navigationGroup = 'Employee Management';
+    protected static ?string $modelLabel = 'Contract';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Select::make('employee_id')
-                ->label('Funcionário')
+                ->label('Employee')
                 ->relationship('employee', 'first_name')
                 ->searchable()
                 ->preload()
                 ->nullable()
-                ->helperText('Será criado automaticamente se vazio.'),
+                ->helperText('Will be created automatically if empty.'),
 
             Forms\Components\Select::make('designation_id')
-                ->label('Cargo / Designação')
+                ->label('Designation')
                 ->relationship('designation', 'name')
                 ->searchable()
                 ->preload()
@@ -49,7 +50,7 @@ class ContractResource extends Resource
                 }),
 
             Forms\Components\Select::make('contract_type_id')
-                ->label('Tipo de Contrato')
+                ->label('Contract Type')
                 ->relationship('contractType', 'name')
                 ->searchable()
                 ->preload()
@@ -57,32 +58,32 @@ class ContractResource extends Resource
                 ->reactive(),
 
             Forms\Components\TextInput::make('salary')
-                ->label('Salário')
+                ->label('Salary')
                 ->numeric()
                 ->required(),
 
             Forms\Components\DatePicker::make('start_date')
-                ->label('Data de Início')
+                ->label('Start Date')
                 ->required()
                 ->default(fn($get) => $get('employee.date_hired') ?? now()),
 
             Forms\Components\DatePicker::make('end_date')
-                ->label('Data de Fim')
+                ->label('End Date')
                 ->nullable()
                 ->helperText('Data de fim do contrato (se aplicável).'),  
 
             Forms\Components\Select::make('status')
                 ->label('Status')
                 ->options([
-                    'active'     => 'Ativo',
-                    'terminated' => 'Encerrado',
-                    'suspended'  => 'Suspenso',
+                    'active'     => 'Active',
+                    'terminated' => 'Terminated',
+                    'suspended'  => 'Suspended',
                 ])
                 ->default('active')
                 ->required(),
 
             Forms\Components\DatePicker::make('date_hired')
-                ->label('Data de Contratação')
+                ->label('Date Hired')
                 ->required()
                 ->default(fn($get) => $get('employee.date_hired') ?? now()),
         ]);
@@ -123,9 +124,9 @@ class ContractResource extends Resource
                     ->label('Status')
                     ->formatStateUsing(function ($state) {
                         $map = [
-                            'active' => ['label' => 'Ativo', 'color' => '#a4ac86'],
-                            'terminated' => ['label' => 'Encerrado', 'color' => '#7f4f24'],
-                            'suspended' => ['label' => 'Suspenso', 'color' => '#b6ad90'],
+                            'active' => ['label' => 'Active', 'color' => '#a4ac86'],
+                            'terminated' => ['label' => 'Terminated', 'color' => '#7f4f24'],
+                            'suspended' => ['label' => 'Suspended', 'color' => '#b6ad90'],
                         ];
 
                         $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];
@@ -139,8 +140,18 @@ class ContractResource extends Resource
                     ->html(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('update', $record);
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->visible(function ($record): bool {
+                        /** @var \App\Models\User|null $u */
+                        $u = Auth::user();
+                        return $u !== null && $u->can('delete', $record);
+                    }),
 
                 Action::make('generate_pdf')
                     ->label('Gerar PDF')

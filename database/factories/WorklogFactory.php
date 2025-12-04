@@ -27,19 +27,38 @@ class WorklogFactory extends Factory
             ->addHours($hoursToAdd)
             ->format('H:i:s');
 
-        // Calculate hours worked and extra hours
+        // Generate break times (lunch break, typically ~1 hour)
         $start = Carbon::createFromFormat('H:i:s', $startTime);
         $end = Carbon::createFromFormat('H:i:s', $endTime);
-        $hoursWorked = $start->floatDiffInHours($end);
-        $extraHours = max(0, $hoursWorked - 8);
+        
+        // Break typically starts around 12:00-13:00 and lasts 1 hour
+        $breakStartHour = $this->faker->numberBetween(12, 13);
+        $breakStartMinute = $this->faker->numberBetween(0, 59);
+        $breakStart = sprintf('%02d:%02d:00', $breakStartHour, $breakStartMinute);
+        
+        // Break duration between 30 minutes and 2 hours
+        $breakDurationMinutes = $this->faker->numberBetween(30, 120);
+        $breakEnd = Carbon::createFromFormat('H:i:s', $breakStart)
+            ->addMinutes($breakDurationMinutes)
+            ->format('H:i:s');
+
+        // Calculate hours worked (total time minus break)
+        $totalHours = $start->floatDiffInHours($end);
+        $bStart = Carbon::createFromFormat('H:i:s', $breakStart);
+        $bEnd = Carbon::createFromFormat('H:i:s', $breakEnd);
+        $breakDuration = $bStart->floatDiffInHours($bEnd);
+        $hoursWorked = max(0, $totalHours - $breakDuration);
+        $extraHours = max(0, (int)($hoursWorked - 8)); // Only count whole hours
 
         return [
             'employee_id' => $employee,
             'work_date' => $workDate->format('Y-m-d'),
             'start_time' => $startTime,
             'end_time' => $endTime,
-            'hours_worked' => round($hoursWorked, 2),
-            'extra_hours' => round($extraHours, 2),
+            'break_start' => $breakStart,
+            'break_end' => $breakEnd,
+            'hours_worked' => (int)max(0, $hoursWorked),
+            'extra_hours' => $extraHours,
             'created_at' => now(),
             'updated_at' => now(),
         ];

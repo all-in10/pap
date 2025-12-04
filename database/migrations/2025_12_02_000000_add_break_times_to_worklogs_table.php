@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hoursbanks', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('employee_id')->unique()->constrained()->cascadeOnDelete();
-            $table->decimal('total_hours', 8, 2)->default(0);
-            $table->timestamps();
+        Schema::table('worklogs', function (Blueprint $table) {
+            $table->time('break_start')->nullable()->after('start_time');
+            $table->time('break_end')->nullable()->after('break_start');
         });
     }
 
@@ -24,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hoursbanks');
+        Schema::table('worklogs', function (Blueprint $table) {
+            $table->dropColumn(['break_start', 'break_end']);
+        });
     }
 };

@@ -63,20 +63,14 @@ class DatabaseSeeder extends Seeder
         }
 
         // 7. Cria registros de horas (Worklogs)
+        // O Hoursbank é criado automaticamente quando Employee é criado, então não duplicamos aqui
         foreach ($employees as $employee) {
             Worklog::factory()->count(5)->create([
                 'employee_id' => $employee->id,
             ]);
         }
 
-        // 8. Cria banco de horas (Hoursbank)
-        foreach ($employees as $employee) {
-            Hoursbank::factory()->create([
-                'employee_id' => $employee->id,
-            ]);
-        }
-
-        // 9. Cria pedidos de folga (Timeoff)
+        // 8. Cria pedidos de folga (Timeoff)
         foreach ($employees as $employee) {
             Timeoff::factory()->count(rand(1, 3))->create([
                 'employee_id' => $employee->id,

@@ -8,6 +8,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Department;
 use App\Models\Designation;
+use App\Models\User;
 
 class EmployeeFactory extends Factory
 {
@@ -19,6 +20,7 @@ class EmployeeFactory extends Factory
         $country = Country::inRandomOrder()->first() ?? Country::factory()->create();
 
         return [
+            'user_id' => User::factory(),
             'country_id' => $country->id,
             'state_id' => State::factory(),
             'city_id' => City::factory(),

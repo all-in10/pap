@@ -34,15 +34,15 @@ class CountryResource extends Resource
             Forms\Components\TextInput::make('name')
                 ->required()
                 ->maxLength(255)
-                ->label('Nome do País'),
+                ->label('Country Name'),
             Forms\Components\TextInput::make('code')
                 ->required()
                 ->maxLength(3)
-                ->label('Código do País'),
+                ->label('Country Code'),
             Forms\Components\TextInput::make('phonecode')
                 ->required()
                 ->maxLength(10)
-                ->label('Código de Telefone'),
+                ->label('Phone Code'),
         ]);
     }
 

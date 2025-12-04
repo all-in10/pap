@@ -4,11 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use App\Enums\UserRole;
+use App\Services\Access;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\View\TablesRenderHook;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -25,18 +29,46 @@ class UserResource extends Resource
             Forms\Components\TextInput::make('name')
                 ->required()
                 ->maxLength(255),
-
             Forms\Components\TextInput::make('email')
                 ->email()
                 ->required()
                 ->maxLength(255),
 
-            Forms\Components\DateTimePicker::make('email_verified_at'),
+            // email_verified_at is set automatically on create and is not editable via the form
 
-            Forms\Components\TextInput::make('password')
-                ->password()
+            // Role select using the enum values
+                Forms\Components\Select::make('role')
+                ->label('Role')
+                ->options([
+                    UserRole::ROOT->value => 'Super Administrator',
+                    UserRole::ADMIN->value => 'Administrator',
+                    UserRole::HR->value => 'Human Resources',
+                    UserRole::EMPLOYEE->value => 'Employee',
+                ])
                 ->required()
-                ->maxLength(255),
+                ->default(UserRole::EMPLOYEE->value),
+
+            // Password: hash on save, optional on edit
+                Forms\Components\TextInput::make('password')
+                ->password()
+                ->dehydrateStateUsing(fn($state) => $state ? Hash::make($state) : null)
+                ->dehydrated(fn($state) => filled($state))
+                ->maxLength(255)
+                ->helperText('Leave empty to keep the current password when editing'),
+
+            // Optional relation to Employee (if present)
+            Forms\Components\Select::make('employee_id')
+                ->label('Related Employee')
+                ->relationship('employee', 'first_name')
+                ->searchable()
+                ->preload()
+                ->nullable(),
+
+            // Must change password toggle
+            Forms\Components\Toggle::make('must_change_password')
+                ->label('Force password change')
+                ->default(false),
+
         ]);
     }
 
@@ -50,6 +82,52 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('role')
+                    ->label('Role')
+                    ->formatStateUsing(function ($state) {
+                        $map = [
+                            UserRole::ROOT->value => 'Super Administrator',
+                            UserRole::ADMIN->value => 'Administrator',
+                            UserRole::HR->value => 'Human Resources',
+                            UserRole::EMPLOYEE->value => 'Employee',
+                        ];
+
+                        if ($state instanceof \BackedEnum) {
+                            $key = $state->value;
+                        } elseif (is_string($state) || is_int($state) || is_float($state)) {
+                            $key = (string) $state;
+                        } else {
+                            $key = '';
+                        }
+
+                        $label = $map[$key] ?? $key;
+
+                        $colorMap = [
+                            UserRole::ROOT->value => 'bg-primary-600',
+                            UserRole::ADMIN->value => 'bg-red-600',
+                            UserRole::HR->value => 'bg-green-600',
+                            UserRole::EMPLOYEE->value => 'bg-gray-500',
+                        ];
+
+                        $colorClass = $colorMap[$key] ?? 'bg-gray-500';
+
+                        return sprintf(
+                            '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold %s text-white">%s</span>',
+                            $colorClass,
+                            e($label)
+                        );
+                    })
+                    ->html()
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\IconColumn::make('must_change_password')
+                    ->label('Force password change')
+                    ->boolean()
+                    ->trueIcon('heroicon-s-check-circle')
+                    ->falseIcon('heroicon-s-x-circle')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
@@ -59,10 +137,13 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
             ])
             ->filters([])
             ->actions([
