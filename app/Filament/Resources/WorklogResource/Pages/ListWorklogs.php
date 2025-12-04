@@ -5,6 +5,7 @@ namespace App\Filament\Resources\WorklogResource\Pages;
 
 use App\Filament\Resources\WorklogResource;
 use App\Models\Worklog;
+use App\Enums\UserRole;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -24,4 +25,6 @@ class ListWorklogs extends ListRecords
                 }),
         ];
     }
+
+    // Filtering moved to the Resource::table() via modifyQueryUsing().
 }

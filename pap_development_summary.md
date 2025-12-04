@@ -18,6 +18,13 @@ This document summarizes the development process, architectural decisions, and k
   - Casts for `hours_worked` and `extra_hours` changed to `integer` to reflect whole-hour storage.
   - This ensures break time is fully excluded from `hours_worked` and downstream calculations (Hoursbank, tables, factory) remain consistent.
 
+- **2025-12-04**: Implement employee-level data isolation for enhanced data protection.
+  - `app/Filament/Resources/EmployeeResource/Pages/ListEmployees.php`: added `getTableQuery()` override to filter by logged-in employee's ID when role == EMPLOYEE.
+  - `app/Filament/Resources/WorklogResource/Pages/ListWorklogs.php`: added `getTableQuery()` override to filter worklogs by logged-in employee's ID when role == EMPLOYEE.
+  - `app/Filament/Resources/TimeoffResource/Pages/ListTimeoffs.php`: added `getTableQuery()` override to filter timeoff records by logged-in employee's ID when role == EMPLOYEE.
+  - `app/Filament/Resources/HoursbankResource/Pages/ListHoursbanks.php`: added `getTableQuery()` override to filter hoursbank records by logged-in employee's ID when role == EMPLOYEE.
+  - All four list pages now import `UserRole` enum and check role before applying filter. Non-employee roles (ROOT, ADMIN, HR) see all records as before.
+
 
 ## 1. Project Foundation
 - **Framework:** Laravel 11

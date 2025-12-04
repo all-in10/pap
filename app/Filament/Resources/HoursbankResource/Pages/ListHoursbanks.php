@@ -4,6 +4,7 @@ namespace App\Filament\Resources\HoursbankResource\Pages;
 
 use App\Filament\Resources\HoursbankResource;
 use App\Models\Hoursbank;
+use App\Enums\UserRole;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -23,4 +24,6 @@ class ListHoursbanks extends ListRecords
                 }),
         ];
     }
+
+    // Filtering moved to the Resource::table() via modifyQueryUsing().
 }

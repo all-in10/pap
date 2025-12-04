@@ -6,6 +6,7 @@ use App\Filament\Resources\ContractResource\Pages;
 use App\Models\Contract;
 use App\Models\Designation;
 use Illuminate\Support\Facades\Auth;
+use App\Services\Access;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -92,6 +93,18 @@ class ContractResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function ($query) {
+                /** @var \App\Models\User|null $u */
+                $u = Auth::user();
+                if ($u && Access::isEmployeeRole($u)) {
+                    $employeeId = $u->employee?->id ?? null;
+                    if ($employeeId) {
+                        $query->where('employee_id', $employeeId);
+                    }
+                }
+
+                return $query;
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')
                     ->label('Funcionário')

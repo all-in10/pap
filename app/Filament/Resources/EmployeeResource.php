@@ -13,6 +13,8 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\UserRole;
+use App\Services\Access;
 
 class EmployeeResource extends Resource
 {
@@ -138,7 +140,18 @@ class EmployeeResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->modifyQueryUsing(function ($query) {
+            /** @var \App\Models\User|null $u */
+            $u = Auth::user();
+            if ($u && Access::isEmployeeRole($u)) {
+                $employeeId = $u->employee?->id ?? null;
+                if ($employeeId) {
+                    $query->where('id', $employeeId);
+                }
+            }
+
+            return $query;
+        })
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')->label('First Name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('last_name')->label('Last Name')->sortable()->searchable(),

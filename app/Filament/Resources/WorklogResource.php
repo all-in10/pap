@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Carbon\Carbon;
+use App\Enums\UserRole;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -184,7 +185,18 @@ class WorklogResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->modifyQueryUsing(function ($query) {
+            /** @var \App\Models\User|null $u */
+            $u = Auth::user();
+            if ($u && Access::isEmployeeRole($u)) {
+                $employeeId = $u->employee?->id ?? null;
+                if ($employeeId) {
+                    $query->where('employee_id', $employeeId);
+                }
+            }
+
+            return $query;
+        })
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')
                         ->label('Employee')
@@ -286,8 +298,10 @@ class WorklogResource extends Resource
                         /** @var \App\Models\User|null $u */
                         $u = Auth::user();
                         if ($u && Access::isEmployeeRole($u)) {
-                            $employeeId = $u->employee?->id ?? $u->id;
-                            return $query->where('employee_id', $employeeId);
+                            $employeeId = $u->employee?->id ?? null;
+                            if ($employeeId) {
+                                return $query->where('employee_id', $employeeId);
+                            }
                         }
                         return $query;
                     }),

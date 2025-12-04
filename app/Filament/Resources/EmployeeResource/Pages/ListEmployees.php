@@ -4,6 +4,7 @@ namespace App\Filament\Resources\EmployeeResource\Pages;
 
 use App\Filament\Resources\EmployeeResource;
 use App\Models\Employee;
+use App\Enums\UserRole;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Auth;
@@ -23,4 +24,6 @@ class ListEmployees extends ListRecords
                 }),
         ];
     }
+
+    // Filtering moved to the Resource::table() via modifyQueryUsing().
 }

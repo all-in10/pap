@@ -10,6 +10,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\UserRole;
+use App\Services\Access;
 
 class HoursbankResource extends Resource
 {
@@ -42,7 +45,18 @@ class HoursbankResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
+        return $table->modifyQueryUsing(function ($query) {
+            /** @var \App\Models\User|null $u */
+            $u = Auth::user();
+            if ($u && Access::isEmployeeRole($u)) {
+                $employeeId = $u->employee?->id ?? null;
+                if ($employeeId) {
+                    $query->where('employee_id', $employeeId);
+                }
+            }
+
+            return $query;
+        })
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')
                     ->label('Employee')

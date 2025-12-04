@@ -10,6 +10,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use App\Enums\UserRole;
+use App\Services\Access;
 
 class TimeoffResource extends Resource
 {
@@ -97,6 +99,18 @@ class TimeoffResource extends Resource
 
             Tables\Columns\TextColumn::make('reason')->label('Reason')->limit(50),
         ])
+                ->modifyQueryUsing(function ($query) {
+                    /** @var \App\Models\User|null $u */
+                    $u = Auth::user();
+                    if ($u && Access::isEmployeeRole($u)) {
+                        $employeeId = $u->employee?->id ?? null;
+                        if ($employeeId) {
+                            $query->where('employee_id', $employeeId);
+                        }
+                    }
+
+                    return $query;
+                })
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->visible(function ($record): bool {

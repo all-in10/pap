@@ -9,7 +9,9 @@ class EmployeePolicy
 {
     public function viewAny(?User $user): bool
     {
-        return $user?->isHr() || $user?->isAdmin() || $user?->isRoot();
+        // Allow HR/Admin/Root to view all employees, and allow an employee to access the list
+        // so they can view their own profile (filtration is applied at Resource level).
+        return $user?->isHr() || $user?->isAdmin() || $user?->isRoot() || $user?->isEmployee();
     }
 
     public function view(?User $user, Employee $employee): bool
@@ -28,7 +30,13 @@ class EmployeePolicy
 
     public function update(?User $user, Employee $employee): bool
     {
-        return $user?->isHr() || $user?->isAdmin() || $user?->isRoot();
+        // Allow HR/Admin/Root to update any employee. Employees may update their own profile.
+        if ($user === null) return false;
+        if ($user->isRoot() || $user->isAdmin() || $user->isHr()) return true;
+        if ($user->isEmployee()) {
+            return $employee->user_id === $user->id;
+        }
+        return false;
     }
 
     public function delete(?User $user, Employee $employee): bool
