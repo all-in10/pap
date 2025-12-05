@@ -103,18 +103,18 @@ class UserResource extends Resource
                         $label = $map[$key] ?? $key;
 
                         $colorMap = [
-                            UserRole::ROOT->value => 'bg-primary-600',
-                            UserRole::ADMIN->value => 'bg-red-600',
-                            UserRole::HR->value => 'bg-green-600',
-                            UserRole::EMPLOYEE->value => 'bg-gray-500',
+                            UserRole::ROOT->value => ['label' => 'Super Administrator', 'color' => '#414833'],
+                            UserRole::ADMIN->value => ['label' => 'Administrator', 'color' => '#7f4f24'],
+                            UserRole::HR->value => ['label' => 'Human Resources', 'color' => '#b6ad90'],
+                            UserRole::EMPLOYEE->value => ['label' => 'Employee', 'color' => '#a4ac86'],
                         ];
 
-                        $colorClass = $colorMap[$key] ?? 'bg-gray-500';
+                        $entry = $colorMap[$key] ?? ['label' => $label, 'color' => '#6b7280'];
 
                         return sprintf(
-                            '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold %s text-white">%s</span>',
-                            $colorClass,
-                            e($label)
+                            '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: %s; color: #ffffff;">%s</span>',
+                            $entry['color'],
+                            e($entry['label'])
                         );
                     })
                     ->html()
