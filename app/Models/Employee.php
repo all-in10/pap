@@ -111,6 +111,11 @@ class Employee extends Model
         return $this->hasMany(Worklog::class);
     }
 
+    public function timeoffs()
+    {
+        return $this->hasMany(Timeoff::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

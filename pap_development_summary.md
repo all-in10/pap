@@ -1,105 +1,121 @@
-# PAP Application Development Summary
+# Resumo do Desenvolvimento da Aplicação PAP
 
-## Overview
-This document summarizes the development process, architectural decisions, and key features implemented in the PAP application up to December 3, 2025.
-
----
-
-## Change Log
-
-- **2025-12-03**: Introduced automated post-change logging behavior and recorded recent edits.
-  - `database/factories/WorklogFactory.php`: cast `hours_worked` and `extra_hours` to integers so seeded worklog data uses whole-hour values.
-  - `app/Filament/Resources/WorklogResource.php`: table columns `hours_worked` and `extra_hours` now display whole integers (e.g., `8h`) and color logic updated to use integer casting.
-  - `app/Models/Worklog.php`: model saving hook updated to cast `hours_worked` and `extra_hours` to integers to enforce whole-hour rounding at save time.
-  - `pap_development_summary.md`: added this Change Log section; the assistant will append entries here after future code changes as requested by the user.
-
-- **2025-12-04**: Adjust hours calculation to exclude break time (model-level change).
-  - `app/Models/Worklog.php`: refactored saving hook to compute total minutes between `start_time` and `end_time`, subtract `break_start`/`break_end` minutes, then store `hours_worked` as whole hours using floor division. `extra_hours` now computed from whole `hours_worked`.
-  - Casts for `hours_worked` and `extra_hours` changed to `integer` to reflect whole-hour storage.
-  - This ensures break time is fully excluded from `hours_worked` and downstream calculations (Hoursbank, tables, factory) remain consistent.
-
-- **2025-12-04**: Implement employee-level data isolation for enhanced data protection.
-  - `app/Filament/Resources/EmployeeResource/Pages/ListEmployees.php`: added `getTableQuery()` override to filter by logged-in employee's ID when role == EMPLOYEE.
-  - `app/Filament/Resources/WorklogResource/Pages/ListWorklogs.php`: added `getTableQuery()` override to filter worklogs by logged-in employee's ID when role == EMPLOYEE.
-  - `app/Filament/Resources/TimeoffResource/Pages/ListTimeoffs.php`: added `getTableQuery()` override to filter timeoff records by logged-in employee's ID when role == EMPLOYEE.
-  - `app/Filament/Resources/HoursbankResource/Pages/ListHoursbanks.php`: added `getTableQuery()` override to filter hoursbank records by logged-in employee's ID when role == EMPLOYEE.
-  - All four list pages now import `UserRole` enum and check role before applying filter. Non-employee roles (ROOT, ADMIN, HR) see all records as before.
-
-
-## 1. Project Foundation
-- **Framework:** Laravel 11
-- **Admin Panel:** Filament 3
-- **Language:** PHP 8.1+
-- **Database:** MySQL
-- **Core Structure:**
-  - Models, Factories, Migrations, Seeders
-  - Filament Resources for CRUD and UI
-  - Authorization via Policies and Gates
-  - Service Layer for access control
+## Visão Geral
+Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 10 de Dezembro de 2025.
 
 ---
 
-## 2. Role Management & Authorization
-- **Roles:** ROOT, ADMIN, HR, EMPLOYEE (UserRole Enum)
-- **Access Control:**
-  - Policies restrict actions by role
-  - Only ROOT can edit/delete worklogs
-  - Employees can only view their own records
-  - Gates and Access service standardize checks
+## Registo de Alterações
+
+- **2025-12-10**: Implementar Painel de Funcionários com controlo de acesso baseado em funções.
+  - `app/Providers/Filament/EmployeePanelProvider.php`: criado novo fornecedor de painel para funcionários no caminho `/employee` com login e autenticação dedicados.
+  - `app/Filament/Pages/EmployeeDashboard.php`: página do painel mostrando histórico de registos de trabalho do funcionário, departamento, total de banco de horas e formulário de pedido de férias.
+  - `resources/views/filament/pages/employee-dashboard.blade.php`: vista renderizando tabela de registos de trabalho, banco de horas, informação de departamento, formulário de pedido de férias e pedidos de férias submetidos.
+  - `app/Http/Middleware/EnsureEmployeePanelAccess.php`: middleware restringindo painel `/employee` apenas para role EMPLOYEE; redireciona outros para `/admin`.
+  - `app/Http/Middleware/EnsureAdminPanelAccess.php`: middleware restringindo painel `/admin` apenas para roles ADMIN/ROOT; redireciona outros para `/employee`.
+  - `app/Http/Middleware/RedirectAuthenticatedFromLogin.php`: middleware redirecionando utilizadores autenticados de páginas de login para os seus respetivos painéis baseado em role.
+  - `bootstrap/providers.php`: registado `EmployeePanelProvider` para descoberta de painel Filament.
+  - `bootstrap/app.php`: registada middleware global `RedirectAuthenticatedFromLogin` na pilha de middleware web.
+  - `app/Providers/Filament/AdminPanelProvider.php`: adicionada middleware `EnsureAdminPanelAccess` para restringir acesso ao painel admin.
+  - `app/Providers/Filament/EmployeePanelProvider.php`: adicionada middleware `EnsureEmployeePanelAccess` para restringir acesso ao painel de funcionários.
+  - `routes/web.php`: adicionadas rotas para redirecionar utilizadores autenticados de páginas de login para os seus painéis corretos.
+  - `app/Models/Employee.php`: adicionada relação `timeoffs()` hasMany para aceder aos registos de férias do funcionário.
+  - Funcionalidades do painel de funcionários: visualizar histórico de registos de trabalho, departamento, banco de horas, submeter pedidos de férias/justificativas de ausência, acompanhar o estado de pedidos de férias.
+
+- **2025-12-03**: Introduzir comportamento de registo automático pós-alteração e registar edições recentes.
+  - `database/factories/WorklogFactory.php`: converter `hours_worked` e `extra_hours` para inteiros para que os dados de registos de trabalho semeados utilizem valores de horas inteiras.
+  - `app/Filament/Resources/WorklogResource.php`: colunas da tabela `hours_worked` e `extra_hours` agora apresentam inteiros completos (ex. `8h`) e lógica de cor atualizada para usar conversão de inteiros.
+  - `app/Models/Worklog.php`: gancho de gravação do modelo atualizado para converter `hours_worked` e `extra_hours` para inteiros para impor arredondamento de horas inteiras no momento da gravação.
+  - `pap_development_summary.md`: adicionada esta secção de Registo de Alterações; o assistente irá acrescentar entradas aqui após futuras alterações de código conforme solicitado pelo utilizador.
+
+- **2025-12-04**: Ajustar cálculo de horas para excluir tempo de pausa (alteração ao nível do modelo).
+  - `app/Models/Worklog.php`: gancho de gravação refatorizado para calcular minutos totais entre `start_time` e `end_time`, subtrair minutos de `break_start`/`break_end`, depois armazenar `hours_worked` como horas inteiras usando divisão de piso. `extra_hours` agora calculado a partir de `hours_worked` inteiro.
+  - Conversões para `hours_worked` e `extra_hours` alteradas para `integer` para refletir armazenamento de horas inteiras.
+  - Isto garante que o tempo de pausa é totalmente excluído de `hours_worked` e cálculos subsequentes (Hoursbank, tabelas, fábrica) permanecem consistentes.
+
+- **2025-12-04**: Implementar isolamento de dados ao nível do funcionário para proteção de dados melhorada.
+  - `app/Filament/Resources/EmployeeResource/Pages/ListEmployees.php`: adicionada substituição `getTableQuery()` para filtrar por ID do funcionário registado quando role == EMPLOYEE.
+  - `app/Filament/Resources/WorklogResource/Pages/ListWorklogs.php`: adicionada substituição `getTableQuery()` para filtrar registos de trabalho por ID do funcionário registado quando role == EMPLOYEE.
+  - `app/Filament/Resources/TimeoffResource/Pages/ListTimeoffs.php`: adicionada substituição `getTableQuery()` para filtrar registos de férias por ID do funcionário registado quando role == EMPLOYEE.
+  - `app/Filament/Resources/HoursbankResource/Pages/ListHoursbanks.php`: adicionada substituição `getTableQuery()` para filtrar registos de banco de horas por ID do funcionário registado quando role == EMPLOYEE.
+  - Todas as quatro páginas de lista agora importam a enumeração `UserRole` e verificam o role antes de aplicar filtro. Roles não-funcionário (ROOT, ADMIN, HR) veem todos os registos como antes.
+
+
+## 1. Fundação do Projeto
+- **Framework:** Laravel 12
+- **Painel Admin:** Filament 3
+- **Linguagem:** PHP 8.1+
+- **Base de Dados:** MySQL
+- **Estrutura Principal:**
+  - Modelos, Fábricas, Migrações, Sementes
+  - Recursos Filament para CRUD e Interface de Utilizador
+  - Autorização via Políticas e Portões
+  - Camada de Serviço para controlo de acesso
 
 ---
 
-## 3. UI Localization
-- All Filament Resources translated to English:
-  - Employee, Timeoff, Hoursbank, Designation, Department, Contract
-  - Navigation labels, form fields, table columns, infolists
+## 2. Gestão de Funções e Autorização
+- **Funções:** ROOT, ADMIN, HR, EMPLOYEE (Enumeração UserRole)
+- **Controlo de Acesso:**
+  - Políticas restringem ações por função
+  - Apenas ROOT pode editar/eliminar registos de trabalho
+  - Funcionários podem apenas visualizar os seus próprios registos
+  - Portões e serviço de Acesso padronizam verificações
 
 ---
 
-## 4. Worklog Feature Enhancements
-- **Break/Lunch Time Tracking:**
-  - Migration added `break_start` and `break_end` columns
-  - Model and Factory updated to handle break times
-  - Form includes TimePickers for break times
-  - Validation ensures break is within work hours and ≤ 2 hours
-  - Table displays break duration in human-readable format
-
-- **Hour Calculations:**
-  - `hours_worked` and `extra_hours` calculated subtracting break duration
-  - All hour values rounded to whole integers (no decimals)
-  - Factory generates realistic test data with breaks
+## 3. Localização da Interface de Utilizador
+- Todos os Recursos Filament traduzidos para Português:
+  - Funcionário, Férias, Banco de Horas, Designação, Departamento, Contrato
+  - Rótulos de navegação, campos de formulário, colunas de tabela, listas de informações
 
 ---
 
-## 5. UI Improvements
-- **Role Badges:**
-  - UserResource table displays roles as colored HTML badges
-  - Deprecated Filament BadgeColumn replaced with TextColumn + custom HTML
+## 4. Melhorias de Funcionalidades de Registo de Trabalho
+- **Rastreamento de Tempo de Pausa/Almoço:**
+  - Migração adicionou colunas `break_start` e `break_end`
+  - Modelo e Fábrica atualizados para lidar com tempos de pausa
+  - Formulário inclui Seletores de Tempo para tempos de pausa
+  - Validação garante que pausa está dentro das horas de trabalho e ≤ 2 horas
+  - Tabela apresenta duração da pausa em formato legível por humanos
 
-- **Conditional Actions:**
-  - Edit/Delete actions only visible to ROOT users
-  - Employee filter shows only own records
-
----
-
-## 6. Validation & Testing
-- All migrations and seeders tested successfully
-- Static analysis confirms zero syntax errors after each change
-- Flexible time parsing prevents format errors between UI and DB
+- **Cálculos de Horas:**
+  - `hours_worked` e `extra_hours` calculados subtraindo duração da pausa
+  - Todos os valores de horas arredondados para inteiros completos (sem decimais)
+  - Fábrica gera dados de teste realistas com pausas
 
 ---
 
-## 7. Recommendations & Next Steps
-- Run migrations and seeders to apply latest schema
-- Test Filament panel for correct break time and hour rounding behavior
-- Consider enhancements: overtime approval, analytics, CSV export, notifications
+## 5. Melhorias da Interface de Utilizador
+- **Distintivos de Função:**
+  - Tabela UserResource apresenta funções como distintivos HTML coloridos
+  - BadgeColumn preterida do Filament substituída por TextColumn + HTML personalizado
+
+- **Ações Condicionais:**
+  - Ações Editar/Eliminar apenas visíveis para utilizadores ROOT
+  - Filtro de funcionário mostra apenas registos próprios
 
 ---
 
-## 8. Status
-- All requested features implemented and validated
-- Application is stable and ready for further testing or deployment
+## 6. Validação e Testes
+- Todas as migrações e sementes testadas com sucesso
+- Análise estática confirma zero erros de sintaxe após cada alteração
+- Análise de tempo flexível previne erros de formato entre Interface de Utilizador e BD
 
 ---
 
-_Last updated: December 3, 2025_
+## 7. Recomendações e Próximas Etapas
+- Executar migrações e sementes para aplicar o esquema mais recente
+- Testar painel Filament para comportamento correto de tempo de pausa e arredondamento de horas
+- Considerar melhorias: aprovação de horas extras, análises, exportação CSV, notificações
+
+---
+
+## 8. Estado
+- Todas as funcionalidades solicitadas implementadas e validadas
+- A aplicação está estável e pronta para testes adicionais ou implementação
+
+---
+
+_Última atualização: 10 de Dezembro de 2025_
+
