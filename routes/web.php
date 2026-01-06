@@ -8,10 +8,11 @@ Route::get('/', function () {
 });
 
 // Redirect authenticated users from login pages to their panels
-Route::middleware(['auth', 'web'])->group(function () {
-    Route::get('/login', fn() => redirect()->intended('/'))->name('login');
-    Route::get('/admin/login', fn() => redirect()->intended('/'))->name('admin.login');
-    Route::get('/employee/login', fn() => redirect()->intended('/'))->name('employee.login');
+Route::middleware(['web'])->group(function () {
+    Route::get('/login', fn() => redirect()->route('admin.login'))->name('login');
+    // /admin/login and /employee/login are provided by Filament; don't override them here.
+
+
 });
 
 // Password change routes

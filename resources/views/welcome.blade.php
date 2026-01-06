@@ -37,14 +37,14 @@
                     </a>
                 @else
                     <a
-                        href="{{ route('filament.admin.auth.login') }}"
+                        href="{{ route('admin.login') }}"
                         class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] text-[#1b1b18] border border-transparent hover:border-[#19140035] dark:hover:border-[#3E3E3A] rounded-sm text-sm leading-normal"
                     >
                         Login - Admin
                     </a>
 
                     <a
-                        href="{{ route('filament.employee.auth.login') }}"
+                        href="{{ route('employee.login') }}"
                         class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
                     >
                         Login - Funcionário
@@ -67,7 +67,7 @@
                             <span>
                                 Se é
                                 <strong>Funcionário</strong>, aceda a
-                                <a href="{{ route('filament.employee.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                <a href="{{ route('employee.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>seu painel pessoal</span>
                                 </a>
                             </span>
@@ -81,7 +81,7 @@
                             <span>
                                 Se é
                                 <strong>Administrador</strong>, aceda ao
-                                <a href="{{ route('filament.admin.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                <a href="{{ route('admin.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>painel de administração</span>
                                 </a>
                             </span>
@@ -89,12 +89,12 @@
                     </ul>
                     <ul class="flex gap-3 text-sm leading-normal">
                         <li>
-                            <a href="{{ route('filament.employee.auth.login') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">
+                            <a href="{{ route('employee.login') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg:white dark:hover:border:white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">
                                 Entrar como Funcionário
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('filament.admin.auth.login') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg-white dark:hover:border-white hover:border-[#706f6c] px-5 py-1.5 bg-transparent rounded-sm border border-[#706f6c] text-[#1b1b18] dark:text-[#EDEDEC] dark:border-[#A1A09A] text-sm leading-normal">
+                            <a href="{{ route('admin.login') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg:white dark:hover;border:white hover:border-[#706f6c] px-5 py-1.5 bg-transparent rounded-sm border border-[#706f6c] text-[#1b1b18] dark:text-[#EDEDEC] dark:border-[#A1A09A] text-sm leading-normal">
                                 Entrar como Admin
                             </a>
                         </li>
