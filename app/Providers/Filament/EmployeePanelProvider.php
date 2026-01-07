@@ -19,6 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\ForcePasswordChange;
 use App\Http\Middleware\EnsureEmployeePanelAccess;
+use App\Filament\Pages\Settings;
 
 class EmployeePanelProvider extends PanelProvider
 {
@@ -29,6 +30,24 @@ class EmployeePanelProvider extends PanelProvider
             ->path('employee')
             ->login()
             ->brandLogo(asset('Background@3x.svg'))
+            ->colors([
+                'primary' => '#582f0e',
+                'secondary' => '#7f4f24',
+                'info' => '#936639',
+                'danger' => '#a68a64',
+                'warning' => '#b6ad90',
+                'success' => '#c2c5aa',
+                'gray' => '#acb79bff',
+                'muted' => '#656d4a',
+                'accent' => '#414833',
+                'neutral' => '#333d29',
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Settings')
+                    ->url(fn (): string => Settings::getUrl())
+                    ->icon('heroicon-o-cog-6-tooth'),
+            ])
             ->favicon(asset('favicon.svg'))
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
