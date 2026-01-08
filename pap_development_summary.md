@@ -7,6 +7,15 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ## Registo de Alterações
 
+- **2026-01-08**: Traduções para PT-BR e correções de testes unitários.
+  - Traduzi rótulos de navegação, campos de formulários, colunas de tabelas, infolists e mensagens de validação para **Português (pt‑BR)** em vários Resources do Filament: `City`, `State`, `Country`, `Employee`, `User`, `Contract`, `Worklog`, `Timeoff`, `Hoursbank`, `Designation`, `Department`, `ContractType`, bem como nas páginas `Settings` e `ChangePassword`.
+  - Ajustei mensagens de validação e textos dinâmicos (ex.: mensagens de erro de intervalos, opções de status e labels de botões) para português e coerência UX.
+  - Corrigi regras de autorização que afetavam testes: `Access::hasRole` foi ajustado para tratar `employee` como igualdade estrita; `WorklogPolicy` foi atualizado para permitir que HR/Admin/Root façam update/delete de worklogs.
+  - Rodei a suíte de testes e confirmei que agora todos os testes passam (8 passed).
+  - Commits relacionados:
+    - `ed6a659` — i18n: traduzir labels/forms/tables/resources para PT-BR
+    - `3fcc187` — fix(tests): ajustar Access::hasRole e WorklogPolicy para corresponder às expectativas dos testes
+
 - **2025-12-10**: Implementar Painel de Funcionários com controlo de acesso baseado em funções.
   - `app/Providers/Filament/EmployeePanelProvider.php`: criado novo fornecedor de painel para funcionários no caminho `/employee` com login e autenticação dedicados.
   - `app/Filament/Pages/EmployeeDashboard.php`: página do painel mostrando histórico de registos de trabalho do funcionário, departamento, total de banco de horas e formulário de pedido de férias.
