@@ -60,7 +60,12 @@ class Access
             $role = UserRole::tryFrom($role) ?? UserRole::EMPLOYEE;
         }
 
-        // Use the enum's hasPrivilegeOf method for consistent hierarchy checking
+        // For 'employee' we require exact equality (employee != hr/admin/root).
+        if ($role === UserRole::EMPLOYEE) {
+            return $user->isEmployee();
+        }
+
+        // For other roles, check hierarchical privilege (e.g., admin >= hr)
         return $user->hasPrivilegeOf($role);
     }
 

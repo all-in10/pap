@@ -33,13 +33,13 @@ class WorklogPolicy
 
     public function update(?User $user, Worklog $worklog): bool
     {
-        // Only ROOT can edit worklogs
-        return $user?->isRoot();
+        // HR/Admin/Root can edit worklogs
+        return $user?->isRoot() || $user?->isAdmin() || $user?->isHr();
     }
 
     public function delete(?User $user, Worklog $worklog): bool
     {
-        // Only ROOT can delete worklogs
-        return $user?->isRoot();
+        // HR/Admin/Root can delete worklogs
+        return $user?->isRoot() || $user?->isAdmin() || $user?->isHr();
     }
 }

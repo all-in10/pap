@@ -27,24 +27,24 @@ class TimeoffResource extends Resource
     {
         return $form->schema([
             Forms\Components\Select::make('employee_id')
-                ->label('Funcionário')
+                ->label('Employee')
                 ->relationship('employee', 'first_name')
                 ->searchable()
                 ->preload()
                 ->required(),
 
             Forms\Components\DatePicker::make('start_date')
-                ->label('Data de Início')
+                ->label('Start Date')
                 ->native(false)
                 ->required(),
 
             Forms\Components\DatePicker::make('end_date')
-                ->label('Data de Término')
+                ->label('End Date')
                 ->native(false)
                 ->required(),
 
             Forms\Components\Select::make('type')
-                ->label('Tipo')
+                ->label('Type')
                 ->options([
                     'vacation'       => 'Vacation',
                     'sick_leave'     => 'Sick Leave',
