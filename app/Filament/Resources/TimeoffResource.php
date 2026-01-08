@@ -81,13 +81,13 @@ class TimeoffResource extends Resource
                 ->label('Tipo')
                 ->formatStateUsing(function ($state) {
                     $map = [
-                        'vacation'       => ['label' => 'Férias', 'color' => '#2f855a'],
-                        'sick_leave'     => ['label' => 'Licença Médica', 'color' => '#d69e2e'],
-                        'personal_leave' => ['label' => 'Licença Pessoal', 'color' => '#3182ce'],
-                        'other'          => ['label' => 'Outro', 'color' => '#718096'],
+                        'vacation'       => ['label' => 'Férias', 'color' => '#c2c5aa'],
+                        'sick_leave'     => ['label' => 'Licença Médica', 'color' => '#a68a64'],
+                        'personal_leave' => ['label' => 'Licença Pessoal', 'color' => '#936639'],
+                        'other'          => ['label' => 'Outro', 'color' => '#656d4a'],
                     ];
 
-                    $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#4a5568'];
+                    $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];
 
                     return sprintf(
                         '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: %s; color: #ffffff;">%s</span>',
@@ -102,8 +102,8 @@ class TimeoffResource extends Resource
                 ->formatStateUsing(function ($state) {
                     $map = [
                         'pending' => ['label' => 'Pendente', 'color' => '#b6ad90'],
-                        'approved' => ['label' => 'Aprovado', 'color' => '#a4ac86'],
-                        'rejected' => ['label' => 'Rejeitado', 'color' => '#7f4f24'],
+                        'approved' => ['label' => 'Aprovado', 'color' => '#c2c5aa'],
+                        'rejected' => ['label' => 'Rejeitado', 'color' => '#a68a64'],
                     ];
 
                     $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];
