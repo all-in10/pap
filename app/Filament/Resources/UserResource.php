@@ -19,9 +19,9 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationLabel = 'Users';
-    protected static ?string $modelLabel = 'Users';
-    protected static ?string $navigationGroup = 'User Management';
+    protected static ?string $navigationLabel = 'Usuários';
+    protected static ?string $modelLabel = 'Usuário';
+    protected static ?string $navigationGroup = 'Gestão de Usuários';
 
     public static function form(Form $form): Form
     {
@@ -38,12 +38,12 @@ class UserResource extends Resource
 
             // Role select using the enum values
                 Forms\Components\Select::make('role')
-                ->label('Role')
+                ->label('Função')
                 ->options([
-                    UserRole::ROOT->value => 'Super Administrator',
-                    UserRole::ADMIN->value => 'Administrator',
-                    UserRole::HR->value => 'Human Resources',
-                    UserRole::EMPLOYEE->value => 'Employee',
+                    UserRole::ROOT->value => 'Super Administrador',
+                    UserRole::ADMIN->value => 'Administrador',
+                    UserRole::HR->value => 'Recursos Humanos',
+                    UserRole::EMPLOYEE->value => 'Funcionário',
                 ])
                 ->required()
                 ->default(UserRole::EMPLOYEE->value),
@@ -54,11 +54,11 @@ class UserResource extends Resource
                 ->dehydrateStateUsing(fn($state) => $state ? Hash::make($state) : null)
                 ->dehydrated(fn($state) => filled($state))
                 ->maxLength(255)
-                ->helperText('Leave empty to keep the current password when editing'),
+                ->helperText('Deixe em branco para manter a senha atual ao editar'),
 
             // Optional relation to Employee (if present)
             Forms\Components\Select::make('employee_id')
-                ->label('Related Employee')
+                ->label('Funcionário Relacionado')
                 ->relationship('employee', 'first_name')
                 ->searchable()
                 ->preload()
@@ -66,7 +66,7 @@ class UserResource extends Resource
 
             // Must change password toggle
             Forms\Components\Toggle::make('must_change_password')
-                ->label('Force password change')
+                ->label('Forçar alteração de senha')
                 ->default(false),
 
         ]);
@@ -83,13 +83,13 @@ class UserResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('role')
-                    ->label('Role')
+                    ->label('Função')
                     ->formatStateUsing(function ($state) {
                         $map = [
-                            UserRole::ROOT->value => 'Super Administrator',
-                            UserRole::ADMIN->value => 'Administrator',
-                            UserRole::HR->value => 'Human Resources',
-                            UserRole::EMPLOYEE->value => 'Employee',
+                            UserRole::ROOT->value => 'Super Administrador',
+                            UserRole::ADMIN->value => 'Administrador',
+                            UserRole::HR->value => 'Recursos Humanos',
+                            UserRole::EMPLOYEE->value => 'Funcionário',
                         ];
 
                         if ($state instanceof \BackedEnum) {
@@ -103,10 +103,10 @@ class UserResource extends Resource
                         $label = $map[$key] ?? $key;
 
                         $colorMap = [
-                            UserRole::ROOT->value => ['label' => 'Super Administrator', 'color' => '#414833'],
-                            UserRole::ADMIN->value => ['label' => 'Administrator', 'color' => '#7f4f24'],
-                            UserRole::HR->value => ['label' => 'Human Resources', 'color' => '#b6ad90'],
-                            UserRole::EMPLOYEE->value => ['label' => 'Employee', 'color' => '#a4ac86'],
+                            UserRole::ROOT->value => ['label' => 'Super Administrador', 'color' => '#414833'],
+                            UserRole::ADMIN->value => ['label' => 'Administrador', 'color' => '#7f4f24'],
+                            UserRole::HR->value => ['label' => 'Recursos Humanos', 'color' => '#b6ad90'],
+                            UserRole::EMPLOYEE->value => ['label' => 'Funcionário', 'color' => '#a4ac86'],
                         ];
 
                         $entry = $colorMap[$key] ?? ['label' => $label, 'color' => '#6b7280'];
@@ -122,7 +122,7 @@ class UserResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\IconColumn::make('must_change_password')
-                    ->label('Force password change')
+                    ->label('Forçar alteração de senha')
                     ->boolean()
                     ->trueIcon('heroicon-s-check-circle')
                     ->falseIcon('heroicon-s-x-circle')

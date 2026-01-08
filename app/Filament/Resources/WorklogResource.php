@@ -22,10 +22,10 @@ class WorklogResource extends Resource
     protected static ?string $model = Worklog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
-    protected static ?string $navigationLabel = 'Worklogs';
-    protected static ?string $pluralModelLabel = 'Worklogs';
-    protected static ?string $navigationGroup = 'Employee Management';
-    protected static ?string $modelLabel = 'Worklog';
+    protected static ?string $navigationLabel = 'Registros de Ponto';
+    protected static ?string $pluralModelLabel = 'Registros de Ponto';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
+    protected static ?string $modelLabel = 'Registro de Ponto';
 
     public static function form(Form $form): Form
     {
@@ -33,7 +33,6 @@ class WorklogResource extends Resource
             ->schema([
                 Forms\Components\Select::make('employee_id')
                     ->label('Funcionário')
-                        ->label('Employee')
                     ->relationship('employee', 'first_name')
                     ->preload()
                     ->searchable()
@@ -54,18 +53,18 @@ class WorklogResource extends Resource
                                     ->when($record?->id, fn($query) => $query->where('id', '!=', $record->id))
                                 ->exists();
                             if ($exists) {
-                                $fail('There is already a record of hours worked for this employee on this date.');
+                                $fail('Já existe um registo de horas para este funcionário nesta data.');
                             }
                         };
                     }),
 
                 Forms\Components\DatePicker::make('work_date')
-                    ->label('Work Date')
+                    ->label('Data')
                     ->default(now())
                     ->required(),
 
                 Forms\Components\TimePicker::make('start_time')
-                    ->label('Start Time')
+                    ->label('Início')
                     ->reactive()
                     ->displayFormat('h:i A')
                     ->required()
@@ -75,7 +74,7 @@ class WorklogResource extends Resource
                     }),
 
                 Forms\Components\TimePicker::make('end_time')
-                    ->label('End Time')
+                    ->label('Fim')
                     ->reactive()
                     ->displayFormat('h:i A')
                     ->required()
@@ -85,7 +84,7 @@ class WorklogResource extends Resource
                     }),
 
                 Forms\Components\TimePicker::make('break_start')
-                    ->label('Break Start')
+                    ->label('Início do Intervalo')
                     ->reactive()
                     ->displayFormat('h:i A')
                     ->nullable()
@@ -95,7 +94,7 @@ class WorklogResource extends Resource
                                 $start = $get('start_time');
                                 $end = $get('end_time');
                                 if (!$start || !$end) {
-                                    $fail('Please set Start and End times before specifying break times.');
+                                    $fail('Por favor, defina os horários de Início e Fim antes de especificar os horários do intervalo.');
                                     return;
                                 }
 
@@ -104,12 +103,12 @@ class WorklogResource extends Resource
                                 $e = self::parseTimeFlexible($end);
 
                                 if (!$bStart || !$s || !$e) {
-                                    $fail('Invalid time format for break start.');
+                                    $fail('Formato de hora inválido para início do intervalo.');
                                     return;
                                 }
 
                                 if ($bStart->lessThan($s) || $bStart->greaterThan($e)) {
-                                    $fail('Break start must be between start time and end time.');
+                                    $fail('O início do intervalo deve estar entre o início e o fim do turno.');
                                 }
                             }
                         };
@@ -120,7 +119,7 @@ class WorklogResource extends Resource
                     }),
 
                 Forms\Components\TimePicker::make('break_end')
-                    ->label('Break End')
+                    ->label('Fim do Intervalo')
                     ->reactive()
                     ->displayFormat('h:i A')
                     ->nullable()
@@ -130,11 +129,11 @@ class WorklogResource extends Resource
                                 $bStart = $get('break_start');
                                 $end = $get('end_time');
                                 if (!$bStart) {
-                                    $fail('Please set Break Start before Break End.');
+                                    $fail('Por favor, defina Início do Intervalo antes do Fim do Intervalo.');
                                     return;
                                 }
                                 if (!$end) {
-                                    $fail('Please set End Time before specifying break end.');
+                                    $fail('Por favor, defina o horário de Fim antes de especificar o fim do intervalo.');
                                     return;
                                 }
 
@@ -143,19 +142,19 @@ class WorklogResource extends Resource
                                 $e = self::parseTimeFlexible($end);
 
                                 if (!$bS || !$bE || !$e) {
-                                    $fail('Invalid time format for break end.');
+                                    $fail('Formato de hora inválido para fim do intervalo.');
                                     return;
                                 }
 
                                 if ($bE->lessThan($bS) || $bE->greaterThan($e)) {
-                                    $fail('Break end must be after break start and before end time.');
+                                    $fail('O fim do intervalo deve ser depois do início do intervalo e antes do horário de término.');
                                     return;
                                 }
 
                                 // limit break duration to maximum (2 hours)
                                 $breakMinutes = $bS->diffInMinutes($bE);
                                 if ($breakMinutes > 120) {
-                                    $fail('Break duration cannot exceed 2 hours.');
+                                    $fail('A duração do intervalo não pode exceder 2 horas.');
                                 }
                             }
                         };
@@ -166,19 +165,19 @@ class WorklogResource extends Resource
                     }),
 
                 Forms\Components\TextInput::make('hours_worked')
-                    ->label('Hours Worked')
+                    ->label('Horas Trabalhadas')
                     ->numeric()
                     ->required()
                     ->disabled(),
 
                 Forms\Components\TextInput::make('extra_hours')
-                    ->label('Extra Hours')
+                    ->label('Horas Extras')
                     ->numeric()
                     ->required()
                     ->disabled(),
 
                 Forms\Components\Textarea::make('notes')
-                    ->label('Notes')
+                    ->label('Observações')
                     ->rows(3),
             ]);
     }
@@ -199,33 +198,33 @@ class WorklogResource extends Resource
         })
             ->columns([
                 Tables\Columns\TextColumn::make('employee.first_name')
-                        ->label('Employee')
+                        ->label('Funcionário')
                     ->sortable()
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('work_date')
-                    ->label('Date')
+                    ->label('Data')
                     ->date()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('start_time')
-                    ->label('Start')
+                    ->label('Início')
                     ->formatStateUsing(fn($state) => Carbon::createFromFormat('H:i:s', $state)->format('h:i A')),
 
                 Tables\Columns\TextColumn::make('end_time')
-                    ->label('End')
+                    ->label('Fim')
                     ->formatStateUsing(fn($state) => Carbon::createFromFormat('H:i:s', $state)->format('h:i A')),
 
                 Tables\Columns\TextColumn::make('break_start')
-                    ->label('Break Start')
+                    ->label('Início do Intervalo')
                     ->formatStateUsing(fn($state) => $state ? Carbon::createFromFormat('H:i:s', $state)->format('h:i A') : '-'),
 
                 Tables\Columns\TextColumn::make('break_end')
-                    ->label('Break End')
+                    ->label('Fim do Intervalo')
                     ->formatStateUsing(fn($state) => $state ? Carbon::createFromFormat('H:i:s', $state)->format('h:i A') : '-'),
 
                 Tables\Columns\TextColumn::make('break_duration')
-                    ->label('Break Duration')
+                    ->label('Duração do Intervalo')
                     ->formatStateUsing(function ($state, $record) {
                         $bStart = $record->break_start ?? null;
                         $bEnd = $record->break_end ?? null;
@@ -258,18 +257,18 @@ class WorklogResource extends Resource
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('hours_worked')
-                    ->label('Hours Worked')
+                    ->label('Horas Trabalhadas')
                     ->sortable()
                     ->formatStateUsing(fn($state) => (int)$state . 'h'),
 
                 Tables\Columns\TextColumn::make('extra_hours')
-                    ->label('Extra Hours')
+                    ->label('Horas Extras')
                     ->sortable()
                     ->formatStateUsing(fn($state) => (int)$state . 'h')
                     ->color(fn($state) => (int)$state > 0 ? 'danger' : 'info'),
 
                 Tables\Columns\TextColumn::make('notes')
-                    ->label('Notes')
+                    ->label('Observações')
                     ->limit(30)
                     ->tooltip(fn($record) => $record->notes)
                     ->toggleable(isToggledHiddenByDefault: true)

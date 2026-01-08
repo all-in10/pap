@@ -21,18 +21,20 @@ class DepartmentResource extends Resource
     protected static ?string $model = Department::class;
     
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationLabel = 'Departments';
-    protected static ?string $modelLabel = 'Department';
-    protected static ?string $navigationGroup = 'Employee Management';
+    protected static ?string $navigationLabel = 'Departamentos';
+    protected static ?string $modelLabel = 'Departamento';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\TextInput::make('name')
+                ->label('Nome')
                 ->required()
                 ->maxLength(255),
             Forms\Components\TextInput::make('description')
+                ->label('Descrição')
                 ->maxLength(255),
         ]);
     }
@@ -74,9 +76,9 @@ class DepartmentResource extends Resource
         return $infolist->schema([
             Section::make()->schema([
                 TextEntry::make('name')
-                    ->label('Department Name'),
+                    ->label('Nome'),
                 TextEntry::make('employees_count')
-                    ->label('Number of Employees'),
+                    ->label('Número de Funcionários'),
             ]),
         ]);
     }

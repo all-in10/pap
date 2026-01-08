@@ -49,7 +49,7 @@ class WorklogsRelationManager extends RelationManager
                     ->dehydrateStateUsing(fn($get) => $this->calculateHoursWorked($get('start_time'), $get('end_time'))),
 
                 Forms\Components\Textarea::make('notes')
-                    ->label('Notes')
+                    ->label('Observações')
                     ->rows(3),
             ]);
     }

@@ -7,7 +7,7 @@ use Filament\Pages\Page;
 class Settings extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
-    protected static ?string $navigationLabel = 'Settings';
+    protected static ?string $navigationLabel = 'Configurações';
     protected static string $view = 'filament.pages.settings';
     protected static bool $shouldRegisterNavigation = false;
 }

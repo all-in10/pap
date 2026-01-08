@@ -14,7 +14,7 @@ class ChangePassword extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-key';
-    protected static ?string $navigationLabel = 'Change Password';
+    protected static ?string $navigationLabel = 'Alterar Senha';
     protected static string $view = 'filament.pages.change-password';
     protected static bool $shouldRegisterNavigation = false;
 
@@ -28,18 +28,18 @@ class ChangePassword extends Page implements HasForms
     protected function getFormSchema(): array
     {
         return [
-            Forms\Components\Section::make('Change Your Password')
-                ->description('You must change your password before continuing.')
+            Forms\Components\Section::make('Alterar sua senha')
+                ->description('Você deve alterar sua senha antes de continuar.')
                 ->schema([
                     Forms\Components\TextInput::make('password')
-                        ->label('New Password')
+                        ->label('Nova Senha')
                         ->password()
                         ->required()
                         ->minLength(8)
                         ->confirmed()
                         ->rules(['required', 'min:8', 'confirmed']),
                     Forms\Components\TextInput::make('password_confirmation')
-                        ->label('Confirm Password')
+                        ->label('Confirmar Senha')
                         ->password()
                         ->required(),
                 ]),
@@ -55,7 +55,7 @@ class ChangePassword extends Page implements HasForms
     {
         return [
             Actions\Action::make('changePassword')
-                ->label('Change Password')
+                ->label('Alterar Senha')
                 ->color('primary')
                 ->size('lg')
                 ->action('submit'),
@@ -76,7 +76,7 @@ class ChangePassword extends Page implements HasForms
             ]);
         }
 
-        \session()->flash('success', 'Password changed successfully!');
+        \session()->flash('success', 'Senha alterada com sucesso!');
         redirect('/admin');
     }
 }

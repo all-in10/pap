@@ -16,36 +16,36 @@ class DesignationResource extends Resource
     protected static ?string $model = Designation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
-    protected static ?string $navigationLabel = 'Designations';
-    protected static ?string $pluralModelLabel = 'Designations';
-    protected static ?string $navigationGroup = 'Employee Management';
-    protected static ?string $modelLabel = 'Designation';
+    protected static ?string $navigationLabel = 'Cargos';
+    protected static ?string $pluralModelLabel = 'Cargos';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
+    protected static ?string $modelLabel = 'Cargo';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label('Name')
+                    ->label('Nome')
                     ->required()
                     ->maxLength(255),
 
                 Forms\Components\Textarea::make('description')
-                    ->label('Description')
+                    ->label('Descrição')
                     ->rows(3),
 
                 Forms\Components\Select::make('level')
-                    ->label('Level')
+                    ->label('Nível')
                     ->options([
-                        'junior' => 'Junior',
-                        'pleno' => 'Mid',
-                        'senior' => 'Senior',
+                        'junior' => 'Júnior',
+                        'pleno' => 'Pleno',
+                        'senior' => 'Sênior',
                     ])
                     ->required()
                     ->native(false),
 
                 Forms\Components\TextInput::make('base_salary')
-                    ->label('Base Salary')
+                    ->label('Salário Base')
                     ->numeric()
                     ->prefix('€')
                     ->required(),
@@ -61,13 +61,13 @@ class DesignationResource extends Resource
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('name')
-                ->label('Name')
+                ->label('Nome')
                 ->searchable(),
                 Tables\Columns\TextColumn::make('level')
-                ->label('Level')
+                ->label('Nível')
                 ->sortable(),
                 Tables\Columns\TextColumn::make('base_salary')
-                    ->label('Base Salary')
+                    ->label('Salário Base')
                     ->money('EUR', true),
             ])
             ->actions([

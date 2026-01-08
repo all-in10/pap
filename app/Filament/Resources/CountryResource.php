@@ -22,9 +22,9 @@ class CountryResource extends Resource
     protected static ?string $model = Country::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
-    protected static ?string $navigationLabel = 'Country';
-    protected static ?string $modelLabel = 'Employees Country';
-    protected static ?string $navigationGroup = 'System Management';
+    protected static ?string $navigationLabel = 'Países';
+    protected static ?string $modelLabel = 'País';
+    protected static ?string $navigationGroup = 'Gestão do Sistema';
     protected static ?int $navigationSort = 1;
 
     // protected static ?string $slug = 'employees-countries';
@@ -35,15 +35,15 @@ class CountryResource extends Resource
             Forms\Components\TextInput::make('name')
                 ->required()
                 ->maxLength(255)
-                ->label('Country Name'),
+                ->label('Nome'),
             Forms\Components\TextInput::make('code')
                 ->required()
                 ->maxLength(3)
-                ->label('Country Code'),
+                ->label('Código do País'),
             Forms\Components\TextInput::make('phonecode')
                 ->required()
                 ->maxLength(10)
-                ->label('Phone Code'),
+                ->label('Código Telefônico'),
         ]);
     }
 
@@ -52,15 +52,15 @@ class CountryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
+                    ->label('Nome')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('code')
-                    ->label('Code')
+                    ->label('Código')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('phonecode')
-                    ->label('Phone Code')
+                    ->label('Código Telefônico')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -92,11 +92,11 @@ class CountryResource extends Resource
         return $infolist->schema([
             Section::make()->schema([
                 TextEntry::make('name')
-                    ->label('Country Name'),
+                    ->label('Nome'),
                 TextEntry::make('code')
-                    ->label('Country Code'),
+                    ->label('Código do País'),
                 TextEntry::make('phonecode')
-                    ->label('Phone Code'),
+                    ->label('Código Telefônico'),
             ]),
         ]);
     }

@@ -21,23 +21,23 @@ class EmployeeResource extends Resource
     protected static ?string $model = Employee::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-identification';
-    protected static ?string $navigationLabel = 'Employees';
-    protected static ?string $pluralModelLabel = 'Employees';
-    protected static ?string $navigationGroup = 'Employee Management';
-    protected static ?string $modelLabel = 'Employee';
+    protected static ?string $navigationLabel = 'Funcionários';
+    protected static ?string $pluralModelLabel = 'Funcionários';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
+    protected static ?string $modelLabel = 'Funcionário';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Location')
-                ->description('Select country, state and city')
+            Forms\Components\Section::make('Localização')
+                ->description('Selecione país, estado e cidade')
                 ->schema([
                     Forms\Components\Select::make('country_id')
                         ->relationship('country', 'name')
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('Country')
+                        ->label('País')
                         ->reactive()
                         ->afterStateUpdated(function ($state, callable $set) {
                             if ($state) {
@@ -55,7 +55,7 @@ class EmployeeResource extends Resource
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('State'),
+                        ->label('Estado'),
 
                     Forms\Components\Select::make('city_id')
                         ->options(fn($get) => $get('state_id')
@@ -64,66 +64,66 @@ class EmployeeResource extends Resource
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('City'),
+                        ->label('Cidade'),
 
                     Forms\Components\Select::make('department_id')
                         ->relationship('department', 'name')
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('Department'),
+                        ->label('Departamento'),
 
                     Forms\Components\Select::make('designation_id')
                         ->relationship('designation', 'name')
                         ->searchable()
                         ->preload()
                         ->required()
-                        ->label('Designation'),
+                        ->label('Cargo'),
                 ])
                 ->columns(2),
 
-            Forms\Components\Section::make('Personal Data')
+            Forms\Components\Section::make('Dados Pessoais')
                 ->schema([
-                    Forms\Components\TextInput::make('first_name')->label('First Name')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('middle_name')->label('Middle Name')->maxLength(255)->nullable(),
-                    Forms\Components\TextInput::make('last_name')->label('Last Name')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('first_name')->label('Nome')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('middle_name')->label('Nome do Meio')->maxLength(255)->nullable(),
+                    Forms\Components\TextInput::make('last_name')->label('Sobrenome')->required()->maxLength(255),
                     Forms\Components\Select::make('gender')
-                        ->label('Gender')
+                        ->label('Gênero')
                         ->options([
-                            'male' => 'Male',
-                            'female' => 'Female',
-                            'n/a' => 'N/A',
+                            'male' => 'Masculino',
+                            'female' => 'Feminino',
+                            'n/a' => 'N/D',
                         ])
                         ->required()
                         ->native(false),
-                    Forms\Components\TextInput::make('email')->label('Email')->email()->required()->unique(ignoreRecord: true),
+                    Forms\Components\TextInput::make('email')->label('E-mail')->email()->required()->unique(ignoreRecord: true),
                     Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(20),
                     Forms\Components\TextInput::make('nif')->label('NIF')->maxLength(20)->nullable(),
                     Forms\Components\TextInput::make('phone_number')
-                        ->label('Phone')
+                        ->label('Telefone')
                         ->maxLength(20)
                         ->nullable()
                         ->placeholder('+351 123 456 789'),
-                    Forms\Components\Textarea::make('observations')->label('Notes')->rows(3)->nullable(),
+                    Forms\Components\Textarea::make('observations')->label('Observações')->rows(3)->nullable(),
                 ])
                 ->columns(2),
 
-            Forms\Components\Section::make('Address')
+            Forms\Components\Section::make('Endereço')
                 ->schema([
-                    Forms\Components\TextInput::make('address')->label('Address')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('zip_code')->label('Zip Code')->required()->maxLength(10),
+                    Forms\Components\TextInput::make('address')->label('Endereço')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('zip_code')->label('Código Postal')->required()->maxLength(10),
                 ])
                 ->columns(2),
 
-            Forms\Components\Section::make('Dates')
+            Forms\Components\Section::make('Datas')
                 ->schema([
                     Forms\Components\DatePicker::make('date_of_birth')
-                        ->label('Date of Birth')
+                        ->label('Data de Nascimento')
                         ->required()
                         ->maxDate(now()->subYears(18))
                         ->native(false),
                     Forms\Components\DatePicker::make('date_hired')
-                        ->label('Date Hired')
+                        ->label('Data de Admissão')
                         ->required()
                         ->maxDate(now())
                         ->native(false),
@@ -132,7 +132,7 @@ class EmployeeResource extends Resource
 
             Forms\Components\Section::make('Status')
                 ->schema([
-                    Forms\Components\Toggle::make('is_active')->label('Active')->default(true),
+                    Forms\Components\Toggle::make('is_active')->label('Ativo')->default(true),
                 ])
                 ->columns(1),
         ]);
@@ -153,12 +153,12 @@ class EmployeeResource extends Resource
             return $query;
         })
             ->columns([
-                Tables\Columns\TextColumn::make('first_name')->label('First Name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('last_name')->label('Last Name')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('email')->label('Email')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('department.name')->label('Department')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('designation.name')->label('Designation')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('date_hired')->label('Date Hired')->date()->sortable(),
+                Tables\Columns\TextColumn::make('first_name')->label('Nome')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('last_name')->label('Sobrenome')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('email')->label('E-mail')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('department.name')->label('Departamento')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('designation.name')->label('Cargo')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('date_hired')->label('Data de Admissão')->date()->sortable(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -188,13 +188,13 @@ class EmployeeResource extends Resource
     public static function infolists(): Infolist
     {
         return Infolist::make()->schema([
-            Section::make('Personal Data')->schema([
-                TextEntry::make('first_name')->label('First Name'),
-                TextEntry::make('last_name')->label('Last Name'),
-                TextEntry::make('email')->label('Email'),
-                TextEntry::make('department.name')->label('Department'),
-                TextEntry::make('designation.name')->label('Designation'),
-                TextEntry::make('date_hired')->label('Date Hired'),
+            Section::make('Dados Pessoais')->schema([
+                TextEntry::make('first_name')->label('Nome'),
+                TextEntry::make('last_name')->label('Sobrenome'),
+                TextEntry::make('email')->label('E-mail'),
+                TextEntry::make('department.name')->label('Departamento'),
+                TextEntry::make('designation.name')->label('Cargo'),
+                TextEntry::make('date_hired')->label('Data de Admissão'),
             ])->columns(2),
         ]);
     }

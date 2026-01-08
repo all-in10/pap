@@ -24,19 +24,19 @@ class CityResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
 
-    protected static ?string $navigationLabel = 'City';
+    protected static ?string $navigationLabel = 'Cidades';
 
-    protected static ?string $modelLabel = 'City';
+    protected static ?string $modelLabel = 'Cidade';
 
-    protected static ?string $navigationGroup = 'System Management';
+    protected static ?string $navigationGroup = 'Gestão do Sistema';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 3; 
 
 public static function form(Form $form): Form
 {
     return $form->schema([
         Forms\Components\Select::make('state_id')
-        ->label('State (Country)')
+        ->label('Estado (País)')
         ->relationship('state', 'name')
         ->getOptionLabelFromRecordUsing(fn ($record) => $record->name . ' (' . ($record->country->name ?? '-') . ')')
     ->searchable()
@@ -54,10 +54,11 @@ public static function form(Form $form): Form
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('City Name')
+                    ->label('Nome')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('state.name')
+                    ->label('Estado')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -87,12 +88,12 @@ public static function form(Form $form): Form
     {
         return $infolist
             ->schema([
-                Section::make('City Details')
+                Section::make('Detalhes da Cidade')
                     ->schema([
                         TextEntry::make('name')
-                            ->label('City Name'),
+                            ->label('Nome'),
                         TextEntry::make('state.name')
-                            ->label('State'),
+                            ->label('Estado'),
                     ]),
             ]);
     }

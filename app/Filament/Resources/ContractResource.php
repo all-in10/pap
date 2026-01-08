@@ -20,24 +20,24 @@ class ContractResource extends Resource
     protected static ?string $model = Contract::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Contracts';
-    protected static ?string $pluralModelLabel = 'Contracts';
-    protected static ?string $navigationGroup = 'Employee Management';
-    protected static ?string $modelLabel = 'Contract';
+    protected static ?string $navigationLabel = 'Contratos';
+    protected static ?string $pluralModelLabel = 'Contratos';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
+    protected static ?string $modelLabel = 'Contrato';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Select::make('employee_id')
-                ->label('Employee')
+                ->label('Funcionário')
                 ->relationship('employee', 'first_name')
                 ->searchable()
                 ->preload()
                 ->nullable()
-                ->helperText('Will be created automatically if empty.'),
+                ->helperText('Será criado automaticamente se estiver vazio.'),
 
             Forms\Components\Select::make('designation_id')
-                ->label('Designation')
+                ->label('Cargo')
                 ->relationship('designation', 'name')
                 ->searchable()
                 ->preload()
@@ -51,7 +51,7 @@ class ContractResource extends Resource
                 }),
 
             Forms\Components\Select::make('contract_type_id')
-                ->label('Contract Type')
+                ->label('Tipo de Contrato')
                 ->relationship('contractType', 'name')
                 ->searchable()
                 ->preload()
@@ -59,32 +59,32 @@ class ContractResource extends Resource
                 ->reactive(),
 
             Forms\Components\TextInput::make('salary')
-                ->label('Salary')
+                ->label('Salário')
                 ->numeric()
                 ->required(),
 
             Forms\Components\DatePicker::make('start_date')
-                ->label('Start Date')
+                ->label('Data de Início')
                 ->required()
                 ->default(fn($get) => $get('employee.date_hired') ?? now()),
 
             Forms\Components\DatePicker::make('end_date')
-                ->label('End Date')
+                ->label('Data de Término')
                 ->nullable()
                 ->helperText('Data de fim do contrato (se aplicável).'),  
 
             Forms\Components\Select::make('status')
                 ->label('Status')
                 ->options([
-                    'active'     => 'Active',
-                    'terminated' => 'Terminated',
-                    'suspended'  => 'Suspended',
+                    'active'     => 'Ativo',
+                    'terminated' => 'Rescindido',
+                    'suspended'  => 'Suspenso',
                 ])
                 ->default('active')
                 ->required(),
 
             Forms\Components\DatePicker::make('date_hired')
-                ->label('Date Hired')
+                ->label('Data de Admissão')
                 ->required()
                 ->default(fn($get) => $get('employee.date_hired') ?? now()),
         ]);
@@ -137,9 +137,9 @@ class ContractResource extends Resource
                     ->label('Status')
                     ->formatStateUsing(function ($state) {
                         $map = [
-                            'active' => ['label' => 'Active', 'color' => '#a4ac86'],
-                            'terminated' => ['label' => 'Terminated', 'color' => '#7f4f24'],
-                            'suspended' => ['label' => 'Suspended', 'color' => '#b6ad90'],
+                            'active' => ['label' => 'Ativo', 'color' => '#a4ac86'],
+                            'terminated' => ['label' => 'Rescindido', 'color' => '#7f4f24'],
+                            'suspended' => ['label' => 'Suspenso', 'color' => '#b6ad90'],
                         ];
 
                         $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#414833'];

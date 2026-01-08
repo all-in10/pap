@@ -18,33 +18,33 @@ class TimeoffResource extends Resource
     protected static ?string $model = Timeoff::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
-    protected static ?string $navigationLabel = 'Time Off Requests';
-    protected static ?string $pluralModelLabel = 'Time Off Requests';
-    protected static ?string $navigationGroup = 'Employee Management';
-    protected static ?string $modelLabel = 'Time Off Request';
+    protected static ?string $navigationLabel = 'Solicitações de Afastamento';
+    protected static ?string $pluralModelLabel = 'Solicitações de Afastamento';
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
+    protected static ?string $modelLabel = 'Solicitação de Afastamento';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Select::make('employee_id')
-                ->label('Employee')
+                ->label('Funcionário')
                 ->relationship('employee', 'first_name')
                 ->searchable()
                 ->preload()
                 ->required(),
 
             Forms\Components\DatePicker::make('start_date')
-                ->label('Start Date')
+                ->label('Data de Início')
                 ->native(false)
                 ->required(),
 
             Forms\Components\DatePicker::make('end_date')
-                ->label('End Date')
+                ->label('Data de Término')
                 ->native(false)
                 ->required(),
 
             Forms\Components\Select::make('type')
-                ->label('Type')
+                ->label('Tipo')
                 ->options([
                     'vacation'       => 'Vacation',
                     'sick_leave'     => 'Sick Leave',
@@ -74,10 +74,10 @@ class TimeoffResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('employee.first_name')->label('Employee')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('start_date')->label('Start Date')->date(),
-            Tables\Columns\TextColumn::make('end_date')->label('End Date')->date(),
-            Tables\Columns\TextColumn::make('type')->label('Type'),
+            Tables\Columns\TextColumn::make('employee.first_name')->label('Funcionário')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('start_date')->label('Data de Início')->date(),
+            Tables\Columns\TextColumn::make('end_date')->label('Data de Término')->date(),
+            Tables\Columns\TextColumn::make('type')->label('Tipo'),
                 Tables\Columns\TextColumn::make('status')
                 ->label('Status')
                 ->formatStateUsing(function ($state) {
