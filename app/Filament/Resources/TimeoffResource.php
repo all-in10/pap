@@ -27,29 +27,29 @@ class TimeoffResource extends Resource
     {
         return $form->schema([
             Forms\Components\Select::make('employee_id')
-                ->label('Employee')
+                ->label('Funcionário')
                 ->relationship('employee', 'first_name')
                 ->searchable()
                 ->preload()
                 ->required(),
 
             Forms\Components\DatePicker::make('start_date')
-                ->label('Start Date')
+                ->label('Data de Início')
                 ->native(false)
                 ->required(),
 
             Forms\Components\DatePicker::make('end_date')
-                ->label('End Date')
+                ->label('Data de Término')
                 ->native(false)
                 ->required(),
 
             Forms\Components\Select::make('type')
-                ->label('Type')
+                ->label('Tipo')
                 ->options([
-                    'vacation'       => 'Vacation',
-                    'sick_leave'     => 'Sick Leave',
-                    'personal_leave' => 'Personal Leave',
-                    'other'          => 'Other',
+                    'vacation'       => 'Férias',
+                    'sick_leave'     => 'Licença Médica',
+                    'personal_leave' => 'Licença Pessoal',
+                    'other'          => 'Outro',
                 ])
                 ->native(false)
                 ->required(),
@@ -57,15 +57,15 @@ class TimeoffResource extends Resource
             Forms\Components\Select::make('status')
                 ->label('Status')
                 ->options([
-                    'pending'  => 'Pending',
-                    'approved' => 'Approved',
-                    'rejected' => 'Rejected',
+                    'pending'  => 'Pendente',
+                    'approved' => 'Aprovado',
+                    'rejected' => 'Rejeitado',
                 ])
                 ->default('pending')
                 ->required(),
 
             Forms\Components\Textarea::make('reason')
-                ->label('Reason')
+                ->label('Motivo')
                 ->rows(3)
                 ->nullable(),
         ]);
@@ -77,8 +77,27 @@ class TimeoffResource extends Resource
             Tables\Columns\TextColumn::make('employee.first_name')->label('Funcionário')->sortable()->searchable(),
             Tables\Columns\TextColumn::make('start_date')->label('Data de Início')->date(),
             Tables\Columns\TextColumn::make('end_date')->label('Data de Término')->date(),
-            Tables\Columns\TextColumn::make('type')->label('Tipo'),
-                Tables\Columns\TextColumn::make('status')
+            Tables\Columns\TextColumn::make('type')
+                ->label('Tipo')
+                ->formatStateUsing(function ($state) {
+                    $map = [
+                        'vacation'       => ['label' => 'Férias', 'color' => '#2f855a'],
+                        'sick_leave'     => ['label' => 'Licença Médica', 'color' => '#d69e2e'],
+                        'personal_leave' => ['label' => 'Licença Pessoal', 'color' => '#3182ce'],
+                        'other'          => ['label' => 'Outro', 'color' => '#718096'],
+                    ];
+
+                    $entry = $map[$state] ?? ['label' => (string) $state, 'color' => '#4a5568'];
+
+                    return sprintf(
+                        '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold" style="background: %s; color: #ffffff;">%s</span>',
+                        $entry['color'],
+                        e($entry['label'])
+                    );
+                })
+                ->html(),
+
+            Tables\Columns\TextColumn::make('status')
                 ->label('Status')
                 ->formatStateUsing(function ($state) {
                     $map = [
@@ -97,7 +116,7 @@ class TimeoffResource extends Resource
                 })
                 ->html(),
 
-            Tables\Columns\TextColumn::make('reason')->label('Reason')->limit(50),
+            Tables\Columns\TextColumn::make('reason')->label('Motivo')->limit(50),
         ])
                 ->modifyQueryUsing(function ($query) {
                     /** @var \App\Models\User|null $u */
