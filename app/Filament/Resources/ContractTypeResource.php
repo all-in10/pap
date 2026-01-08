@@ -20,6 +20,14 @@ class ContractTypeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?string $navigationLabel = 'Tipos de Contrato';
+
+    protected static ?string $modelLabel = 'Tipo de Contrato';
+
+    protected static ?string $navigationGroup = 'Gestão de Funcionários';
+
+    protected static ?int $navigationSort = 5;
+
     public static function form(Form $form): Form
     {
         return $form
