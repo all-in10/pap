@@ -12,6 +12,7 @@ class CreateHoursbank extends CreateRecord
 {
     use NotifiesCreatedItems;
     use SuppressesDefaultFilamentNotifications;
+    use \App\Traits\ConfirmsCancelAction;
 
     protected static string $resource = HoursbankResource::class;
 
@@ -19,6 +20,6 @@ class CreateHoursbank extends CreateRecord
     {
         $this->notifyCreatedItems([
             'Banco de Horas criado (ID: ' . ($this->record->id ?? '—') . ') para funcionário ID: ' . ($this->record->employee_id ?? '—'),
-        ]);
+        ], $this->record->employee_id ? \App\Models\Employee::find($this->record->employee_id)?->user?->id : null);
     }
 }

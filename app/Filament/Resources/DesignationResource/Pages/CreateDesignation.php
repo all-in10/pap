@@ -12,6 +12,7 @@ class CreateDesignation extends CreateRecord
 {
     use NotifiesCreatedItems;
     use SuppressesDefaultFilamentNotifications;
+    use \App\Traits\ConfirmsCancelAction;
 
     protected static string $resource = DesignationResource::class;
 

@@ -13,7 +13,11 @@ trait NotifiesCreatedItems
      *
      * @param array $items Array of strings describing created items
      */
-    protected function notifyCreatedItems(array $items): void
+    /**
+     * @param array $items
+     * @param int|null $targetUserId Optional user id to relate the notification to
+     */
+    protected function notifyCreatedItems(array $items, ?int $targetUserId = null): void
     {
         foreach ($items as $item) {
             // Persist to notification history
@@ -23,6 +27,7 @@ trait NotifiesCreatedItems
                     'body' => $item,
                     'data' => null,
                     'created_by' => Auth::id(),
+                    'user_id' => $targetUserId,
                 ]);
             } catch (\Throwable $e) {
                 // If persisting fails, don't block UI notifications

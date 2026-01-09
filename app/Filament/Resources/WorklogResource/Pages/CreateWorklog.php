@@ -13,6 +13,7 @@ class CreateWorklog extends CreateRecord
 {
     use NotifiesCreatedItems;
     use SuppressesDefaultFilamentNotifications;
+    use \App\Traits\ConfirmsCancelAction;
 
     protected static string $resource = WorklogResource::class;
 

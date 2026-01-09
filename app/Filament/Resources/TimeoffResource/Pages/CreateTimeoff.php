@@ -12,6 +12,7 @@ class CreateTimeoff extends CreateRecord
 {
     use NotifiesCreatedItems;
     use SuppressesDefaultFilamentNotifications;
+    use \App\Traits\ConfirmsCancelAction;
 
     protected static string $resource = TimeoffResource::class;
 

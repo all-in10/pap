@@ -12,6 +12,7 @@ class CreateContractType extends CreateRecord
 {
     use NotifiesCreatedItems;
     use SuppressesDefaultFilamentNotifications;
+    use \App\Traits\ConfirmsCancelAction;
 
     protected static string $resource = ContractTypeResource::class;
 

@@ -13,6 +13,7 @@ class CreateEmployee extends CreateRecord
 {
     use NotifiesCreatedItems;
     use SuppressesDefaultFilamentNotifications;
+    use \App\Traits\ConfirmsCancelAction;
 
     protected static string $resource = EmployeeResource::class;
 
@@ -40,10 +41,12 @@ class CreateEmployee extends CreateRecord
             $created[] = 'Contrato (ID: ' . $contract->id . ', Status: ' . $contract->status . ')';
         }
 
+        $targetUserId = $employee->user?->id ?? null;
+
         if (!empty($created)) {
-            $this->notifyCreatedItems($created);
+            $this->notifyCreatedItems($created, $targetUserId);
         } else {
-            $this->notifyCreatedItems(['Funcionário criado com sucesso.']);
+            $this->notifyCreatedItems(['Funcionário criado com sucesso.'], $targetUserId);
         }
     }
 }

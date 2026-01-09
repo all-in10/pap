@@ -8,6 +8,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditEmployee extends EditRecord
 {
+    use \App\Traits\ConfirmsCancelAction;
+
     protected static string $resource = EmployeeResource::class;
 
     protected function getHeaderActions(): array

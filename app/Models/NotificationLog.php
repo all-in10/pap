@@ -14,14 +14,20 @@ class NotificationLog extends Model
         'body',
         'data',
         'created_by',
+        'user_id',
     ];
 
     protected $casts = [
         'data' => 'array',
     ];
 
-    public function user()
+    public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
