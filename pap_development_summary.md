@@ -1,7 +1,7 @@
 # Resumo do Desenvolvimento da Aplicação PAP
 
 ## Visão Geral
-Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 10 de Dezembro de 2025.
+Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 9 de Janeiro de 2026.
 
 ---
 
@@ -11,6 +11,7 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
   - Adicionei o trait `NotifiesCreatedItems` para enviar notificações separadas por item criado e o trait `SuppressesDefaultFilamentNotifications` para suprimir a notificação padrão do Filament.
   - Integrei notificações em todas as páginas de criação (`Create*`) — Employee, User, Contract, Hoursbank, Designation, ContractType, Department, Country, State, City, Worklog, Timeoff — para que cada item relacionado gere a sua própria notificação.
   - Adicionei criação automática de `Hoursbank` (com `total_hours = 0`) no gancho `Employee::created` quando não existia um registo associado.
+  - Adicionei notificação específica que avisa quando um `Hoursbank` é criado (ex.: 'Banco de Horas criado (ID: {id}) para funcionário ID: {employee_id}').
   - Corrigi `canAccess()`/`canCreate()` em resources relevantes e atualizei as páginas de listagem para usar `::canCreate()` para exibir corretamente o botão "Criar".
   - Testes manuais realizados: notificações custom aparecem corretamente e a notificação padrão do Filament foi suprimida.
 
@@ -133,5 +134,5 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ---
 
-_Última atualização: 10 de Dezembro de 2025_
+_Última atualização: 9 de Janeiro de 2026
 
