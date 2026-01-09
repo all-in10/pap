@@ -47,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 MenuItem::make()
-                    ->label('Settings')
+                    ->label('Configurações')
                     ->url(fn (): string => Settings::getUrl())
                     ->icon('heroicon-o-cog-6-tooth'),
             ])

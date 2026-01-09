@@ -14,6 +14,9 @@ class NotificationLogResource extends Resource
 {
     protected static ?string $model = NotificationLog::class;
 
+    // Hide this resource from the sidebar — notifications are shown in the Settings page only
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $navigationIcon = 'heroicon-o-bell-alert';
     protected static ?string $navigationLabel = 'Histórico de Notificações';
     protected static ?string $navigationGroup = 'Gestão do Sistema';
