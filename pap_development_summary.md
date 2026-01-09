@@ -14,6 +14,7 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
   - Adicionei notificação específica que avisa quando um `Hoursbank` é criado (ex.: 'Banco de Horas criado (ID: {id}) para funcionário ID: {employee_id}').
   - Corrigi `canAccess()`/`canCreate()` em resources relevantes e atualizei as páginas de listagem para usar `::canCreate()` para exibir corretamente o botão "Criar".
   - Testes manuais realizados: notificações custom aparecem corretamente e a notificação padrão do Filament foi suprimida.
+  - Apliquei confirmação de cancelamento ao cancelar edições (trait `ConfirmsCancelAction`) em todas as páginas Create/Edit do Filament para prevenir perda não intencional de alterações; commitei as mudanças (commit: `7df642e`).
 
 - **2026-01-08**: Traduções para PT-BR e correções de testes unitários.
   - Traduzi rótulos de navegação, campos de formulários, colunas de tabelas, infolists e mensagens de validação para **Português (pt‑BR)** em vários Resources do Filament: `City`, `State`, `Country`, `Employee`, `User`, `Contract`, `Worklog`, `Timeoff`, `Hoursbank`, `Designation`, `Department`, `ContractType`, bem como nas páginas `Settings` e `ChangePassword`.
