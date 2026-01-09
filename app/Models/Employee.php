@@ -47,6 +47,13 @@ class Employee extends Model
                 $employee->save();
             }
 
+            // Cria um banco de horas associado caso não exista
+            if (!$employee->hoursbank) {
+                $employee->hoursbank()->create([
+                    'total_hours' => 0,
+                ]);
+            }
+
             // Evita criação de contrato se não houver data de contratação
             if (!$employee->date_hired) {
                 return;

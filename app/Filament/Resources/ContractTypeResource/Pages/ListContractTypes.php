@@ -17,9 +17,7 @@ class ListContractTypes extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->visible(function (): bool {
-                    /** @var \App\Models\User|null $u */
-                    $u = Auth::user();
-                    return $u !== null && $u->can('create', ContractType::class);
+                    return ContractTypeResource::canCreate();
                 }),
         ];
     }

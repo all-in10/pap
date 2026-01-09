@@ -17,12 +17,7 @@ class ListDesignations extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->visible(function (): bool {
-                    /** @var \App\Models\User|null $u */
-                    $u = Auth::user();
-                    if ($u === null) {
-                        return false;
-                    }
-                    return $u->can('create', Designation::class);
+                    return DesignationResource::canCreate();
                 }),
         ];
     }

@@ -95,6 +95,13 @@ class DesignationResource extends Resource
 
     public static function canAccess(): bool
     {
-        return Access::isRoot();
+        // Allow HR, Admin and Root users to access this resource
+        return Access::isHr() || Access::isAdmin() || Access::isRoot();
+    }
+
+    public static function canCreate(): bool
+    {
+        // Creation should follow the same role-based rule as access
+        return self::canAccess();
     }
 }

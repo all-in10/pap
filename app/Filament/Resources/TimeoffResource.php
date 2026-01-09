@@ -18,10 +18,10 @@ class TimeoffResource extends Resource
     protected static ?string $model = Timeoff::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
-    protected static ?string $navigationLabel = 'Solicitações de Afastamento';
-    protected static ?string $pluralModelLabel = 'Solicitações de Afastamento';
+    protected static ?string $navigationLabel = 'Solicitações de Licenças';
+    protected static ?string $pluralModelLabel = 'Solicitações de Licenças';
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
-    protected static ?string $modelLabel = 'Solicitação de Afastamento';
+    protected static ?string $modelLabel = 'Solicitação de Licenças';
 
     public static function form(Form $form): Form
     {

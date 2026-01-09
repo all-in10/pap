@@ -7,6 +7,13 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ## Registo de Alterações
 
+- **2026-01-09**: Notificações por item criado e criação automática de Banco de Horas.
+  - Adicionei o trait `NotifiesCreatedItems` para enviar notificações separadas por item criado e o trait `SuppressesDefaultFilamentNotifications` para suprimir a notificação padrão do Filament.
+  - Integrei notificações em todas as páginas de criação (`Create*`) — Employee, User, Contract, Hoursbank, Designation, ContractType, Department, Country, State, City, Worklog, Timeoff — para que cada item relacionado gere a sua própria notificação.
+  - Adicionei criação automática de `Hoursbank` (com `total_hours = 0`) no gancho `Employee::created` quando não existia um registo associado.
+  - Corrigi `canAccess()`/`canCreate()` em resources relevantes e atualizei as páginas de listagem para usar `::canCreate()` para exibir corretamente o botão "Criar".
+  - Testes manuais realizados: notificações custom aparecem corretamente e a notificação padrão do Filament foi suprimida.
+
 - **2026-01-08**: Traduções para PT-BR e correções de testes unitários.
   - Traduzi rótulos de navegação, campos de formulários, colunas de tabelas, infolists e mensagens de validação para **Português (pt‑BR)** em vários Resources do Filament: `City`, `State`, `Country`, `Employee`, `User`, `Contract`, `Worklog`, `Timeoff`, `Hoursbank`, `Designation`, `Department`, `ContractType`, bem como nas páginas `Settings` e `ChangePassword`.
   - Ajustei mensagens de validação e textos dinâmicos (ex.: mensagens de erro de intervalos, opções de status e labels de botões) para português e coerência UX.
