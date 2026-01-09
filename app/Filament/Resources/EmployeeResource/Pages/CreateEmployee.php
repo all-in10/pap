@@ -21,6 +21,10 @@ class CreateEmployee extends CreateRecord
         /** @var Employee $employee */
         $employee = $this->record;
 
+        // Refresh relations to ensure any related records created in model events are available
+        $employee->refresh();
+        $employee->load(['user', 'hoursbank', 'contracts']);
+
         $created = [];
 
         if ($employee->user) {
