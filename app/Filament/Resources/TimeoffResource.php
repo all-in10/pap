@@ -74,11 +74,20 @@ class TimeoffResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            Tables\Columns\TextColumn::make('employee.first_name')->label('Funcionário')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('start_date')->label('Data de Início')->date(),
-            Tables\Columns\TextColumn::make('end_date')->label('Data de Término')->date(),
+            Tables\Columns\TextColumn::make('employee.first_name')->label('Funcionário')
+                ->sortable()
+                ->searchable(),
+            Tables\Columns\TextColumn::make('start_date')
+                ->label('Data de Início')
+                ->sortable()
+                ->date(),
+            Tables\Columns\TextColumn::make('end_date')
+                ->label('Data de Término')
+                ->sortable()
+                ->date(),
             Tables\Columns\TextColumn::make('type')
                 ->label('Tipo')
+                ->sortable()
                 ->formatStateUsing(function ($state) {
                     $map = [
                         'vacation'       => ['label' => 'Férias', 'color' => '#c2c5aa'],
@@ -99,6 +108,7 @@ class TimeoffResource extends Resource
 
             Tables\Columns\TextColumn::make('status')
                 ->label('Status')
+                ->sortable()
                 ->formatStateUsing(function ($state) {
                     $map = [
                         'pending' => ['label' => 'Pendente', 'color' => '#b6ad90'],
@@ -118,18 +128,18 @@ class TimeoffResource extends Resource
 
             Tables\Columns\TextColumn::make('reason')->label('Motivo')->limit(50),
         ])
-                ->modifyQueryUsing(function ($query) {
-                    /** @var \App\Models\User|null $u */
-                    $u = Auth::user();
-                    if ($u && Access::isEmployeeRole($u)) {
-                        $employeeId = $u->employee?->id ?? null;
-                        if ($employeeId) {
-                            $query->where('employee_id', $employeeId);
-                        }
+            ->modifyQueryUsing(function ($query) {
+                /** @var \App\Models\User|null $u */
+                $u = Auth::user();
+                if ($u && Access::isEmployeeRole($u)) {
+                    $employeeId = $u->employee?->id ?? null;
+                    if ($employeeId) {
+                        $query->where('employee_id', $employeeId);
                     }
+                }
 
-                    return $query;
-                })
+                return $query;
+            })
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->visible(function ($record): bool {
