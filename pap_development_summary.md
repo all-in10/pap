@@ -1,11 +1,22 @@
 # Resumo do Desenvolvimento da Aplicação PAP
 
 ## Visão Geral
-Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 9 de Janeiro de 2026.
+Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 15 de Janeiro de 2026.
 
 ---
 
 ## Registo de Alterações
+
+- **2026-01-15**: Melhorias no dashboard admin, nova página de login unificada e correções de UI.
+  - Criado novo dashboard personalizado para admin (`app/Filament/Admin/Pages/Dashboard.php`) com widgets de estatísticas gerais (StatsOverview), gráfico de contratos por tipo (ContractsChart) e gráfico de solicitações de férias (TimeoffsChart).
+  - Implementados widgets Filament: `StatsOverview` (visão geral de usuários, funcionários, contratos ativos e férias pendentes), `ContractsChart` (gráfico de barras para contratos por tipo) e `TimeoffsChart` (gráfico de rosca para status de solicitações de férias).
+  - Criada nova página de login unificada (`resources/views/login.blade.php`) com links para painéis de funcionário e admin, substituindo a lógica anterior no `welcome.blade.php`.
+  - Atualizada rota `/login` em `routes/web.php` para renderizar a nova view de login em vez de redirecionar.
+  - Corrigido `welcome.blade.php` para remover links de login específicos e simplificar para um link genérico.
+  - Aplicadas correções de dark mode em `settings.blade.php` (página de configurações) para melhor suporte a temas escuros.
+  - Reorganizadas importações em `AdminPanelProvider.php` e `Employee.php` para melhor legibilidade.
+  - Adicionada linha em branco no final de `User.php` para consistência de formatação.
+  - Testes manuais: dashboard carrega corretamente com widgets funcionais; página de login redireciona adequadamente; UI responsiva em light/dark mode.
 
 - **2026-01-09**: Notificações por item criado e criação automática de Banco de Horas.
   - Adicionei o trait `NotifiesCreatedItems` para enviar notificações separadas por item criado e o trait `SuppressesDefaultFilamentNotifications` para suprimir a notificação padrão do Filament.
@@ -135,5 +146,4 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ---
 
-_Última atualização: 9 de Janeiro de 2026
-
+_Última atualização: 15 de Janeiro de 2026

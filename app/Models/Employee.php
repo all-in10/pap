@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,32 +11,9 @@ class Employee extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'first_name',
-        'middle_name',
-        'last_name',
-        'gender',
-        'email',
-        'nss',
-        'nif',
-        'phone_number',
-        'observations',
-        'address',
-        'zip_code',
-        'date_of_birth',
-        'date_hired',
-        'is_active',
-        'country_id',
-        'state_id',
-        'city_id',
-        'department_id',
-        'designation_id',
-    ];
-
     protected static function booted()
     {
         static::created(function ($employee) {
-            // Cria usuário relacionado apenas se não existir um user_id definido
             if (empty($employee->user_id)) {
                 $defaultPassword = 'changeme123';
                 $user = \App\Models\User::create([
@@ -76,6 +55,28 @@ class Employee extends Model
             ]);
         });
     }
+
+    protected $fillable = [
+        'first_name',
+        'middle_name',
+        'last_name',
+        'gender',
+        'email',
+        'nss',
+        'nif',
+        'phone_number',
+        'observations',
+        'address',
+        'zip_code',
+        'date_of_birth',
+        'date_hired',
+        'is_active',
+        'country_id',
+        'state_id',
+        'city_id',
+        'department_id',
+        'designation_id',
+    ];
 
     // RELACIONAMENTOS
     public function country()
