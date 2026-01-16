@@ -6,10 +6,13 @@
     <title>Login - PAP</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
 </head>
 <body class="bg-[#FDFDFC] dark:bg-[#0a0a0a] text-[#1b1b18] flex items-center justify-center min-h-screen">
     <div class="max-w-md w-full p-6 bg-white dark:bg-[#161615] rounded-lg shadow-lg">
+        <div class="flex justify-center mb-6">
+            @include('filament.brand')
+        </div>
         <h1 class="text-2xl font-medium mb-6 text-center">Entrar no Sistema</h1>
         <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-6 text-center">Selecione seu papel para acessar o painel correspondente.</p>
         <div class="space-y-4">

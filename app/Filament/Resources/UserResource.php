@@ -13,15 +13,28 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\View\TablesRenderHook;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Actions\Action as TableAction;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationLabel = 'Usuários';
-    protected static ?string $modelLabel = 'Usuário';
-    protected static ?string $navigationGroup = 'Gestão de Usuários';
+    protected static ?string $navigationLabel = 'Utilizadores';
+    protected static ?string $modelLabel = 'Utilizador';
+    protected static ?string $navigationGroup = 'Gestão de Utilizadores';
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        return $user->isAdmin() || $user->isRoot();
+    }
 
     public static function form(Form $form): Form
     {
@@ -151,10 +164,37 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                // Soft-delete action visible to Admins (permanent delete reserved for Root via policy)
+                TableAction::make('softDelete')
+                    ->label('Excluir (soft)')
+                    ->icon('heroicon-s-trash')
+                    ->requiresConfirmation()
+                    ->action(function (User $record): void {
+                        // Soft-delete the user (requires users table to use soft deletes)
+                        $record->delete();
+                    })
+                    ->visible(function () {
+                        $u = Auth::user();
+                        return $u instanceof User && $u->isAdmin();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Provide a soft-delete bulk action for Admins
+                    Tables\Actions\BulkAction::make('softDelete')
+                        ->label('Excluir selecionados (soft)')
+                        ->requiresConfirmation()
+                        ->action(function (\Illuminate\Support\Collection $records) {
+                            foreach ($records as $record) {
+                                if (method_exists($record, 'delete')) {
+                                    $record->delete();
+                                }
+                            }
+                        })
+                        ->visible(function () {
+                            $u = Auth::user();
+                            return $u instanceof User && $u->isAdmin();
+                        }),
                 ]),
             ]);
     }

@@ -39,7 +39,7 @@ class WorklogPolicy
 
     public function delete(?User $user, Worklog $worklog): bool
     {
-        // HR/Admin/Root can delete worklogs
-        return $user?->isRoot() || $user?->isAdmin() || $user?->isHr();
+        // Only Admin/Root can delete worklogs
+        return $user?->isRoot() || $user?->isAdmin();
     }
 }

@@ -27,8 +27,12 @@ class ForcePasswordChange
 
         // Check if user is authenticated and must change password
         $user = $request->user();
-        if ($user && $user->must_change_password && $request->is('admin/*')) {
-            return redirect('/admin/change-password');
+        if ($user && $user->must_change_password && (
+            str_starts_with($request->path(), 'app/') ||
+            str_starts_with($request->path(), 'hr/') ||
+            str_starts_with($request->path(), 'admin/')
+        )) {
+            return redirect()->route('password.change');
         }
 
         return $next($request);

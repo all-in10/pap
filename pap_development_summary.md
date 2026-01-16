@@ -1,11 +1,18 @@
 # Resumo do Desenvolvimento da Aplicação PAP
 
 ## Visão Geral
-Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 15 de Janeiro de 2026.
+Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 18 de Janeiro de 2026.
 
 ---
 
 ## Registo de Alterações
+
+- **2026-01-16**: Correção da política de mudança de password, remoção de departamentos do dashboard de funcionários e simplificação do layout.
+  - Corrigido middleware `ForcePasswordChange` para redirecionar corretamente para `/password/change` em vez de `/admin/change-password`, e expandido para cobrir todos os painéis (app, hr, admin).
+  - Atualizado `PasswordChangeController` para redirecionar para `/app` após mudança de password bem-sucedida.
+  - Adicionado controlo de acesso `canAccess()` ao `DepartmentResource` para restringir visibilidade apenas a HR, Admin e Root (escondendo de funcionários).
+  - Simplificado dashboard removendo `TimeoffsChart` e alterando layout para coluna única (de 2 para 1 coluna).
+  - Testes manuais: política de password agora funciona corretamente; departamentos não aparecem no menu de funcionários; dashboard mais limpo e simples.
 
 - **2026-01-15**: Melhorias no dashboard admin, nova página de login unificada e correções de UI.
   - Criado novo dashboard personalizado para admin (`app/Filament/Admin/Pages/Dashboard.php`) com widgets de estatísticas gerais (StatsOverview), gráfico de contratos por tipo (ContractsChart) e gráfico de solicitações de férias (TimeoffsChart).
@@ -50,6 +57,28 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
   - `routes/web.php`: adicionadas rotas para redirecionar utilizadores autenticados de páginas de login para os seus painéis corretos.
   - `app/Models/Employee.php`: adicionada relação `timeoffs()` hasMany para aceder aos registos de férias do funcionário.
   - Funcionalidades do painel de funcionários: visualizar histórico de registos de trabalho, departamento, banco de horas, submeter pedidos de férias/justificativas de ausência, acompanhar o estado de pedidos de férias.
+
+- **2026-01-16**: Criação de painéis adicionais, correções de Vite e melhorias na página de login.
+  - Criado `AppPanelProvider` (`app/Providers/Filament/AppPanelProvider.php`) com caminho `/app` e login em `/app/login`, configurado como painel padrão com widgets compartilhados (StatsOverview, ContractsChart, TimeoffsChart).
+  - Criado `HrPanelProvider` (`app/Providers/Filament/HrPanelProvider.php`) com caminho `/hr` para área dedicada ao RH, incluindo dashboard (`app/Filament/Hr/Pages/Dashboard.php`) com widgets compartilhados para acesso às mesmas informações com controle de níveis.
+  - Implementado middleware `EnsureHrPanelAccess` (`app/Http/Middleware/EnsureHrPanelAccess.php`) para restringir acesso ao painel HR apenas para roles HR, ADMIN e ROOT, redirecionando outros conforme o role.
+  - Removido `@vite` de `welcome.blade.php` e `login.blade.php` para corrigir erro de manifest não encontrado, substituindo por estilos inline de Tailwind para evitar dependência de Vite.
+  - Atualizado `login.blade.php` para incluir o logo TeamCore via `@include('filament.brand')` e corrigido `brand.blade.php` para usar logo transparente em light/dark mode.
+  - Atualizado `routes/web.php` para redirecionar `/login` para `/app/login`.
+  - Registrados `AppPanelProvider` e `HrPanelProvider` em `bootstrap/providers.php`.
+  - Testes manuais: painéis acessíveis conforme roles (HR/Admin/Root para /hr, todos para /app); login redireciona corretamente; UI consistente com Filament sem erros de Vite.
+
+- **2026-01-17**: Implementação de notificações para edições de itens.
+  - Criado trait `NotifiesUpdatedItems` (`app/Traits/NotifiesUpdatedItems.php`) para enviar notificações separadas por item editado, persistindo no histórico de notificações e suprimindo notificações padrão do Filament.
+  - Integrado trait em todas as páginas de edição (`Edit*`) — Employee, User, Contract, Hoursbank, Designation, ContractType, Department, Country, State, City, Worklog, Timeoff — para gerar notificações customizadas ao salvar edições.
+  - Adicionado método `afterSave()` em cada página Edit para chamar `notifyUpdatedItems` com mensagem específica (ex.: 'Funcionário ID: {id} atualizado.').
+  - Testes manuais: notificações aparecem corretamente ao editar itens; notificações padrão do Filament suprimidas.
+
+- **2026-01-18**: Ajustes nas políticas de acesso para usuários HR.
+  - Atualizado `WorklogPolicy` para restringir delete apenas a Admin/Root (removido HR da permissão de delete).
+  - Adicionado `canAccess()` em `UserResource` para permitir acesso apenas a Admin/Root, bloqueando HR e outros.
+  - Políticas existentes (Employee, Timeoff, Contract) já restringem delete a Admin/Root, permitindo HR create/update/view.
+  - Testes manuais: HR pode criar/editar mas não deletar itens; HR não acessa UserResource; Admin/Root mantêm acesso completo.
 
 - **2025-12-03**: Introduzir comportamento de registo automático pós-alteração e registar edições recentes.
   - `database/factories/WorklogFactory.php`: converter `hours_worked` e `extra_hours` para inteiros para que os dados de registos de trabalho semeados utilizem valores de horas inteiras.
@@ -146,4 +175,4 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ---
 
-_Última atualização: 15 de Janeiro de 2026
+_Última atualização: 18 de Janeiro de 2026

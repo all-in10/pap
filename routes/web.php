@@ -9,7 +9,7 @@ Route::get('/', function () {
 
 // Redirect authenticated users from login pages to their panels
 Route::middleware(['web'])->group(function () {
-    Route::get('/login', fn() => view('login'))->name('login');
+    Route::get('/login', fn() => redirect('/app/login'))->name('login');
     // /admin/login and /employee/login are provided by Filament; don't override them here.
 
 

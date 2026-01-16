@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class DepartmentResource extends Resource
 {
@@ -25,6 +27,17 @@ class DepartmentResource extends Resource
     protected static ?string $modelLabel = 'Departamento';
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?int $navigationSort = 4;
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        if (! $user instanceof User) {
+            return false;
+        }
+
+        return $user->isHr() || $user->isAdmin() || $user->isRoot();
+    }
 
     public static function form(Form $form): Form
     {

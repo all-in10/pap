@@ -35,7 +35,7 @@ class PasswordChangeController extends Controller
             ]);
         }
 
-        return redirect()->route('filament.admin.pages.dashboard')
+        return redirect('/app')
             ->with('success', 'Password changed successfully!');
     }
 }
