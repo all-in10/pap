@@ -7,6 +7,11 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ## Registo de Alterações
 
+- **2026-01-20**: Padronização de senha padrão para usuários.
+  - Adicionado evento `creating` no modelo `User` para definir senha padrão "passexemplo123" (hasheada) e `must_change_password = true` quando a senha não for fornecida na criação.
+  - Atualizado `UserFactory` para usar a mesma senha padrão e flag de mudança obrigatória.
+  - Isso garante que novos usuários tenham uma senha placeholder e sejam obrigados a alterá-la no primeiro acesso.
+
 - **2026-01-16**: Correção da política de mudança de password, remoção de departamentos do dashboard de funcionários e simplificação do layout.
   - Corrigido middleware `ForcePasswordChange` para redirecionar corretamente para `/password/change` em vez de `/admin/change-password`, e expandido para cobrir todos os painéis (app, hr, admin).
   - Atualizado `PasswordChangeController` para redirecionar para `/app` após mudança de password bem-sucedida.
@@ -34,13 +39,13 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
   - Testes manuais realizados: notificações custom aparecem corretamente e a notificação padrão do Filament foi suprimida.
   - Apliquei confirmação de cancelamento ao cancelar edições (trait `ConfirmsCancelAction`) em todas as páginas Create/Edit do Filament para prevenir perda não intencional de alterações; commitei as mudanças (commit: `7df642e`).
 
-- **2026-01-08**: Traduções para PT-BR e correções de testes unitários.
-  - Traduzi rótulos de navegação, campos de formulários, colunas de tabelas, infolists e mensagens de validação para **Português (pt‑BR)** em vários Resources do Filament: `City`, `State`, `Country`, `Employee`, `User`, `Contract`, `Worklog`, `Timeoff`, `Hoursbank`, `Designation`, `Department`, `ContractType`, bem como nas páginas `Settings` e `ChangePassword`.
+- **2026-01-08**: Traduções para PT-PT e correções de testes unitários.
+  - Traduzi rótulos de navegação, campos de formulários, colunas de tabelas, infolists e mensagens de validação para **Português (PT-PT)** em vários Resources do Filament: `City`, `State`, `Country`, `Employee`, `User`, `Contract`, `Worklog`, `Timeoff`, `Hoursbank`, `Designation`, `Department`, `ContractType`, bem como nas páginas `Settings` e `ChangePassword`.
   - Ajustei mensagens de validação e textos dinâmicos (ex.: mensagens de erro de intervalos, opções de status e labels de botões) para português e coerência UX.
   - Corrigi regras de autorização que afetavam testes: `Access::hasRole` foi ajustado para tratar `employee` como igualdade estrita; `WorklogPolicy` foi atualizado para permitir que HR/Admin/Root façam update/delete de worklogs.
   - Rodei a suíte de testes e confirmei que agora todos os testes passam (8 passed).
   - Commits relacionados:
-    - `ed6a659` — i18n: traduzir labels/forms/tables/resources para PT-BR
+    - `ed6a659` — i18n: traduzir labels/forms/tables/resources para PT-PT
     - `3fcc187` — fix(tests): ajustar Access::hasRole e WorklogPolicy para corresponder às expectativas dos testes
 
 - **2025-12-10**: Implementar Painel de Funcionários com controlo de acesso baseado em funções.
@@ -175,4 +180,4 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ---
 
-_Última atualização: 18 de Janeiro de 2026
+_Última atualização: 20 de Janeiro de 2026

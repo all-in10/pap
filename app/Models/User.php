@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRole;
 
 class User extends Authenticatable
@@ -93,6 +94,14 @@ class User extends Authenticatable
 
     protected static function booted()
     {
+        // Set default password and must_change_password if not provided
+        static::creating(function (User $user) {
+            if (empty($user->password)) {
+                $user->password = Hash::make('passexemplo123');
+                $user->must_change_password = true;
+            }
+        });
+
         // After creation, ensure email_verified_at is set to created_at if not provided
         static::created(function (User $user) {
             if (empty($user->email_verified_at)) {
