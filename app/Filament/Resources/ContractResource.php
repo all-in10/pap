@@ -25,6 +25,11 @@ class ContractResource extends Resource
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Contrato';
 
+    /**
+     * Define o formulário para criação/edição de contratos
+     * Inclui seleção de funcionário, cargo, tipo, salário, datas
+     * Fluxo: campos reativos atualizam salário baseado no cargo
+     */
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -90,6 +95,11 @@ class ContractResource extends Resource
         ]);
     }
 
+    /**
+     * Define a tabela de listagem de contratos
+     * Modifica query para filtrar apenas contratos do próprio funcionário se usuário for EMPLOYEE
+     * Fluxo: query modificada -> colunas com formatação HTML para status -> ações incluindo geração de PDF
+     */
     public static function table(Table $table): Table
     {
         return $table

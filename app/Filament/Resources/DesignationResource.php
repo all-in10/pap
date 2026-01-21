@@ -21,6 +21,10 @@ class DesignationResource extends Resource
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Cargo';
 
+    /**
+     * Define o formulário para criação/edição de cargos
+     * Inclui nome, descrição, nível e salário base
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -52,6 +56,10 @@ class DesignationResource extends Resource
             ]);
     }
 
+    /**
+     * Define a tabela de listagem de cargos
+     * Inclui colunas para ID, nome, nível e salário base
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -93,12 +101,20 @@ class DesignationResource extends Resource
         ];
     }
 
+    /**
+     * Verifica se o usuário pode acessar este recurso
+     * HR, Admin e Root têm acesso
+     */
     public static function canAccess(): bool
     {
         // Allow HR, Admin and Root users to access this resource
         return Access::isHr() || Access::isAdmin() || Access::isRoot();
     }
 
+    /**
+     * Verifica se o usuário pode criar cargos
+     * Segue a mesma regra de acesso
+     */
     public static function canCreate(): bool
     {
         // Creation should follow the same role-based rule as access

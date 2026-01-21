@@ -28,6 +28,10 @@ class DepartmentResource extends Resource
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?int $navigationSort = 4;
 
+    /**
+     * Verifica se o usuário pode acessar este recurso
+     * HR, Admin e Root têm acesso
+     */
     public static function canAccess(): bool
     {
         $user = Auth::user();
@@ -39,6 +43,10 @@ class DepartmentResource extends Resource
         return $user->isHr() || $user->isAdmin() || $user->isRoot();
     }
 
+    /**
+     * Define o formulário para criação/edição de departamentos
+     * Inclui nome e descrição
+     */
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -52,6 +60,10 @@ class DepartmentResource extends Resource
         ]);
     }
 
+    /**
+     * Define a tabela de listagem de departamentos
+     * Inclui colunas para nome, contagem de funcionários e timestamps
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -84,6 +96,10 @@ class DepartmentResource extends Resource
             ]);
     }
 
+    /**
+     * Define o infolist para visualização detalhada do departamento
+     * Exibe nome e número de funcionários
+     */
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([

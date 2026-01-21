@@ -8,15 +8,18 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\Access;
 
 /**
- * @note This middleware expects `Auth::user()` to return an instance of `\App\Models\User`.
+ * Middleware para garantir que o usuário tenha uma das roles especificadas
+ * Uso em rotas: ->middleware("role:admin,hr")
+ * Usuários ROOT passam por todas as verificações
  */
 
 class EnsureRole
 {
     /**
-     * Handle an incoming request.
-     * Usage in routes: ->middleware("role:admin,hr")
-     * Root users bypass role checks.
+     * Processa a requisição verificando se o usuário tem as roles necessárias
+     * Se não autenticado, deixa o middleware de auth lidar com o redirecionamento
+     * Se ROOT, permite acesso direto
+     * Caso contrário, verifica se tem alguma das roles especificadas
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next

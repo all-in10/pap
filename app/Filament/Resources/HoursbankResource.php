@@ -24,6 +24,10 @@ class HoursbankResource extends Resource
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Banco de Horas';
 
+    /**
+     * Define o formulário para criação/edição de banco de horas
+     * Inclui seleção de funcionário e total de horas (somente leitura)
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -43,6 +47,10 @@ class HoursbankResource extends Resource
             ]);
     }
 
+    /**
+     * Define a tabela para listagem de bancos de horas
+     * Mostra funcionário, total de horas e datas de criação/atualização
+     */
     public static function table(Table $table): Table
     {
         return $table->modifyQueryUsing(function ($query) {
@@ -78,6 +86,10 @@ class HoursbankResource extends Resource
             ]);
     }
 
+    /**
+     * Define as relações para o resource
+     * Inclui o gerenciador de worklogs relacionados ao funcionário
+     */
     public static function getRelations(): array
     {
         return [
@@ -85,6 +97,10 @@ class HoursbankResource extends Resource
         ];
     }
 
+    /**
+     * Define as páginas disponíveis para o resource
+     * Inclui listagem, criação e edição de bancos de horas
+     */
     public static function getPages(): array
     {
         return [

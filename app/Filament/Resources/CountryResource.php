@@ -29,6 +29,10 @@ class CountryResource extends Resource
 
     // protected static ?string $slug = 'employees-countries';
 
+    /**
+     * Define o formulário para criação/edição de países
+     * Inclui nome, código e código telefônico
+     */
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -47,6 +51,10 @@ class CountryResource extends Resource
         ]);
     }
 
+    /**
+     * Define a tabela de listagem de países
+     * Inclui colunas para nome, código, código telefônico e timestamps
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -87,6 +95,10 @@ class CountryResource extends Resource
             ]);
     }
 
+    /**
+     * Define o infolist para visualização detalhada do país
+     * Exibe nome, código e código telefônico
+     */
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
@@ -117,6 +129,10 @@ class CountryResource extends Resource
         ];
     }
 
+    /**
+     * Verifica se o usuário pode acessar este recurso
+     * Apenas ROOT tem acesso
+     */
     public static function canAccess(): bool
     {
         return Access::isRoot();

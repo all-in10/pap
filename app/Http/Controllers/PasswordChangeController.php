@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Hash;
 class PasswordChangeController extends Controller
 {
     /**
-     * Show the password change form.
+     * Exibe o formulário de alteração de senha
+     * Retorna a view para mudança de senha obrigatória
      */
     public function show()
     {
@@ -17,7 +18,8 @@ class PasswordChangeController extends Controller
     }
 
     /**
-     * Update the user's password.
+     * Atualiza a senha do usuário
+     * Valida a nova senha, atualiza no banco e redireciona
      */
     public function update(Request $request)
     {

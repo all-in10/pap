@@ -32,7 +32,11 @@ class CityResource extends Resource
 
     protected static ?int $navigationSort = 3; 
 
-public static function form(Form $form): Form
+    /**
+     * Define o formulário para criação/edição de cidades
+     * Inclui seleção de estado (com país) e nome da cidade
+     */
+    public static function form(Form $form): Form
 {
     return $form->schema([
         Forms\Components\Select::make('state_id')
@@ -48,7 +52,10 @@ public static function form(Form $form): Form
     ]);
 }
 
-
+    /**
+     * Define a tabela de listagem de cidades
+     * Inclui colunas para nome, estado e timestamps
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -84,6 +91,10 @@ public static function form(Form $form): Form
             ]);
     }
 
+    /**
+     * Define o infolist para visualização detalhada da cidade
+     * Exibe nome e estado
+     */
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
@@ -115,6 +126,10 @@ public static function form(Form $form): Form
         ];
     }
 
+    /**
+     * Verifica se o usuário pode acessar este recurso
+     * Apenas ROOT tem acesso
+     */
     public static function canAccess(): bool
     {
         return Access::isRoot();

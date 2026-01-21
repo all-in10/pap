@@ -24,6 +24,10 @@ use App\Http\Middleware\EnsureAdminPanelAccess;
 
 class AdminPanelProvider extends PanelProvider
 {
+    /**
+     * Configura o painel de administração do Filament
+     * Define cores, middleware, recursos e páginas disponíveis para admins
+     */
     public function panel(Panel $panel): Panel
     {
         return $panel

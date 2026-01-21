@@ -31,6 +31,10 @@ class StateResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    /**
+     * Define o formulário para criação/edição de estados
+     * Inclui seleção de país e nome do estado
+     */
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -45,6 +49,10 @@ class StateResource extends Resource
         ]);
     }
 
+    /**
+     * Define a tabela de listagem de estados
+     * Inclui colunas para nome, país e timestamps; ordenação padrão por país
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -82,6 +90,10 @@ class StateResource extends Resource
             ]);
     }
 
+    /**
+     * Define o infolist para visualização detalhada do estado
+     * Exibe país e nome
+     */
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
@@ -110,6 +122,10 @@ class StateResource extends Resource
         ];
     }
 
+    /**
+     * Verifica se o usuário pode acessar este recurso
+     * Apenas ROOT tem acesso
+     */
     public static function canAccess(): bool
     {
         return Access::isRoot();

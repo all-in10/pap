@@ -10,8 +10,7 @@ use App\Enums\UserRole;
 class Access
 {
     /**
-     * Get the current authenticated user or return provided user
-     * 
+     * Obtém o usuário autenticado atual ou retorna o usuário fornecido
      * @param User|null $user
      * @return User|null
      */
@@ -21,7 +20,9 @@ class Access
     }
 
     /**
-     * Convenience wrapper: returns true if the current user can manage worklogs (HR/Admin/Root).
+     * Verifica se o usuário pode gerenciar registos de trabalho (HR/Admin/Root)
+     * @param User|null $user
+     * @return bool
      */
     public static function canManageWorklogs(?User $user = null): bool
     {
@@ -30,9 +31,7 @@ class Access
     }
 
     /**
-     * Convenience wrapper: returns true when the given (or current) user is effectively an "employee"
-     * (i.e., not allowed to manage worklogs).
-     * 
+     * Verifica se o usuário tem papel de funcionário (não pode gerenciar registos)
      * @param User|null $user
      * @return bool
      */
@@ -46,7 +45,11 @@ class Access
     }
 
     /**
-     * Check if user has a specific role
+     * Verifica se o usuário tem um papel específico
+     * Para 'employee', requer igualdade exata; para outros, verifica privilégio hierárquico
+     * @param string|UserRole $role
+     * @param User|null $user
+     * @return bool
      */
     public static function hasRole(string|UserRole $role, ?User $user = null): bool
     {
@@ -55,22 +58,24 @@ class Access
             return false;
         }
 
-        // Convert string to enum if needed
+        // Converte string para enum se necessário
         if (is_string($role)) {
             $role = UserRole::tryFrom($role) ?? UserRole::EMPLOYEE;
         }
 
-        // For 'employee' we require exact equality (employee != hr/admin/root).
+        // Para 'employee', requer igualdade exata (employee != hr/admin/root)
         if ($role === UserRole::EMPLOYEE) {
             return $user->isEmployee();
         }
 
-        // For other roles, check hierarchical privilege (e.g., admin >= hr)
+        // Para outros papéis, verifica privilégio hierárquico (ex.: admin >= hr)
         return $user->hasPrivilegeOf($role);
     }
 
     /**
-     * Check if user is at least HR level
+     * Verifica se o usuário está pelo menos no nível HR
+     * @param User|null $user
+     * @return bool
      */
     public static function isHr(?User $user = null): bool
     {
@@ -79,7 +84,9 @@ class Access
     }
 
     /**
-     * Check if user is admin or root
+     * Verifica se o usuário é admin ou root
+     * @param User|null $user
+     * @return bool
      */
     public static function isAdmin(?User $user = null): bool
     {
@@ -88,7 +95,9 @@ class Access
     }
 
     /**
-     * Check if user is root
+     * Verifica se o usuário é root
+     * @param User|null $user
+     * @return bool
      */
     public static function isRoot(?User $user = null): bool
     {

@@ -27,6 +27,11 @@ class WorklogResource extends Resource
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Registro de Ponto';
 
+    /**
+     * Define o formulário para criação/edição de registos de trabalho
+     * Inclui seleção de funcionário, datas/horários, pausa, cálculos automáticos
+     * Fluxo: campos reativos atualizam horas trabalhadas/extras; validações de intervalo
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -182,6 +187,11 @@ class WorklogResource extends Resource
             ]);
     }
 
+    /**
+     * Define a tabela de listagem de registos de trabalho
+     * Modifica query para filtrar apenas registos do próprio funcionário se usuário for EMPLOYEE
+     * Fluxo: query modificada -> colunas com formatação de horas -> ações baseadas em permissões
+     */
     public static function table(Table $table): Table
     {
         return $table->modifyQueryUsing(function ($query) {
@@ -318,6 +328,12 @@ class WorklogResource extends Resource
 
     /* === Funções auxiliares === */
 
+    /**
+     * Converte string de tempo para objeto Carbon, tentando múltiplos formatos
+     * Suporta H:i:s, H:i, h:i A
+     * @param mixed $time
+     * @return \Carbon\Carbon|null
+     */
     private static function parseTimeFlexible($time)
     {
         if (!$time) {
@@ -350,6 +366,15 @@ class WorklogResource extends Resource
         return null;
     }
 
+    /**
+     * Calcula horas trabalhadas subtraindo tempo de pausa
+     * Fluxo: parse dos tempos -> diferença total -> subtrai pausa -> retorna horas
+     * @param string|null $startTime
+     * @param string|null $endTime
+     * @param string|null $breakStart
+     * @param string|null $breakEnd
+     * @return float
+     */
     private static function calculateHoursWorked(?string $startTime, ?string $endTime, ?string $breakStart = null, ?string $breakEnd = null): float
     {
         $start = self::parseTimeFlexible($startTime);
@@ -372,6 +397,15 @@ class WorklogResource extends Resource
         return 0;
     }
 
+    /**
+     * Calcula horas extras (acima de 8 horas diárias)
+     * Fluxo: calcula horas trabalhadas -> subtrai limite de 8h -> retorna máximo 0
+     * @param string|null $startTime
+     * @param string|null $endTime
+     * @param string|null $breakStart
+     * @param string|null $breakEnd
+     * @return float
+     */
     private static function calculateExtraHours(?string $startTime, ?string $endTime, ?string $breakStart = null, ?string $breakEnd = null): float
     {
         $total = self::calculateHoursWorked($startTime, $endTime, $breakStart, $breakEnd);

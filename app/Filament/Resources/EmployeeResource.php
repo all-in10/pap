@@ -26,6 +26,11 @@ class EmployeeResource extends Resource
     protected static ?string $navigationGroup = 'Gestão de Funcionários';
     protected static ?string $modelLabel = 'Funcionário';
 
+    /**
+     * Define o formulário para criação/edição de funcionários
+     * Inclui seções para localização, dados pessoais, endereço, datas e status
+     * Fluxo: campos reativos para país/estado/cidade, validações de email único, etc.
+     */
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -138,6 +143,11 @@ class EmployeeResource extends Resource
         ]);
     }
 
+    /**
+     * Define a tabela de listagem de funcionários
+     * Modifica a query para filtrar apenas o próprio funcionário se o usuário for EMPLOYEE
+     * Fluxo: query modificada -> colunas exibidas -> ações visíveis baseadas em permissões
+     */
     public static function table(Table $table): Table
     {
         return $table->modifyQueryUsing(function ($query) {
@@ -185,6 +195,10 @@ class EmployeeResource extends Resource
             ]);
     }
 
+    /**
+     * Define o infolist para visualização detalhada do funcionário
+     * Exibe dados pessoais em seções organizadas
+     */
     public static function infolists(): Infolist
     {
         return Infolist::make()->schema([

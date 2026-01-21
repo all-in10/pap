@@ -52,49 +52,76 @@ class User extends Authenticatable
         ];
     }
 
-    // Role helpers
+    // Role helpers - Métodos auxiliares para verificar papéis do usuário
     public const ROLE_ROOT = 'root';
     public const ROLE_ADMIN = 'admin';
     public const ROLE_HR = 'hr';
     public const ROLE_EMPLOYEE = 'employee';
 
+    /**
+     * Verifica se o usuário é ROOT (nível máximo de privilégios)
+     * @return bool
+     */
     public function isRoot(): bool
     {
         return $this->role === UserRole::ROOT;
     }
 
+    /**
+     * Verifica se o usuário é ADMIN ou superior (inclui ROOT)
+     * @return bool
+     */
     public function isAdmin(): bool
     {
         return in_array($this->role, [UserRole::ADMIN, UserRole::ROOT], true);
     }
 
+    /**
+     * Verifica se o usuário é HR ou superior (inclui ADMIN e ROOT)
+     * @return bool
+     */
     public function isHr(): bool
     {
         return in_array($this->role, [UserRole::HR, UserRole::ADMIN, UserRole::ROOT], true);
     }
 
+    /**
+     * Verifica se o usuário é EMPLOYEE (nível básico)
+     * @return bool
+     */
     public function isEmployee(): bool
     {
         return $this->role === UserRole::EMPLOYEE;
     }
 
     /**
-     * Check if this user has at least the privilege level of a given role
+     * Verifica se este usuário tem pelo menos o nível de privilégio de um papel dado
+     * @param UserRole $role
+     * @return bool
      */
     public function hasPrivilegeOf(UserRole $role): bool
     {
         return $this->role->hasPrivilegeOf($role);
     }
 
-    // RELACIONAMENTOS
+    // RELACIONAMENTOS - Define as relações com outras entidades
+    /**
+     * Relacionamento um-para-um com Employee
+     * Um usuário pode ter um funcionário associado
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function employee()
     {
         return $this->hasOne(Employee::class);
     }
 
+    /**
+     * Método executado quando o modelo é inicializado
+     * Define eventos para criação e salvamento do usuário
+     */
     protected static function booted()
     {
-        // Set default password and must_change_password if not provided
+        // Define senha padrão e obrigatoriedade de mudança se não fornecida
         static::creating(function (User $user) {
             if (empty($user->password)) {
                 $user->password = Hash::make('passexemplo123');
@@ -102,21 +129,21 @@ class User extends Authenticatable
             }
         });
 
-        // After creation, ensure email_verified_at is set to created_at if not provided
+        // Após criação, define email_verified_at se não fornecido
         static::created(function (User $user) {
             if (empty($user->email_verified_at)) {
-                // Use saveQuietly to avoid triggering event loops
+                // Usa saveQuietly para evitar loops de eventos
                 $user->email_verified_at = $user->created_at;
                 $user->saveQuietly();
             }
         });
 
-        // Prevent changing email_verified_at once it's set
+        // Previne mudança de email_verified_at uma vez definido
         static::saving(function (User $user) {
             if ($user->exists) {
                 $original = $user->getOriginal('email_verified_at');
                 if ($original !== null && $user->isDirty('email_verified_at')) {
-                    // Revert any attempt to change the verified timestamp
+                    // Reverte qualquer tentativa de mudança do timestamp verificado
                     $user->email_verified_at = $original;
                 }
             }

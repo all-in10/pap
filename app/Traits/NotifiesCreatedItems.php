@@ -6,21 +6,22 @@ use Filament\Notifications\Notification;
 use App\Models\NotificationLog;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Trait para notificar itens criados
+ * Envia notificações separadas para cada item criado e persiste no histórico
+ */
 trait NotifiesCreatedItems
 {
     /**
-     * Send a separate success notification for each created item and persist it in history.
-     *
-     * @param array $items Array of strings describing created items
-     */
-    /**
-     * @param array $items
-     * @param int|null $targetUserId Optional user id to relate the notification to
+     * Envia uma notificação de sucesso separada para cada item criado e persiste no histórico
+     * Fluxo: para cada item, cria registo no NotificationLog e envia notificação Filament
+     * @param array $items Array de strings descrevendo itens criados
+     * @param int|null $targetUserId ID opcional do usuário para relacionar a notificação
      */
     protected function notifyCreatedItems(array $items, ?int $targetUserId = null): void
     {
         foreach ($items as $item) {
-            // Persist to notification history
+            // Persiste no histórico de notificações
             try {
                 NotificationLog::create([
                     'title' => 'Criado',
@@ -30,10 +31,10 @@ trait NotifiesCreatedItems
                     'user_id' => $targetUserId,
                 ]);
             } catch (\Throwable $e) {
-                // If persisting fails, don't block UI notifications
+                // Se falhar a persistência, não bloqueia notificações UI
             }
 
-            // Send the Filament notification
+            // Envia a notificação Filament
             Notification::make()
                 ->title('Criado')
                 ->body($item)

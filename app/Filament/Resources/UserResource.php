@@ -25,6 +25,11 @@ class UserResource extends Resource
     protected static ?string $modelLabel = 'Utilizador';
     protected static ?string $navigationGroup = 'Gestão de Utilizadores';
 
+    /**
+     * Verifica se o usuário atual pode acessar este recurso
+     * Apenas Admin e Root têm acesso
+     * @return bool
+     */
     public static function canAccess(): bool
     {
         $user = Auth::user();
@@ -36,6 +41,11 @@ class UserResource extends Resource
         return $user->isAdmin() || $user->isRoot();
     }
 
+    /**
+     * Define o formulário para criação/edição de usuários
+     * Inclui campos para nome, email, função, senha, funcionário relacionado
+     * Fluxo: senha é hasheada; função usa enum; validações aplicadas
+     */
     public static function form(Form $form): Form
     {
         return $form->schema([
@@ -85,6 +95,11 @@ class UserResource extends Resource
         ]);
     }
 
+    /**
+     * Define a tabela de listagem de usuários
+     * Inclui colunas com formatação HTML para função colorida
+     * Fluxo: colunas exibidas -> ações de soft-delete para Admin
+     */
     public static function table(Table $table): Table
     {
         return $table

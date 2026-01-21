@@ -28,6 +28,10 @@ class ContractTypeResource extends Resource
 
     protected static ?int $navigationSort = 5;
 
+    /**
+     * Define o formulário para criação/edição de tipos de contrato
+     * Inclui nome (único), categoria e descrição
+     */
     public static function form(Form $form): Form
     {
         return $form
@@ -51,6 +55,10 @@ class ContractTypeResource extends Resource
             ]);
     }
 
+    /**
+     * Define a tabela de listagem de tipos de contrato
+     * Inclui colunas para nome, categoria (colorida) e descrição
+     */
     public static function table(Table $table): Table
     {
         return $table
@@ -112,12 +120,20 @@ class ContractTypeResource extends Resource
         ];
     }
 
+    /**
+     * Verifica se o usuário pode acessar este recurso
+     * HR, Admin e Root têm acesso
+     */
     public static function canAccess(): bool
     {
         // Allow HR, Admin and Root users to access this resource
         return Access::isHr() || Access::isAdmin() || Access::isRoot();
     }
 
+    /**
+     * Verifica se o usuário pode criar tipos de contrato
+     * Segue a mesma regra de acesso
+     */
     public static function canCreate(): bool
     {
         // Creation should follow the same role-based rule as access
