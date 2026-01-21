@@ -32,7 +32,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            
+
             ->id('admin')
             ->path('admin')
             ->login()
@@ -52,7 +52,7 @@ class AdminPanelProvider extends PanelProvider
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Configurações')
-                    ->url(fn (): string => \App\Filament\Pages\Settings::getUrl())
+                    ->url(fn(): string => \App\Filament\Pages\Settings::getUrl())
                     ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->favicon(asset('favicon.svg'))
@@ -83,6 +83,5 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
                 EnsureAdminPanelAccess::class,
             ]);
-            
     }
 }
