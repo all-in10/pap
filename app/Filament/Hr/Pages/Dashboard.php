@@ -6,6 +6,7 @@ use Filament\Pages\Dashboard as BaseDashboard;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\ContractsChart;
 use App\Filament\Widgets\TimeoffsChart;
+use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends BaseDashboard
 {

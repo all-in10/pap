@@ -7,86 +7,32 @@ use App\Models\Employee;
 use App\Models\Worklog;
 use App\Models\Hoursbank;
 use App\Models\Timeoff;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms;
-use Filament\Actions;
 use Illuminate\Support\Facades\Auth;
-use Filament\Notifications\Notification;
 
-class EmployeeDashboard extends Page implements HasForms
+class EmployeeDashboard extends Page
 {
-    use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    //protected static ?string $navigationLabel = 'Dashboard';
+    //protected static ?string $navigationGroup = 'Dashboard';
     protected static string $view = 'filament.pages.employee-dashboard';
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
-    public ?array $data = [];
-
-    public function mount(): void
-    {
-        $this->form->fill();
-    }
-
-    protected function getFormSchema(): array
+    protected function getHeaderWidgets(): array
     {
         return [
-            Forms\Components\Section::make('Solicitar Férias ou Justificativa de Ausência')
-                ->schema([
-                    Forms\Components\Select::make('type')
-                        ->label('Tipo de Solicitação')
-                        ->options([
-                            'vacation' => 'Férias',
-                            'justification' => 'Justificativa de Ausência',
-                        ])
-                        ->required(),
-                    Forms\Components\DatePicker::make('start_date')
-                        ->label('Data Inicial')
-                        ->required(),
-                    Forms\Components\DatePicker::make('end_date')
-                        ->label('Data Final')
-                        ->required(),
-                    Forms\Components\Textarea::make('reason')
-                        ->label('Motivo/Observações')
-                        ->rows(3),
-                ])
-                ->columns(2),
+            \App\Filament\Widgets\AverageHoursWidget::class,
+            \App\Filament\Widgets\EmployeeInfoWidget::class,
         ];
     }
 
-    public function submit(): void
+    protected function getFooterWidgets(): array
     {
-        $user = Auth::user();
-        $employee = $user->employee;
-
-        if (!$employee) {
-            Notification::make()
-                ->title('Erro')
-                ->body('Funcionário não encontrado.')
-                ->danger()
-                ->send();
-            return;
-        }
-
-        $data = $this->form->getState();
-
-        Timeoff::create([
-            'employee_id' => $employee->id,
-            'start_date' => $data['start_date'],
-            'end_date' => $data['end_date'],
-            'type' => $data['type'],
-            'status' => 'pending',
-            'reason' => $data['reason'] ?? null,
-        ]);
-
-        Notification::make()
-            ->title('Sucesso')
-            ->body('Solicitação enviada com sucesso.')
-            ->success()
-            ->send();
-
-        $this->form->fill();
+        return [
+            \App\Filament\Widgets\WorklogSummaryWidget::class,
+            \App\Filament\Widgets\HoursbankHistoryWidget::class,
+            \App\Filament\Widgets\LicenseInformationWidget::class,
+        ];
     }
 
     public function getWorklogData(): array
@@ -141,7 +87,7 @@ class EmployeeDashboard extends Page implements HasForms
         return $employee
             ->timeoffs()
             ->orderBy('start_date', 'desc')
-            ->limit(5)
+            ->limit(10)
             ->get()
             ->map(fn($timeoff) => [
                 'type' => $timeoff->type,

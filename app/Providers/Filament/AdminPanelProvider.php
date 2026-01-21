@@ -52,15 +52,15 @@ class AdminPanelProvider extends PanelProvider
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Configurações')
-                    ->url(fn (): string => Settings::getUrl())
+                    ->url(fn (): string => \App\Filament\Pages\Settings::getUrl())
                     ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->favicon(asset('favicon.svg'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 \App\Filament\Admin\Pages\Dashboard::class,
                 \App\Filament\Pages\ChangePassword::class,
+                \App\Filament\Pages\Settings::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

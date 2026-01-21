@@ -45,16 +45,18 @@ class EmployeePanelProvider extends PanelProvider
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Configurações')
-                    ->url(fn (): string => Settings::getUrl())
+                    ->url(fn(): string => Settings::getUrl())
                     ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->favicon(asset('favicon.svg'))
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\Pages\ChangePassword::class,
                 \App\Filament\Pages\EmployeeDashboard::class,
+                \App\Filament\Pages\Settings::class,
             ])
-            ->middleware([
+            ->widgets([
+                Widgets\AccountWidget::class,
+            ])->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
