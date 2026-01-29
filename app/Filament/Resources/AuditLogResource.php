@@ -49,13 +49,17 @@ class AuditLogResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTime('M d, Y H:i:s')
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('user_id')
                     ->label('User')
                     ->sortable()
-                    ->formatStateUsing(fn($state) => $state ? "User {$state}" : 'System'),
+                    ->formatStateUsing(fn($state) => $state ? "User #{$state}" : '🔒 System')
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('action')
                     ->badge()
@@ -65,21 +69,28 @@ class AuditLogResource extends Resource
                         'deleted' => 'danger',
                         default => 'gray',
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('model_type')
-                    ->label('Model')
+                    ->label('Entity')
                     ->formatStateUsing(fn($state) => class_basename($state))
-                    ->sortable(),
+                    ->badge()
+                    ->color('blue')
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('model_id')
                     ->label('Record ID')
-                    ->sortable(),
+                    ->copyable()
+                    ->sortable()
+                    ->toggleable(),
 
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Timestamp')
-                    ->dateTime('Y-m-d H:i:s')
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('changes')
+                    ->label('Changes')
+                    ->formatStateUsing(fn($state) => $state ? count($state) . ' field(s)' : '-')
+                    ->color('info')
+                    ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('action')

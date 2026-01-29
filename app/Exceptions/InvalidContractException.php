@@ -6,6 +6,7 @@ use Exception;
 
 class InvalidContractException extends Exception
 {
+    protected $errors;
     public function __construct(
         $message = "Dados do contrato são inválidos ou incompletos.",
         $errors = []

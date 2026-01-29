@@ -6,6 +6,8 @@ use Exception;
 
 class TimeoffOverlapException extends Exception
 {
+    protected $startDate;
+    protected $endDate;
     public function __construct(
         $startDate,
         $endDate,

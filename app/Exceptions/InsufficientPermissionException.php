@@ -6,6 +6,8 @@ use Exception;
 
 class InsufficientPermissionException extends Exception
 {
+    protected $action;
+    protected $resource;
     public function __construct(
         $action = null,
         $resource = null,
