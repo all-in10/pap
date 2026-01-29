@@ -2,12 +2,23 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends BaseWidget
 {
+    use WidgetVisibility;
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+        ];
+    }
     protected function getStats(): array
     {
         return [

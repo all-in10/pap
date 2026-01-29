@@ -77,6 +77,5 @@ class HrPanelProvider extends PanelProvider
                 Authenticate::class,
                 EnsureHrPanelAccess::class,
             ]);
-            
     }
 }

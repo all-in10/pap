@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\Employee;
@@ -10,6 +12,17 @@ use Carbon\Carbon;
 
 class AverageHoursWidget extends BaseWidget
 {
+    use WidgetVisibility;
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+            UserRole::EMPLOYEE,
+            UserRole::HR,
+        ];
+    }
     protected function getStats(): array
     {
         $user = Auth::user();

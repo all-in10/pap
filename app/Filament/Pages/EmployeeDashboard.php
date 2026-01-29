@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class EmployeeDashboard extends Page
 {
-
+    protected static ?string $title = 'Dashboard';
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     //protected static ?string $navigationLabel = 'Dashboard';
     //protected static ?string $navigationGroup = 'Dashboard';
     protected static string $view = 'filament.pages.employee-dashboard';
-    protected static bool $shouldRegisterNavigation = true;
+    protected static bool $shouldRegisterNavigation = false;
 
     protected function getHeaderWidgets(): array
     {

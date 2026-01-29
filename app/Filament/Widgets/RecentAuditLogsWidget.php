@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use App\Models\AuditLog;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -10,9 +12,19 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentAuditLogsWidget extends BaseWidget
 {
+    use WidgetVisibility;
+
     protected int | string | array $columnSpan = 'full';
 
     protected static ?int $sort = 2;
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+        ];
+    }
 
     public function table(Table $table): Table
     {

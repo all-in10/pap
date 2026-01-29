@@ -2,12 +2,25 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use Filament\Widgets\ChartWidget;
 use App\Models\Timeoff;
 
 class TimeoffsChart extends ChartWidget
 {
+    use WidgetVisibility;
+
     protected static ?string $heading = 'Tipos de Solicitações de licenças';
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+            UserRole::HR,
+        ];
+    }
 
     protected function getType(): string
     {

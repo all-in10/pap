@@ -85,7 +85,7 @@ class TimeoffResource extends Resource
         return $table->columns([
             Tables\Columns\TextColumn::make('employee.first_name')->label('Funcionário')
                 ->sortable()
-                ->searchable(),
+                ->searchable(['employees.first_name', 'employees.last_name']),
             Tables\Columns\TextColumn::make('start_date')
                 ->label('Data de Início')
                 ->sortable()

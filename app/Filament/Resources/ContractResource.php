@@ -127,7 +127,7 @@ class ContractResource extends Resource
                 Tables\Columns\TextColumn::make('employee.first_name')
                     ->label('Funcionário')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(['employees.first_name', 'employees.last_name']),
 
                 Tables\Columns\TextColumn::make('designation.name')
                     ->label('Cargo / Designação')

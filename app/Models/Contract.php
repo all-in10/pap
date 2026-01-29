@@ -74,6 +74,14 @@ class Contract extends Model
         return $this->status === 'active';
     }
 
+    /**
+     * Scope para filtrar contratos ativos
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
     public function isTerminated(): bool
     {
         return $this->status === 'terminated';

@@ -2,17 +2,31 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use App\Services\DashboardStatisticsService;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Cache;
 
 class WeeklyWorklogChart extends ChartWidget
 {
+    use WidgetVisibility;
+
     protected static ?string $heading = 'Horas Registradas (Esta Semana)';
 
     protected int | string | array $columnSpan = 'half';
 
     protected static ?int $sort = 4;
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+            UserRole::EMPLOYEE,
+            UserRole::HR,
+        ];
+    }
 
     protected function getData(): array
     {

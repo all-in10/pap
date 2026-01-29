@@ -54,9 +54,11 @@ class EmployeePanelProvider extends PanelProvider
                 \App\Filament\Pages\EmployeeDashboard::class,
                 \App\Filament\Pages\Settings::class,
             ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-            ])->middleware([
+            ])
+            ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,

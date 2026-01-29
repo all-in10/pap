@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
     /**
      * Configura o painel de administração do Filament
      * Define cores, middleware, recursos e páginas disponíveis para admins
+     * Filtra widgets baseado em políticas de visibilidade (roles)
      */
     public function panel(Panel $panel): Panel
     {

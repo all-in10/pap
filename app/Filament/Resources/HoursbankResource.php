@@ -69,7 +69,7 @@ class HoursbankResource extends Resource
                 Tables\Columns\TextColumn::make('employee.first_name')
                     ->label('Funcionário')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable(['employees.first_name', 'employees.last_name']),
 
                 Tables\Columns\TextColumn::make('total_hours')
                     ->label('Total de Horas')

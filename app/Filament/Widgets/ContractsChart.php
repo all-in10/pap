@@ -2,13 +2,26 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use Filament\Widgets\ChartWidget;
 use App\Models\Contract;
 use App\Models\ContractType;
 
 class ContractsChart extends ChartWidget
 {
+    use WidgetVisibility;
+
     protected static ?string $heading = 'Contratos por Tipo';
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+            UserRole::HR,
+        ];
+    }
 
     protected function getType(): string
     {

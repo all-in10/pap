@@ -57,3 +57,4 @@ class ContractFactory extends Factory
             'status' => 'suspended',
         ]);
     }
+}

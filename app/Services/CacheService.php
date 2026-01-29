@@ -100,7 +100,7 @@ class CacheService
             now()->addMinutes(self::DURATION_EMPLOYEES),
             function () use ($departmentId) {
                 return \App\Models\Employee::where('department_id', $departmentId)
-                    ->select('id', 'name', 'designation_id', 'department_id')
+                    ->select('id', 'first_name', 'last_name', 'designation_id', 'department_id')
                     ->get();
             }
         );

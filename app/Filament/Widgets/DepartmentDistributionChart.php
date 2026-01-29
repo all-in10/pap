@@ -2,17 +2,30 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use App\Services\DashboardStatisticsService;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Cache;
 
 class DepartmentDistributionChart extends ChartWidget
 {
+    use WidgetVisibility;
+
     protected static ?string $heading = 'Distribuição por Departamento';
 
     protected int | string | array $columnSpan = 'half';
 
     protected static ?int $sort = 3;
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+            UserRole::HR,
+        ];
+    }
 
     protected function getData(): array
     {

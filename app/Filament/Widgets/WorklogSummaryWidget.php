@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use Filament\Widgets\Widget;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
@@ -9,9 +11,18 @@ use Carbon\Carbon;
 
 class WorklogSummaryWidget extends Widget
 {
+    use WidgetVisibility;
+
     protected static ?string $heading = 'Resumo de Ponto Recente';
 
     protected static string $view = 'filament.widgets.worklog-summary-widget';
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::EMPLOYEE,
+        ];
+    }
 
     public function getRecentWorklogs()
     {

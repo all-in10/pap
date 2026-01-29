@@ -117,6 +117,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Relacionamento um-para-muitos com PerformanceReview
+     * Um usuário pode ter várias avaliações de desempenho como revisor
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function performanceReviews()
+    {
+        return $this->hasMany(PerformanceReview::class, 'reviewer_id');
+    }
+
+    /**
+     * Relacionamento um-para-muitos com EmployeeBenefit
+     * Um usuário pode ter vários benefícios de funcionários aprovados
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function approvedEmployeeBenefits()
+    {
+        return $this->hasMany(EmployeeBenefit::class, 'approved_by');
+    }
+
+    /**
      * Método executado quando o modelo é inicializado
      * Define eventos para criação e salvamento do usuário
      */

@@ -7,6 +7,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Employee extends Model
 {
@@ -83,6 +84,17 @@ class Employee extends Model
         'department_id',
         'designation_id',
     ];
+
+    /**
+     * Compute the full name from first_name and last_name
+     * This attribute allows accessing $employee->name without a database column
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->first_name . ' ' . $this->last_name,
+        );
+    }
 
     // RELACIONAMENTOS - Define as relações com outras entidades
     /**
@@ -183,5 +195,35 @@ class Employee extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relacionamento um-para-um com FlexibleSchedule
+     * Um funcionário pode ter uma jornada flexível
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function flexibleSchedule()
+    {
+        return $this->hasOne(FlexibleSchedule::class);
+    }
+
+    /**
+     * Relacionamento um-para-muitos com PerformanceReview
+     * Um funcionário pode ter várias avaliações de desempenho
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function performanceReviews()
+    {
+        return $this->hasMany(PerformanceReview::class);
+    }
+
+    /**
+     * Relacionamento um-para-muitos com EmployeeBenefit
+     * Um funcionário pode ter vários benefícios
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function employeeBenefits()
+    {
+        return $this->hasMany(EmployeeBenefit::class);
     }
 }

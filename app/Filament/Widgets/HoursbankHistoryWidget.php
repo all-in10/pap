@@ -2,6 +2,8 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\UserRole;
+use App\Filament\Traits\WidgetVisibility;
 use Filament\Widgets\ChartWidget;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
@@ -9,9 +11,21 @@ use Carbon\Carbon;
 
 class HoursbankHistoryWidget extends ChartWidget
 {
+    use WidgetVisibility;
+
     protected static ?string $heading = 'Histórico de Banco de Horas';
     
     protected static string $color = 'info';
+
+    protected static function allowedRoles(): array
+    {
+        return [
+            UserRole::ROOT,
+            UserRole::ADMIN,
+            UserRole::EMPLOYEE,
+            UserRole::HR,
+        ];
+    }
 
     protected function getData(): array
     {
