@@ -8,6 +8,13 @@ use App\Http\Controllers\Api\WorklogController;
 use App\Http\Controllers\Api\TimeoffController;
 use App\Http\Controllers\Api\AuthController;
 
+// API Documentation
+Route::get('/docs.json', function () {
+    return response()->file(storage_path('../public/api-docs.json'), [
+        'Content-Type' => 'application/json',
+    ]);
+});
+
 Route::middleware('auth')->group(function () {
     // Audit Logs
     Route::get('/audit-logs', [AuditLogController::class, 'index']);
