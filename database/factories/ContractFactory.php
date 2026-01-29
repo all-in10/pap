@@ -34,4 +34,26 @@ class ContractFactory extends Factory
             'updated_at' => now(),
         ];
     }
-}
+
+    public function active(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'active',
+            'end_date' => now()->addMonths(6)->format('Y-m-d'),
+        ]);
+    }
+
+    public function terminated(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'terminated',
+            'end_date' => now()->subMonth()->format('Y-m-d'),
+        ]);
+    }
+
+    public function suspended(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'suspended',
+        ]);
+    }
