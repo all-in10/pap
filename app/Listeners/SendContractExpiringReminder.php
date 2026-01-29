@@ -3,12 +3,17 @@
 namespace App\Listeners;
 
 use App\Events\ContractExpiringReminder;
+use App\Mail\ContractExpiringMail;
 use App\Models\NotificationLog;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
-class SendContractExpiringReminder
+class SendContractExpiringReminder implements ShouldQueue
 {
+    use InteractsWithQueue;
+
     /**
      * Handle the event.
      */
@@ -38,6 +43,19 @@ class SendContractExpiringReminder
             'is_read' => false,
         ]);
 
-        // TODO: Enviar email para HR quando SMTP estiver configurado
+        // Enviar email para HR e para o funcionário
+        // Email para HR
+        $hrUsers = User::where('role', 'hr')->orWhere('role', 'admin')->orWhere('role', 'root')->get();
+        foreach ($hrUsers as $user) {
+            if ($user->email) {
+                Mail::to($user->email)->send(new ContractExpiringMail($contract));
+            }
+        }
+
+        // Email para o funcionário também
+        if ($contract->employee->user->email) {
+            Mail::to($contract->employee->user->email)
+                ->send(new ContractExpiringMail($contract));
+        }
     }
 }

@@ -29,4 +29,25 @@ class TimeoffFactory extends Factory
             'updated_at' => now(),
         ];
     }
+
+    public function approved(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'approved',
+        ]);
+    }
+
+    public function rejected(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'rejected',
+        ]);
+    }
+
+    public function pending(): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'status' => 'pending',
+        ]);
+    }
 }

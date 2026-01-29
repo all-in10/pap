@@ -3,12 +3,16 @@
 namespace App\Listeners;
 
 use App\Events\TimeoffApproved;
+use App\Mail\TimeoffApprovedMail;
 use App\Models\NotificationLog;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
-class CreateTimeoffApprovedNotification
+class CreateTimeoffApprovedNotification implements ShouldQueue
 {
+    use InteractsWithQueue;
+
     /**
      * Handle the event.
      */
@@ -35,7 +39,10 @@ class CreateTimeoffApprovedNotification
             'is_read' => false,
         ]);
 
-        // TODO: Enviar email quando SMTP estiver configurado
-        // Mail::to($timeoff->employee->user->email)->send(new TimeoffApprovedMail($timeoff));
+        // Enviar email de aprovação
+        if ($timeoff->employee->user->email) {
+            Mail::to($timeoff->employee->user->email)
+                ->send(new TimeoffApprovedMail($timeoff));
+        }
     }
 }

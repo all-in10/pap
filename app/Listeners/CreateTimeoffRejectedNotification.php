@@ -3,12 +3,16 @@
 namespace App\Listeners;
 
 use App\Events\TimeoffRejected;
+use App\Mail\TimeoffRejectedMail;
 use App\Models\NotificationLog;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
-class CreateTimeoffRejectedNotification
+class CreateTimeoffRejectedNotification implements ShouldQueue
 {
+    use InteractsWithQueue;
+
     /**
      * Handle the event.
      */
@@ -35,7 +39,10 @@ class CreateTimeoffRejectedNotification
             'is_read' => false,
         ]);
 
-        // TODO: Enviar email quando SMTP estiver configurado
-        // Mail::to($timeoff->employee->user->email)->send(new TimeoffRejectedMail($timeoff));
+        // Enviar email de rejeição
+        if ($timeoff->employee->user->email) {
+            Mail::to($timeoff->employee->user->email)
+                ->send(new TimeoffRejectedMail($timeoff, $event->reason ?? null));
+        }
     }
 }
