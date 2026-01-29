@@ -5,6 +5,11 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User;
+use App\Models\Employee;
+use App\Models\Timeoff;
+use App\Models\Worklog;
+use App\Models\Contract;
+use App\Observers\AuditObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,5 +51,10 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->bound('router')) {
             $this->app->router->aliasMiddleware('role', \App\Http\Middleware\EnsureRole::class);
         }
+        // Register model observers for audit logging
+        Employee::observe(AuditObserver::class);
+        Timeoff::observe(AuditObserver::class);
+        Worklog::observe(AuditObserver::class);
+        Contract::observe(AuditObserver::class);
     }
 }

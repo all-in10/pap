@@ -6,10 +6,11 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * Método executado quando o modelo é inicializado
@@ -43,8 +44,8 @@ class Employee extends Model
                 return;
             }
 
-            // Salário base da designação ou zero
-            $baseSalary = $employee->designation?->base_salary ?? 0;
+            // Salário base da designação ou mínimo de 1000
+            $baseSalary = $employee->designation?->base_salary ?? 1000;
 
             // Obtém o tipo de contrato "Tempo completo"
             $contractType = \App\Models\ContractType::where('name', 'Tempo completo')->first();

@@ -15,10 +15,12 @@ class NotificationLog extends Model
         'data',
         'created_by',
         'user_id',
+        'is_read',
     ];
 
     protected $casts = [
         'data' => 'array',
+        'is_read' => 'boolean',
     ];
 
     public function creator()

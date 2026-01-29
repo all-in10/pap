@@ -9,7 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('notification_logs', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable()->after('created_by');
+            if (!Schema::hasColumn('notification_logs', 'user_id')) {
+                $table->unsignedBigInteger('user_id')->nullable()->after('created_by');
+            }
+            if (!Schema::hasColumn('notification_logs', 'is_read')) {
+                $table->boolean('is_read')->default(false)->after('data');
+            }
             $table->index('user_id');
         });
     }

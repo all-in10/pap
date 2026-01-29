@@ -14,6 +14,8 @@ use App\Models\Worklog;
 use App\Policies\WorklogPolicy;
 use App\Policies\EmployeePolicy;
 use App\Policies\UserPolicy;
+use App\Policies\AuditLogPolicy;
+use App\Models\AuditLog;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -28,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         Employee::class => EmployeePolicy::class,
         Worklog::class => WorklogPolicy::class,
         User::class => UserPolicy::class,
+        AuditLog::class => AuditLogPolicy::class,
     ];
 
     public function register(): void

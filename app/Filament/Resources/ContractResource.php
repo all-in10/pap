@@ -66,17 +66,25 @@ class ContractResource extends Resource
             Forms\Components\TextInput::make('salary')
                 ->label('Salário')
                 ->numeric()
-                ->required(),
+                ->required()
+                ->minValue(0.01)
+                ->step(0.01)
+                ->regex('/^\d+(\.\d{1,2})?$/', 'Formato de valor inválido')
+                ->rules(['required', 'numeric', 'min:0.01']),
 
             Forms\Components\DatePicker::make('start_date')
                 ->label('Data de Início')
                 ->required()
-                ->default(fn($get) => $get('employee.date_hired') ?? now()),
+                ->default(fn($get) => $get('employee.date_hired') ?? now())
+                ->maxDate(now()->addMonths(6))
+                ->reactive(),
 
             Forms\Components\DatePicker::make('end_date')
                 ->label('Data de Término')
                 ->nullable()
-                ->helperText('Data de fim do contrato (se aplicável).'),  
+                ->helperText('Data de fim do contrato (se aplicável).')
+                ->afterOrEqual('start_date')
+                ->reactive(),
 
             Forms\Components\Select::make('status')
                 ->label('Status')

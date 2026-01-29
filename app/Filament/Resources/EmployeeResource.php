@@ -102,13 +102,26 @@ class EmployeeResource extends Resource
                         ->required()
                         ->native(false),
                     Forms\Components\TextInput::make('email')->label('E-mail')->email()->required()->unique(ignoreRecord: true),
-                    Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(20),
-                    Forms\Components\TextInput::make('nif')->label('NIF')->maxLength(20)->nullable(),
+                    Forms\Components\TextInput::make('nss')->label('NSS')
+                        ->required()
+                        ->maxLength(20)
+                        ->unique(ignoreRecord: true)
+                        ->regex('/^[0-9]{9}$/', 'NSS deve conter 9 dígitos')
+                        ->placeholder('123456789'),
+
+                    Forms\Components\TextInput::make('nif')->label('NIF')
+                        ->maxLength(20)
+                        ->nullable()
+                        ->unique(ignoreRecord: true)
+                        ->regex('/^[0-9]{9}$/', 'NIF deve conter 9 dígitos')
+                        ->placeholder('123456789'),
+
                     Forms\Components\TextInput::make('phone_number')
                         ->label('Telefone')
                         ->maxLength(20)
                         ->nullable()
-                        ->placeholder('+351 123 456 789'),
+                        ->placeholder('+351 123 456 789')
+                        ->regex('/^\+?[0-9\s\-\(\)]+$/', 'Telefone inválido'),
                     Forms\Components\Textarea::make('observations')->label('Observações')->rows(3)->nullable(),
                 ])
                 ->columns(2),

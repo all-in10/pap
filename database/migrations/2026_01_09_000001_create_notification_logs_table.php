@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->text('body');
             $table->json('data')->nullable();
+            $table->boolean('is_read')->default(false);
             $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
         });

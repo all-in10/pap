@@ -35,8 +35,8 @@ SQL
             DB::statement("ALTER TABLE users ALTER COLUMN role TYPE user_role USING role::user_role");
             DB::statement("ALTER TABLE users ALTER COLUMN role SET DEFAULT 'employee'::user_role");
         } else {
-            // Fallback: try to alter to a VARCHAR that matches expected values (no-op for many drivers)
-            DB::statement("ALTER TABLE users ALTER COLUMN role TYPE varchar(50)");
+            // SQLite doesn't support ALTER COLUMN TYPE, but the role column is already created as TEXT
+            // So we just skip it for SQLite - it works fine as-is
         }
     }
 
@@ -58,8 +58,7 @@ SQL
             DB::statement("ALTER TABLE users ALTER COLUMN role TYPE varchar USING role::text");
             DB::statement("DROP TYPE IF EXISTS user_role");
         } else {
-            // Best-effort fallback
-            DB::statement("ALTER TABLE users ALTER COLUMN role TYPE varchar(50)");
+            // SQLite doesn't support ALTER COLUMN TYPE, skip for SQLite
         }
     }
 };

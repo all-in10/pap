@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TimeoffResource\Pages;
 use App\Models\Timeoff;
+use App\Rules\NoTimeoffOverlap;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\UserRole;
 use App\Services\Access;
+use Illuminate\Validation\Rule;
 
 class TimeoffResource extends Resource
 {
@@ -36,12 +38,19 @@ class TimeoffResource extends Resource
             Forms\Components\DatePicker::make('start_date')
                 ->label('Data de Início')
                 ->native(false)
-                ->required(),
+                ->required()
+                ->reactive(),
 
             Forms\Components\DatePicker::make('end_date')
                 ->label('Data de Término')
                 ->native(false)
-                ->required(),
+                ->required()
+                ->reactive()
+                ->rules([
+                    fn ($get) => new NoTimeoffOverlap(
+                        $get('../id') // ID do timeoff se atualizando
+                    ),
+                ]),
 
             Forms\Components\Select::make('type')
                 ->label('Tipo')
