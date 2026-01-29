@@ -1,9 +1,11 @@
 # Resumo do Desenvolvimento - Aplicação PAP
 
-**Data:** 21 de Janeiro de 2026  
+**Data:** 29 de Janeiro de 2026 *(Atualizado)*  
 **Status:** ✅ Estável e Pronto para Produção  
 **Framework:** Laravel 12 + Filament 3  
 **Linguagem:** PHP 8.1+
+
+> **⚠️ Última Atualização:** Refatoração completa de visibilidade de widgets com implementação de WidgetVisibility trait. Ver [WIDGET_VISIBILITY_RECENT_CHANGES.md](WIDGET_VISIBILITY_RECENT_CHANGES.md) para detalhes técnicos.
 
 ---
 
@@ -40,6 +42,64 @@ A aplicação **PAP** (Personnel & Attendance Platform) é um sistema de gestão
 ## Timeline de Alterações
 
 ### January 2026
+
+#### 2026-01-29: Refatoração de Visibilidade de Widgets 🎨
+
+**Objetivo:** Implementar sistema robusto de controle de visibilidade de widgets baseado em roles
+
+**Alterações Principais:**
+
+1. **WidgetVisibility Trait** - Criado mecanismo centralizado de controle:
+   ```php
+   // app/Filament/Traits/WidgetVisibility.php
+   - allowedRoles(): array - Define quais roles podem ver o widget
+   - canView(): bool - Verifica se usuário autenticado pode visualizar
+   - Suporta enum UserRole com validação tipo-segura
+   ```
+
+2. **Widgets Configurados (12 total):**
+
+   **Global Widgets (Visíveis para ROOT, ADMIN, HR):**
+   - ✅ StatsOverview (ROOT, ADMIN)
+   - ✅ DashboardOverviewWidget (ROOT, ADMIN)
+   - ✅ RecentAuditLogsWidget (ROOT, ADMIN)
+   - ✅ LicenseInformationWidget (ROOT, ADMIN)
+   - ✅ ContractsChart (ROOT, ADMIN, HR)
+   - ✅ DepartmentDistributionChart (ROOT, ADMIN, HR)
+   - ✅ TimeoffsChart (ROOT, ADMIN, HR)
+   - ✅ WeeklyWorklogChart (ROOT, ADMIN, HR, EMPLOYEE)
+   - ✅ AverageHoursWidget (ROOT, ADMIN, HR, EMPLOYEE)
+   - ✅ HoursbankHistoryWidget (ROOT, ADMIN, HR, EMPLOYEE)
+
+   **Employee-Exclusive Widgets:**
+   - ✅ EmployeeInfoWidget (EMPLOYEE apenas)
+   - ✅ WorklogSummaryWidget (EMPLOYEE apenas)
+
+3. **Panel Providers - Descoberta Automática:**
+   - `->discoverWidgets()` ativa auto-discovery de todos widgets
+   - Filament chama `canView()` em cada widget durante render time (quando Auth::user() está disponível)
+   - Removido: `getVisibleWidgets()` que filtrava em initialization time (bug causava Auth::user() = null)
+   - Afetados: AdminPanelProvider, HrPanelProvider, EmployeePanelProvider, AppPanelProvider
+
+4. **Contract Model - Scope Active:**
+   - Adicionado `scopeActive()` para queries
+   - Permite: `Contract::active()->count()` no DashboardStatisticsService
+   - Status válidos: 'active', 'terminated', 'suspended'
+
+5. **Bug Fixes:**
+   - ❌ Sintaxe: EmployeePanelProvider tinha closing braces incorretos
+   - ✅ Corrigido: Adicionado `});` ao final da função panel()
+   - ❌ Dashboard Admin: `getWidgets()` manual sobrescrevia discoveryWidgets
+   - ✅ Removido: Dashboard agora usa descoberta automática completa
+
+**Resultado:**
+- ✅ 10 widgets aparecem para ROOT (todos exceto EmployeeInfoWidget e WorklogSummaryWidget)
+- ✅ Filtrados automaticamente durante render time (não init time)
+- ✅ Sem cache issues; comportamento previsível
+- ✅ HR vê widgets apropriados em /hr painel
+- ✅ Employee vê apenas 2 widgets específicos em /employee painel
+
+---
 
 #### 2026-01-20: Padronização de Senha Padrão 🔐
 
@@ -104,8 +164,32 @@ A aplicação **PAP** (Personnel & Attendance Platform) é um sistema de gestão
 ```
 
 **Widgets por Painel:**
-- App/Admin/HR: StatsOverview, ContractsChart, TimeoffsChart
-- Employee: EmployeeInfoWidget, AverageHoursWidget, WorklogSummaryWidget, HoursbankHistoryWidget, LicenseInformationWidget
+- App/Admin/HR: Auto-discover com WidgetVisibility trait (10 widgets visíveis dependendo role)
+- Employee: 2 widgets exclusivos (EmployeeInfoWidget, WorklogSummaryWidget)
+- Filament Internos: AccountWidget, FilamentInfoWidget
+
+**Filtro por Role (WidgetVisibility Trait):**
+```
+ROOT:
+├─ Vê todos 10 widgets (exceto employee-exclusive)
+├─ Todos os dados globais
+└─ Acesso /admin, /app, /hr
+
+ADMIN:
+├─ Vê 10 widgets (exceto employee-exclusive)
+├─ Dados de gestão completa
+└─ Acesso /admin, /app
+
+HR:
+├─ Vê 5 widgets (3 charts + AverageHours + HoursbankHistory)
+├─ Dados de RH apenas
+└─ Acesso /app, /hr
+
+EMPLOYEE:
+├─ Vê 2 widgets (EmployeeInfo, WorklogSummary)
+├─ Dados pessoais apenas
+└─ Acesso /employee
+```
 
 **Resultado:** Painéis acessíveis conforme role; UI consistente; sem erros de Vite
 
@@ -284,6 +368,7 @@ app/
 ├── Services/
 │   └── Access.php (controlo de permissões)
 └── Traits/
+    ├── WidgetVisibility.php (controle de visibilidade de widgets)
     ├── NotifiesCreatedItems.php
     ├── NotifiesUpdatedItems.php
     ├── SuppressesDefaultFilamentNotifications.php
@@ -531,104 +616,190 @@ RedirectAuthenticatedFromLogin
 
 ### 📋 Resumo Executivo
 
-O dashboard do employee foi completamente revisado em **21/01/2026** com a adição de **5 widgets personalizados** que mostram métricas relacionadas a horas trabalhadas, banco de horas, histórico de ponto, informações do funcionário e solicitações de licenças.
+O dashboard do employee foi completamente revisado com implementação de **sistema de visibilidade de widgets baseado em traits**. A descoberta automática de widgets utiliza `WidgetVisibility` trait para filtrar dinamicamente baseado no role do usuário.
 
-**Alteração Principal:** Remoção de métricas globais do dashboard employee, mantendo apenas widgets específicos do funcionário. Métricas globais (StatsOverview, ContractsChart, TimeoffsChart) agora visíveis apenas para HR/Admin/Root.
+**Alteração Principal:** Implementação de `WidgetVisibility` trait que centraliza controle de acesso. Cada widget define seus `allowedRoles()`, e Filament filtra automaticamente durante render time.
+
+**Data da Revisão:** 29 de Janeiro de 2026
 
 ---
 
-### 🆕 Widgets Personalizados Criados (5)
+### 🎯 Sistema de Visibilidade (WidgetVisibility Trait)
 
-#### 1. **AverageHoursWidget** ⏱️
+**Arquivo:** `app/Filament/Traits/WidgetVisibility.php`
 
-**Localização:** `app/Filament/Widgets/AverageHoursWidget.php`  
+**Funcionalidade:**
+```php
+trait WidgetVisibility
+{
+    // Define quais roles podem ver este widget
+    protected static function allowedRoles(): array {
+        return [UserRole::ROOT, UserRole::ADMIN];
+    }
+
+    // Verifica se usuário atual pode visualizar
+    public static function canView(): bool {
+        $user = Auth::user();
+        if (!$user) return false;
+        
+        $allowedRoles = static::allowedRoles();
+        if (empty($allowedRoles)) return true;
+        
+        // Suporta enum ou string
+        $userRole = $user->role instanceof UserRole 
+            ? $user->role 
+            : UserRole::tryFrom($user->role);
+        
+        return in_array($userRole, $allowedRoles, strict: true);
+    }
+}
+```
+
+**Integração:**
+- Todos os 12 widgets implementam a trait
+- Filament chama `canView()` durante rendering (render time)
+- Não mais em initialization time (evita Auth::user() = null)
+
+---
+
+### 🎨 Widgets Implementados (12 total)
+
+---
+
+### 🆕 Widgets Globais (10) - Visíveis conforme Role
+
+#### 1. **StatsOverview** 📊
+**Roles:** ROOT, ADMIN  
+**Tipo:** StatsOverviewWidget (4 cards)  
+**Localização:** Header do Dashboard
+
+**Cards:**
+- Total de Usuários
+- Total de Funcionários
+- Contratos Ativos
+- Férias Pendentes
+
+---
+
+#### 2. **DashboardOverviewWidget** 📈
+**Roles:** ROOT, ADMIN  
+**Tipo:** Widget customizado  
+**Localização:** Dashboard
+
+---
+
+#### 3. **RecentAuditLogsWidget** 📋
+**Roles:** ROOT, ADMIN  
+**Tipo:** Widget customizado  
+**Localização:** Dashboard
+
+---
+
+#### 4. **LicenseInformationWidget** 📜
+**Roles:** ROOT, ADMIN  
 **Tipo:** StatsOverviewWidget (3 cards)  
-**Posição:** Header do Dashboard
+**Localização:** Dashboard
 
-**Funcionalidades:**
-- Média de horas trabalhadas no mês atual
-- Média de horas dos últimos 30 dias
-- Total de horas extras do mês atual
-
-**Cores:**
-- Verde (#10b981): Horas normais
-- Azul (#3b82f6): Média 30 dias
-- Âmbar (#f59e0b): Horas extras
+**Cards:**
+- Total de Licenças
+- Pendentes
+- Aprovadas
 
 ---
 
-#### 2. **HoursbankHistoryWidget** 📊
+#### 5. **ContractsChart** 📊
+**Roles:** ROOT, ADMIN, HR  
+**Tipo:** ChartWidget (Gráfico de barras)  
+**Localização:** Dashboard
 
-**Localização:** `app/Filament/Widgets/HoursbankHistoryWidget.php`  
-**Tipo:** ChartWidget (Gráfico de Linhas)  
-**Posição:** Footer do Dashboard
-
-**Funcionalidades:**
-- Visualização histórica de horas nos últimos 30 dias
-- Dados agrupados por semana (YYYY-WW format)
-- Comparação: Horas Normais (verde) vs Horas Extras (âmbar)
-- Gráfico interativo com Chart.js
+**Dados:**
+- Contratos agrupados por tipo
+- Visualização comparativa
 
 ---
 
-#### 3. **EmployeeInfoWidget** 👤
+#### 6. **DepartmentDistributionChart** 🏢
+**Roles:** ROOT, ADMIN, HR  
+**Tipo:** ChartWidget (Gráfico de rosca)  
+**Localização:** Dashboard
 
-**Localização:** `app/Filament/Widgets/EmployeeInfoWidget.php`  
+**Dados:**
+- Distribuição de funcionários por departamento
+
+---
+
+#### 7. **TimeoffsChart** 📅
+**Roles:** ROOT, ADMIN, HR  
+**Tipo:** ChartWidget (Gráfico de rosca)  
+**Localização:** Dashboard
+
+**Dados:**
+- Status de férias (Pendente, Aprovado, Recusado)
+
+---
+
+#### 8. **WeeklyWorklogChart** 📈
+**Roles:** ROOT, ADMIN, HR, EMPLOYEE  
+**Tipo:** ChartWidget (Gráfico de linhas)  
+**Localização:** Dashboard
+
+**Dados:**
+- Horas trabalhadas última semana
+- Horas extras
+
+---
+
+#### 9. **AverageHoursWidget** ⏱️
+**Roles:** ROOT, ADMIN, HR, EMPLOYEE  
+**Tipo:** StatsOverviewWidget (3 cards)  
+**Localização:** Header
+
+**Cards:**
+- Média de horas (mês)
+- Média de horas (30 dias)
+- Horas extras (mês)
+
+---
+
+#### 10. **HoursbankHistoryWidget** 🏦
+**Roles:** ROOT, ADMIN, HR, EMPLOYEE  
+**Tipo:** ChartWidget (Gráfico de linhas)  
+**Localização:** Footer
+
+**Dados:**
+- Histórico 30 dias
+- Horas normais vs extras
+- Agrupado por semana
+
+---
+
+### 👤 Widgets Exclusivos de Employee (2)
+
+#### 11. **EmployeeInfoWidget** 👤
+**Roles:** EMPLOYEE apenas  
 **Tipo:** Widget customizado com view Blade  
-**Posição:** Header do Dashboard  
+**Localização:** Header do Dashboard  
 **View:** `resources/views/filament/widgets/employee-info-widget.blade.php`
 
-**Funcionalidades:**
-- Dados pessoais: nome, email, departamento, cargo
-- Estatísticas de horas:
-  - Total de horas trabalhadas (historicamente)
-  - Total de horas extras
-  - Saldo atual do banco de horas
-- Grid layout responsivo (1 coluna mobile, 2 colunas desktop)
+**Dados:**
+- Informações pessoais: nome, email, departamento, cargo
+- Estatísticas: Total horas, Extras, Saldo banco de horas
+- Grid responsivo
 
 ---
 
-#### 4. **WorklogSummaryWidget** 📋
-
-**Localização:** `app/Filament/Widgets/WorklogSummaryWidget.php`  
+#### 12. **WorklogSummaryWidget** 📋
+**Roles:** EMPLOYEE apenas  
 **Tipo:** Widget customizado com view Blade  
-**Posição:** Footer do Dashboard  
+**Localização:** Footer do Dashboard  
 **View:** `resources/views/filament/widgets/worklog-summary-widget.blade.php`
 
-**Funcionalidades:**
-- Estatísticas do mês atual (3 cards):
-  - Dias trabalhados
-  - Total de horas
-  - Horas extras
-- Tabela dos últimos 10 registros de ponto
-- Informações: data, dia da semana, hora entrada, saída, horas, extras
-- Formatação em Português
-- Hover effects e design responsivo
+**Dados:**
+- 3 Cards: Dias trabalhados, Total horas, Horas extras (mês)
+- Tabela: Últimos 10 registros de ponto
+- Formatação: data, dia semana, entrada, saída, horas
 
 ---
-
-#### 5. **LicenseInformationWidget** 📜
-
-**Localização:** `app/Filament/Widgets/LicenseInformationWidget.php`  
-**Tipo:** StatsOverviewWidget  
-**Posição:** Footer do Dashboard  
-**View:** `resources/views/filament/widgets/license-information-widget.blade.php`
-
-**Funcionalidades:**
-- 3 cards de estatísticas:
-  - Total de solicitações de licença
-  - Licenças aguardando análise (pending)
-  - Licenças aprovadas
-- Informações sobre tipos de licenças:
-  - Médica/Recuperação
-  - Parental/Maternidade
-  - Sem Vencimento
-  - Especial
-- Design visual com gradientes
-
----
-
-### 📁 Arquivos Criados (8 novos)
 
 **Widgets (5):**
 ```
@@ -1141,7 +1312,16 @@ php artisan test --filter=EmployeePolicy
 
 **Aplicação:** ✅ **Estável e Pronto para Produção**
 
-**Última Atualização:** 21 de Janeiro de 2026  
-**Versão:** 1.0  
+**Última Atualização:** 29 de Janeiro de 2026  
+**Versão:** 1.1 (Refatoração de Widgets)  
 **Branch:** dev  
-**Commit:** 349e989
+
+**Mudanças Recentes:**
+- ✅ WidgetVisibility trait implementada
+- ✅ Panel providers refatorados (auto-discovery)
+- ✅ 12 widgets configurados com roles
+- ✅ Contract model scope active() adicionado
+- ✅ HTTP 500 e erros de sintaxe resolvidos
+
+**Documentação:**
+- Ver [WIDGET_VISIBILITY_RECENT_CHANGES.md](WIDGET_VISIBILITY_RECENT_CHANGES.md) para detalhes técnicos completos
