@@ -9,8 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Hash;
 use App\Enums\UserRole;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
@@ -102,6 +104,20 @@ class User extends Authenticatable
     public function hasPrivilegeOf(UserRole $role): bool
     {
         return $this->role->hasPrivilegeOf($role);
+    }
+
+    /**
+     * Determine whether the user can access the given Filament panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return match ($panel->getId()) {
+            'admin' => $this->isAdmin() || $this->isRoot(),
+            'hr' => $this->isHr() || $this->isAdmin() || $this->isRoot(),
+            'employee' => $this->isEmployee(),
+            'app' => true,
+            default => false,
+        };
     }
 
     // RELACIONAMENTOS - Define as relações com outras entidades

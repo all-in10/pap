@@ -24,6 +24,10 @@ class RedirectAuthenticatedFromLogin
                 return redirect()->to('/employee');
             }
 
+            if ($user->role === UserRole::HR) {
+                return redirect()->to('/hr');
+            }
+
             if ($user->role === UserRole::ADMIN || $user->role === UserRole::ROOT) {
                 return redirect()->to('/admin');
             }

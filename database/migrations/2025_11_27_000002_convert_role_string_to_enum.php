@@ -36,6 +36,10 @@ SQL
             DB::statement("ALTER TABLE users ALTER COLUMN role SET DEFAULT 'employee'::user_role");
         } else {
             // Fallback: try to alter to a VARCHAR that matches expected values (no-op for many drivers)
+            // SQLite (used in tests) does not support ALTER COLUMN — skip the conversion to avoid test failures.
+            if ($driver === 'sqlite' || $driver === 'sqlite3') {
+                return;
+            }
             DB::statement("ALTER TABLE users ALTER COLUMN role TYPE varchar(50)");
         }
     }
@@ -59,6 +63,10 @@ SQL
             DB::statement("DROP TYPE IF EXISTS user_role");
         } else {
             // Best-effort fallback
+            // SQLite (used in tests) does not support ALTER COLUMN — skip the conversion to avoid test failures.
+            if ($driver === 'sqlite' || $driver === 'sqlite3') {
+                return;
+            }
             DB::statement("ALTER TABLE users ALTER COLUMN role TYPE varchar(50)");
         }
     }

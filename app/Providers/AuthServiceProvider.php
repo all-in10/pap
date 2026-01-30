@@ -39,6 +39,39 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // Ensure users are redirected to their portal after login when no other intended URL is set
+        // Listens to the Login event and sets the `url.intended` session key accordingly.
+        \Illuminate\Support\Facades\Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
+            $user = $event->user;
+
+            // Respect an existing intended URL (user may have been trying to access a specific page)
+            $intended = session()->get('url.intended');
+            $path = $intended ? parse_url($intended, PHP_URL_PATH) : null;
+
+            // Only override intended if there's no intended path or it's pointing to the generic / or /app
+            if ($path && $path !== '/' && strpos($path, '/app') !== 0) {
+                return;
+            }
+
+            if ($user->isEmployee()) {
+                session()->put('url.intended', url('/employee'));
+                return;
+            }
+
+            if ($user->isAdmin() || $user->isRoot()) {
+                session()->put('url.intended', url('/admin'));
+                return;
+            }
+
+            if ($user->isHr()) {
+                session()->put('url.intended', url('/hr'));
+                return;
+            }
+
+            // Fallback to the generic app panel
+            session()->put('url.intended', url('/app'));
+        });
+
         // Define gates for role-based access
         Gate::define('manage-worklogs', function (User $user) {
             return $user->isHr() || $user->isAdmin() || $user->isRoot();
