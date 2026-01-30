@@ -23,7 +23,7 @@ class HoursbankHistoryWidget extends ChartWidget
             UserRole::ROOT,
             UserRole::ADMIN,
             UserRole::EMPLOYEE,
-            UserRole::HR,
+            //UserRole::HR,
         ];
     }
 

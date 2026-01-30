@@ -20,7 +20,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Pages\Settings;
 use App\Http\Middleware\ForcePasswordChange;
-use App\Http\Middleware\EnsureAdminPanelAccess;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -32,11 +31,11 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
+            ->default(false)
 
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(false)
             ->brandLogo(asset('Background@3x.svg'))
             ->colors([
                 'primary' => '#582f0e',
@@ -82,7 +81,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureAdminPanelAccess::class,
+                'role:admin,root',
             ]);
     }
 }

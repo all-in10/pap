@@ -20,7 +20,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Pages\Settings;
 use App\Http\Middleware\ForcePasswordChange;
-use App\Http\Middleware\EnsureHrPanelAccess;
 
 class HrPanelProvider extends PanelProvider
 {
@@ -29,7 +28,7 @@ class HrPanelProvider extends PanelProvider
         return $panel
             ->id('hr')
             ->path('hr')
-            ->login()
+            ->login(false) // Sem login próprio - usar AppPanel
             ->brandLogo(asset('Background@3x.svg'))
             ->colors([
                 'primary' => '#582f0e',
@@ -75,7 +74,7 @@ class HrPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureHrPanelAccess::class,
+                'role:hr,admin,root',
             ]);
     }
 }

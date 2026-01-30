@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\ForcePasswordChange::class,
-            \App\Http\Middleware\RedirectAuthenticatedFromLogin::class,
+            \App\Http\Middleware\CentralizedRedirectHandler::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

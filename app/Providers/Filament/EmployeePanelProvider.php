@@ -18,7 +18,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\ForcePasswordChange;
-use App\Http\Middleware\EnsureEmployeePanelAccess;
 use App\Filament\Pages\Settings;
 
 class EmployeePanelProvider extends PanelProvider
@@ -28,7 +27,7 @@ class EmployeePanelProvider extends PanelProvider
         return $panel
             ->id('employee')
             ->path('employee')
-            ->login()
+            ->login(false) // Sem login próprio - usar AppPanel
             ->brandLogo(asset('Background@3x.svg'))
             ->colors([
                 'primary' => '#582f0e',
@@ -72,7 +71,7 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureEmployeePanelAccess::class,
+                'role:employee,hr,admin,root',
             ]);
     }
 }

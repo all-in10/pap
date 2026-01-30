@@ -30,7 +30,7 @@ class AppPanelProvider extends PanelProvider
             
             ->id('app')
             ->path('app')
-            ->login()
+            ->login() // Login único para toda a aplicação - distribuidor central
             ->brandLogo(asset('Background@3x.svg'))
             ->colors([
                 'primary' => '#582f0e',
@@ -54,7 +54,6 @@ class AppPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                \App\Filament\Admin\Pages\Dashboard::class,
                 \App\Filament\Pages\ChangePassword::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')

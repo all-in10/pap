@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use App\Events\TimeoffApproved;
 use App\Events\TimeoffRejected;
@@ -11,6 +12,7 @@ use App\Events\ContractExpiringReminder;
 use App\Listeners\CreateTimeoffApprovedNotification;
 use App\Listeners\CreateTimeoffRejectedNotification;
 use App\Listeners\SendContractExpiringReminder;
+use App\Listeners\RedirectUserAfterLogin;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        Login::class => [
+            RedirectUserAfterLogin::class,
         ],
         TimeoffApproved::class => [
             CreateTimeoffApprovedNotification::class,

@@ -54,7 +54,7 @@
                             <span>
                                 Se é
                                 <strong>Funcionário</strong>, aceda a
-                                <a href="{{ route('filament.employee.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                <a href="/app/login" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>seu painel pessoal</span>
                                 </a>
                             </span>
@@ -68,7 +68,7 @@
                             <span>
                                 Se é
                                 <strong>Administrador</strong>, aceda ao
-                                <a href="{{ route('filament.admin.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                <a href="/app/login" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>painel de administração</span>
                                 </a>
                             </span>
