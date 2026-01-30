@@ -13,7 +13,7 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                     Solicite férias ou justifique uma ausência do trabalho.
                 </p>
-                <a href="{{ route('filament.admin.resources.timeoffs.create') }}" class="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-green-700 transition-colors">
+                <a href="{{ \App\Filament\Resources\TimeoffResource::getUrl('create', [], true, 'employee') }}" class="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-green-700 transition-colors">
                     Nova Solicitação
                 </a>
             </div>
@@ -29,7 +29,7 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
                     Solicite licença médica, parental ou especial.
                 </p>
-                <a href="{{ route('filament.admin.resources.timeoffs.create') }}" class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-blue-700 transition-colors">
+                <a href="{{ \App\Filament\Resources\TimeoffResource::getUrl('create', [], true, 'employee') }}" class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-blue-700 transition-colors">
                     Nova Solicitação
                 </a>
             </div>

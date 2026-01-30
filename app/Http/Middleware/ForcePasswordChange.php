@@ -21,7 +21,14 @@ class ForcePasswordChange
         }
 
         // Skip for logout, login, and API routes
-        if ($request->is('admin/logout', 'admin/login', 'api/*')) {
+        if ($request->is(
+            'admin/logout',
+            'admin/login',
+            'employee/login',
+            'hr/login',
+            'app/login',
+            'api/*'
+        )) {
             return $next($request);
         }
 

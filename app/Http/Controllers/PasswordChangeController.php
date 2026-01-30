@@ -37,7 +37,18 @@ class PasswordChangeController extends Controller
             ]);
         }
 
-        return redirect('/app')
-            ->with('success', 'Password changed successfully!');
+        // Redirect to the appropriate panel after password change
+        if ($user) {
+            $destination = match ($user->role) {
+                \App\Enums\UserRole::EMPLOYEE => redirect('/employee'),
+                \App\Enums\UserRole::HR => redirect('/hr'),
+                \App\Enums\UserRole::ADMIN, \App\Enums\UserRole::ROOT => redirect('/admin'),
+                default => redirect('/'),
+            };
+
+            return $destination->with('success', 'Password changed successfully!');
+        }
+
+        return redirect('/')->with('success', 'Password changed successfully!');
     }
 }

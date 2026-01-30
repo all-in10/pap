@@ -19,13 +19,23 @@ class RedirectAuthenticatedFromLogin
         $user = Auth::user();
 
         // If the user is authenticated and is requesting the login page(s), redirect to panel
-        if ($request->is('login') || $request->is('admin/login') || $request->is('employee/login')) {
+        if (
+            $request->is('login') ||
+            $request->is('app/login') ||
+            $request->is('admin/login') ||
+            $request->is('employee/login') ||
+            $request->is('hr/login')
+        ) {
             if ($user->role === UserRole::EMPLOYEE) {
                 return redirect()->to('/employee');
             }
 
             if ($user->role === UserRole::ADMIN || $user->role === UserRole::ROOT) {
                 return redirect()->to('/admin');
+            }
+
+            if ($user->role === UserRole::HR) {
+                return redirect()->to('/hr');
             }
         }
 

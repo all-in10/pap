@@ -26,6 +26,7 @@ class EmployeePanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->default()
             ->id('employee')
             ->path('employee')
             ->login()
@@ -49,11 +50,14 @@ class EmployeePanelProvider extends PanelProvider
                     ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->favicon(asset('favicon.svg'))
+            // Discover resources and widgets so panel has the same resources available as the Admin panel
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->pages([
-                \App\Filament\Pages\ChangePassword::class,
                 \App\Filament\Pages\EmployeeDashboard::class,
+                \App\Filament\Pages\ChangePassword::class,
                 \App\Filament\Pages\Settings::class,
             ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
             ])->middleware([

@@ -16,10 +16,10 @@
         <h1 class="text-2xl font-medium mb-6 text-center">Entrar no Sistema</h1>
         <p class="text-sm text-[#706f6c] dark:text-[#A1A09A] mb-6 text-center">Selecione seu papel para acessar o painel correspondente.</p>
         <div class="space-y-4">
-            <a href="{{ route('filament.employee.auth.login') }}" class="block w-full px-5 py-3 bg-[#1b1b18] dark:bg-[#eeeeec] dark:text-[#1C1C1A] text-white rounded-sm text-center hover:bg-black dark:hover:bg-white transition">
+            <a href="{{ Route::has('filament.employee.auth.login') ? route('filament.employee.auth.login') : url('/employee/login') }}" class="block w-full px-5 py-3 bg-[#1b1b18] dark:bg-[#eeeeec] dark:text-[#1C1C1A] text-white rounded-sm text-center hover:bg-black dark:hover:bg-white transition">
                 Entrar como Funcionário
             </a>
-            <a href="{{ route('filament.admin.auth.login') }}" class="block w-full px-5 py-3 bg-[#1b1b18] dark:bg-[#eeeeec] dark:text-[#1C1C1A] text-white rounded-sm text-center hover:bg-black dark:hover:bg-white transition">
+            <a href="{{ Route::has('filament.admin.auth.login') ? route('filament.admin.auth.login') : url('/admin/login') }}" class="block w-full px-5 py-3 bg-[#1b1b18] dark:bg-[#eeeeec] dark:text-[#1C1C1A] text-white rounded-sm text-center hover:bg-black dark:hover:bg-white transition">
                 Entrar como Administrador
             </a>
         </div>

@@ -24,13 +24,13 @@
             <nav class="flex items-center justify-end gap-4">
                 @auth
                     <a
-                        href="{{ route('filament.admin.pages.dashboard') }}"
+                        href="{{ Route::has('filament.admin.pages.dashboard') ? route('filament.admin.pages.dashboard') : url('/admin') }}"
                         class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
                     >
                         Painel Admin
                     </a>
                     <a
-                        href="{{ route('filament.employee.pages.dashboard') }}"
+                        href="{{ Route::has('filament.employee.pages.dashboard') ? route('filament.employee.pages.dashboard') : url('/employee') }}"
                         class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
                     >
                         Painel de Funcionário
@@ -60,7 +60,7 @@
                             <span>
                                 Se é
                                 <strong>Funcionário</strong>, aceda a
-                                <a href="{{ route('filament.employee.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                <a href="{{ Route::has('filament.employee.auth.login') ? route('filament.employee.auth.login') : url('/employee/login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>seu painel pessoal</span>
                                 </a>
                             </span>
@@ -74,7 +74,7 @@
                             <span>
                                 Se é
                                 <strong>Administrador</strong>, aceda ao
-                                <a href="{{ route('filament.admin.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                <a href="{{ Route::has('filament.admin.auth.login') ? route('filament.admin.auth.login') : url('/admin/login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>painel de administração</span>
                                 </a>
                             </span>

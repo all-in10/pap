@@ -13,9 +13,12 @@ class EmployeeDashboard extends Page
 {
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    //protected static ?string $navigationLabel = 'Dashboard';
-    //protected static ?string $navigationGroup = 'Dashboard';
+    protected static ?string $navigationLabel = 'Dashboard';
+    protected static ?string $navigationGroup = 'Dashboard';
     protected static string $view = 'filament.pages.employee-dashboard';
+    // Register this page at the panel root so it is accessible directly at /employee
+    // Setting this to '/' registers the page at the panel root (resulting URL: /employee)
+    protected static ?string $slug = '/';
     protected static bool $shouldRegisterNavigation = true;
 
     protected function getHeaderWidgets(): array
