@@ -6,7 +6,7 @@ use Filament\Pages\Dashboard as BaseDashboard;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\ContractsChart;
 use App\Filament\Widgets\TimeoffsChart;
-
+use App\Filament\Widgets\PendingTimeoffs;
 class Dashboard extends BaseDashboard
 {
     protected static ?string $navigationIcon = 'heroicon-o-home';
@@ -16,6 +16,7 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
+            PendingTimeoffs::class,
             StatsOverview::class,
             ContractsChart::class,
             TimeoffsChart::class,
@@ -24,6 +25,6 @@ class Dashboard extends BaseDashboard
 
     public function getColumns(): int | string | array
     {
-        return 2;
+        return 3;
     }
 }

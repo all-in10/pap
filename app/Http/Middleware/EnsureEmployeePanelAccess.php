@@ -22,6 +22,14 @@ class EnsureEmployeePanelAccess
             return $next($request);
         }
 
+        // Log and audit denied access
+        \Illuminate\Support\Facades\Log::warning('Unauthorized employee panel access attempt', ['user_id' => $user->id ?? null, 'path' => $request->path()]);
+        try {
+            \App\Services\Audit::recordPanelAccessDenied($request, $user);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to persist audit log for panel access denied: ' . $e->getMessage(), ['exception' => $e]);
+        }
+
         // If not employee, redirect to admin panel
         return redirect('/admin');
     }

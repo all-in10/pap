@@ -77,7 +77,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureAdminPanelAccess::class,
+                \App\Http\Middleware\EnsureAdminPanelAccess::class,
             ]);
             
     }

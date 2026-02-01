@@ -7,6 +7,15 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ## Registo de Alterações
 
+- **2026-02-01**: Correção de aviso Intelephense, melhorias do fluxo de login e ajustes em providers/tests.
+  - Corrigido o aviso Intelephense P1013 "Undefined method 'user'" em `AuditLogResource`.
+  - Adicionada a importação `use Illuminate\Support\Facades\Auth;` e substituído `auth()->user()` por `Auth::user()` em `app/Filament/Resources/AuditLogResource.php` para resolver o diagnóstico de análise estática.
+  - Implementado fallback de redirecionamento de login: agora o controlador de autenticação descarta `url.intended` quando aponta para um painel que não corresponde ao role do usuário e garante redirecionamento ao `panelPath()` do usuário.
+  - Adicionado `panelPath()` em `app/Models/User.php` para centralizar destinos por role e remediar erros de análise estática relacionados.
+  - Corrigida referência da `EmployeeDashboard` em `app/Providers/Filament/EmployeePanelProvider.php` e removidos argumentos nomeados incompatíveis com o analisador; isso resolve avisos e previne rotas quebradas do painel de funcionários.
+  - Adicionados testes de feature (`tests/Feature/LoginRedirectsToRolePanelTest.php`) cobrindo fallback de painel e preservação de URLs intended não-panel.
+  - Recomenda-se reindexar o servidor de linguagem (Intelephense) se os avisos persistirem após atualizar o código.
+
 - **2026-01-20**: Padronização de senha padrão para usuários.
   - Adicionado evento `creating` no modelo `User` para definir senha padrão "passexemplo123" (hasheada) e `must_change_password = true` quando a senha não for fornecida na criação.
   - Atualizado `UserFactory` para usar a mesma senha padrão e flag de mudança obrigatória.

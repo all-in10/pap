@@ -28,6 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         Employee::class => EmployeePolicy::class,
         Worklog::class => WorklogPolicy::class,
         User::class => UserPolicy::class,
+        \App\Models\AuditLog::class => \App\Policies\AuditLogPolicy::class,
     ];
 
     public function register(): void

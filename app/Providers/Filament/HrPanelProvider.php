@@ -75,7 +75,7 @@ class HrPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureHrPanelAccess::class,
+                \App\Http\Middleware\EnsureHrPanelAccess::class,
             ]);
             
     }

@@ -49,9 +49,8 @@ class EmployeePanelProvider extends PanelProvider
                     ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->favicon(asset('favicon.svg'))
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverPages(app_path('Filament/Pages'), 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
                 \App\Filament\Pages\EmployeeDashboard::class,
             ])
             ->middleware([
@@ -68,7 +67,7 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureEmployeePanelAccess::class,
+                \App\Http\Middleware\EnsureEmployeePanelAccess::class,
             ]);
     }
 }

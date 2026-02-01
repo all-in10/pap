@@ -46,5 +46,27 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->bound('router')) {
             $this->app->router->aliasMiddleware('role', \App\Http\Middleware\EnsureRole::class);
         }
+
+        // Global Eloquent listeners to record audit events for create/update/delete
+        \Illuminate\Database\Eloquent\Model::created(function ($model) {
+            if ($model instanceof \App\Models\AuditLog) {
+                return;
+            }
+            \App\Services\Audit::recordModelEvent('created', $model);
+        });
+
+        \Illuminate\Database\Eloquent\Model::updated(function ($model) {
+            if ($model instanceof \App\Models\AuditLog) {
+                return;
+            }
+            \App\Services\Audit::recordModelEvent('updated', $model);
+        });
+
+        \Illuminate\Database\Eloquent\Model::deleted(function ($model) {
+            if ($model instanceof \App\Models\AuditLog) {
+                return;
+            }
+            \App\Services\Audit::recordModelEvent('deleted', $model);
+        });
     }
 }

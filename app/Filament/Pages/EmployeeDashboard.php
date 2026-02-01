@@ -19,6 +19,7 @@ class EmployeeDashboard extends Page implements HasForms
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $slug = 'dashboard';
     protected static string $view = 'filament.pages.employee-dashboard';
     protected static bool $shouldRegisterNavigation = false;
 
