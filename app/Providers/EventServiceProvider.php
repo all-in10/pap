@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Providers;
+
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Auth\Events\Login;
+use App\Listeners\EnforceIntendedPanelOnLogin;
+
+class EventServiceProvider extends ServiceProvider
+{
+    protected $listen = [
+        Login::class => [
+            EnforceIntendedPanelOnLogin::class,
+        ],
+    ];
+
+    public function boot(): void
+    {
+        parent::boot();
+    }
+}

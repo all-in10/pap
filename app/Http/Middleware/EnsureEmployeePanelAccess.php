@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\UserRole;
+use App\Models\User; // for Intelephense type hints
 
 class EnsureEmployeePanelAccess
 {
@@ -15,6 +16,7 @@ class EnsureEmployeePanelAccess
             return redirect('/employee/login');
         }
 
+        /** @var User|null $user */
         $user = Auth::user();
 
         // Only allow employees to access the employee panel
@@ -30,7 +32,7 @@ class EnsureEmployeePanelAccess
             \Illuminate\Support\Facades\Log::error('Failed to persist audit log for panel access denied: ' . $e->getMessage(), ['exception' => $e]);
         }
 
-        // If not employee, redirect to admin panel
-        return redirect('/admin');
+        // If not employee, redirect to the user's own panel
+        return redirect($user->panelPath());
     }
 }

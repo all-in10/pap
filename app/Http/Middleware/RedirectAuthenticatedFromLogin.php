@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Enums\UserRole;
+use App\Models\User; // for Intelephense type hints
 
 class RedirectAuthenticatedFromLogin
 {
@@ -16,21 +17,13 @@ class RedirectAuthenticatedFromLogin
             return $next($request);
         }
 
+        /** @var User|null $user */
         $user = Auth::user();
 
-        // If the user is authenticated and is requesting the login page(s), redirect to panel
-        if ($request->is('login') || $request->is('admin/login') || $request->is('employee/login') || $request->is('hr/login')) {
-            if ($user->role === UserRole::EMPLOYEE) {
-                return redirect()->to('/employee');
-            }
-
-            if ($user->role === UserRole::HR) {
-                return redirect()->to('/hr');
-            }
-
-            if ($user->role === UserRole::ADMIN || $user->role === UserRole::ROOT) {
-                return redirect()->to('/admin');
-            }
+        // If the user is authenticated and is requesting any login page(s), redirect to the user's panel
+        if ($request->is('login') || $request->is('admin/login') || $request->is('employee/login') || $request->is('hr/login') || $request->is('app/login')) {
+            // Delegate decision to User::panelPath() to avoid mismatches and keep a single source of truth
+            return redirect()->to($user->panelPath());
         }
 
         return $next($request);

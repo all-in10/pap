@@ -16,10 +16,10 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            PendingTimeoffs::class,
             StatsOverview::class,
-            ContractsChart::class,
+            PendingTimeoffs::class,
             TimeoffsChart::class,
+            ContractsChart::class,
         ];
     }
 

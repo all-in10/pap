@@ -7,14 +7,18 @@ Este documento resume o processo de desenvolvimento, decisões arquitetónicas e
 
 ## Registo de Alterações
 
-- **2026-02-01**: Correção de aviso Intelephense, melhorias do fluxo de login e ajustes em providers/tests.
-  - Corrigido o aviso Intelephense P1013 "Undefined method 'user'" em `AuditLogResource`.
+- **2026-02-01**: Correção de aviso Intelephense, reforço do fluxo de login e políticas de acesso a painéis.
+  - Corrigido o aviso Intelephense P1013 "Undefined method 'user'" em `AuditLogResource` (tipagem e assinatura `Tables\Table`).
   - Adicionada a importação `use Illuminate\Support\Facades\Auth;` e substituído `auth()->user()` por `Auth::user()` em `app/Filament/Resources/AuditLogResource.php` para resolver o diagnóstico de análise estática.
-  - Implementado fallback de redirecionamento de login: agora o controlador de autenticação descarta `url.intended` quando aponta para um painel que não corresponde ao role do usuário e garante redirecionamento ao `panelPath()` do usuário.
+  - Implementado fallback de redirecionamento de login: o `AuthController` descarta `url.intended` quando aponta para um painel que não corresponde ao role do usuário e redireciona de forma segura para `panelPath()`.
   - Adicionado `panelPath()` em `app/Models/User.php` para centralizar destinos por role e remediar erros de análise estática relacionados.
-  - Corrigida referência da `EmployeeDashboard` em `app/Providers/Filament/EmployeePanelProvider.php` e removidos argumentos nomeados incompatíveis com o analisador; isso resolve avisos e previne rotas quebradas do painel de funcionários.
-  - Adicionados testes de feature (`tests/Feature/LoginRedirectsToRolePanelTest.php`) cobrindo fallback de painel e preservação de URLs intended não-panel.
-  - Recomenda-se reindexar o servidor de linguagem (Intelephense) se os avisos persistirem após atualizar o código.
+  - Criado listener `EnforceIntendedPanelOnLogin` (registrado em `EventServiceProvider`) que intercepta o evento `Login` e substitui o `url.intended` quando aponta para um painel que não corresponde ao role do usuário — isso cobre logins via Filament e outras rotas de forma uniforme.
+  - Refatorado middleware `RedirectAuthenticatedFromLogin` para sempre redirecionar autenticados diretamente para `$user->panelPath()` (melhora consistência e evita redirecionamentos erróneos).
+  - Ajustados middlewares `EnsureAdminPanelAccess`, `EnsureHrPanelAccess` e `EnsureEmployeePanelAccess` para usarem `panelPath()` como destino de fallback e registar tentativas negadas no sistema de auditoria (`Audit::recordPanelAccessDenied`).
+  - Adicionados testes de integração (`tests/Feature/PanelAccessTest.php`) cobrindo cenários críticos: HR não acede ao admin, admin não acede ao employee, e override do `url.intended` no login.
+  - Atualizado `bootstrap/providers.php` para registar `EventServiceProvider` e garantir que o listener de login esteja activo.
+  - Recomenda-se reindexar o servidor de linguagem (Intelephense) e executar a suíte de testes (pest) para validar todas as mudanças.
+
 
 - **2026-01-20**: Padronização de senha padrão para usuários.
   - Adicionado evento `creating` no modelo `User` para definir senha padrão "passexemplo123" (hasheada) e `must_change_password = true` quando a senha não for fornecida na criação.

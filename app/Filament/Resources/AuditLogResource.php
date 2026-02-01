@@ -44,7 +44,6 @@ class AuditLogResource extends Resource
                     ->formatStateUsing(function ($state, \App\Models\AuditLog $record) {
                         return $record->user?->email ?? '-';
                     }),
-                Tables\Columns\TextColumn::make('auditable_type')->label('Tipo'),
                 Tables\Columns\TextColumn::make('url')->label('URL')->limit(50)->toggleable(true),
                 Tables\Columns\TextColumn::make('created_at')->label('Criado')->dateTime()->sortable(),
             ])

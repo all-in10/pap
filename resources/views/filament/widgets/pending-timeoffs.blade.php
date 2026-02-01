@@ -41,7 +41,16 @@ $pending = $this->getPending();
                                                 @csrf
                                                 <button class="inline-flex items-center px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-500" type="submit">Rejeitar</button>
                                             </form>
-                                            <a href="{{ \App\Filament\Resources\TimeoffResource::getUrl('edit', ['record' => $timeoff]) }}" class="inline-flex items-center px-3 py-1 text-xs text-gray-700 hover:underline">Ver</a>
+                                            @php
+                                                try {
+                                                    $editUrl = \App\Filament\Resources\TimeoffResource::getUrl('edit', ['record' => $timeoff]);
+                                                } catch (\Throwable $e) {
+                                                    $editUrl = null;
+                                                }
+                                            @endphp
+                                            @if($editUrl)
+                                                <a href="{{ $editUrl }}" class="inline-flex items-center px-3 py-1 text-xs text-gray-700 hover:underline">Ver</a>
+                                            @endif
                                         </div>
                                     @endcan
                                 </td>
@@ -52,7 +61,8 @@ $pending = $this->getPending();
             </div>
 
             <div class="mt-3">
-                {{ $pending->links() }}
+                {{-- Use Tailwind pagination; append current query to keep other filters intact. --}}
+                {{ $pending->appends(request()->except('page'))->links() }}
             </div>
         </div>
     @endif

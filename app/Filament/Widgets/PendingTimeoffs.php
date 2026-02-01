@@ -25,7 +25,8 @@ class PendingTimeoffs extends Widget
             return false;
         }
 
-        return $user->isAdmin() || $user->isHr() || $user->isRoot();
+        // Exclusive to HR role by request
+        return $user->isHr();
     }
 
     public function getPending(): \Illuminate\Pagination\LengthAwarePaginator

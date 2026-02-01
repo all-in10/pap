@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Enums\UserRole;
 use App\Services\Audit;
+use App\Models\User; // for Intelephense type hints
 
 class EnsureAdminPanelAccess
 {
@@ -17,6 +18,7 @@ class EnsureAdminPanelAccess
             return redirect('/admin/login');
         }
 
+        /** @var User|null $user */
         $user = Auth::user();
 
         // Only allow admin/root users to access the admin panel
@@ -33,7 +35,7 @@ class EnsureAdminPanelAccess
             Log::error('Failed to persist audit log for panel access denied: ' . $e->getMessage(), ['exception' => $e]);
         }
 
-        // If not admin/root, redirect to employee panel
-        return redirect('/employee');
+        // If not admin/root, redirect to the user's own panel
+        return redirect($user->panelPath());
     }
 }
