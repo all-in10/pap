@@ -77,8 +77,11 @@ class ChangePassword extends Page implements HasForms
         }
 
         \session()->flash('success', 'Senha alterada com sucesso!');
-        redirect('/admin');
+        $panel = \Filament\Facades\Filament::getCurrentPanel()?->getId();
+        if ($panel === 'employee') {
+            redirect('/employee');
+        } else {
+            redirect('/admin');
+        }
     }
 }
-
-

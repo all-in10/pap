@@ -6,6 +6,8 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class Employee extends Model
 {
@@ -15,13 +17,17 @@ class Employee extends Model
     {
         static::created(function ($employee) {
             if (empty($employee->user_id)) {
-                $defaultPassword = 'changeme123';
+                // Use a securely generated random password instead of a fixed default.
+                // The account is created with 'must_change_password' = true so the user
+                // should set a new password on first login (or via password reset flow).
+                $randomPassword = Str::random(16);
                 $user = \App\Models\User::create([
                     'name' => $employee->first_name . ' ' . $employee->last_name,
                     'email' => $employee->email,
-                    'password' => bcrypt($defaultPassword),
+                    'password' => Hash::make($randomPassword),
                     'must_change_password' => true,
                 ]);
+
                 $employee->user_id = $user->id;
                 $employee->save();
             }

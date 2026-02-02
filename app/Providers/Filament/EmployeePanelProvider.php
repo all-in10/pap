@@ -20,6 +20,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\ForcePasswordChange;
 use App\Http\Middleware\EnsureEmployeePanelAccess;
 use App\Filament\Pages\Settings;
+use App\Filament\Pages\ChangePassword;
 
 class EmployeePanelProvider extends PanelProvider
 {
@@ -45,14 +46,13 @@ class EmployeePanelProvider extends PanelProvider
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Configurações')
-                    ->url(fn (): string => Settings::getUrl())
+                    ->url(fn(): string => Settings::getUrl())
                     ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->favicon(asset('favicon.svg'))
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
-                \App\Filament\Pages\EmployeeDashboard::class,
+                \Filament\Pages\Dashboard::class,
+                \App\Filament\Pages\ChangePassword::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -68,7 +68,6 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureEmployeePanelAccess::class,
             ]);
     }
 }

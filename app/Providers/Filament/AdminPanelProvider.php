@@ -53,9 +53,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->favicon(asset('favicon.svg'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            // Discover only admin-specific pages to avoid pulling employee-only pages into the admin panel
+            ->discoverPages(in: app_path('Filament/Admin/Pages'), for: 'App\\Filament\\Admin\\Pages')
             ->pages([
-                \App\Filament\Admin\Pages\Dashboard::class,
+                \Filament\Pages\Dashboard::class,
                 \App\Filament\Pages\ChangePassword::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
@@ -77,7 +78,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                EnsureAdminPanelAccess::class,
             ]);
             
     }

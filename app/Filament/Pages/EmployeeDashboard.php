@@ -2,25 +2,21 @@
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
-use App\Models\Employee;
-use App\Models\Worklog;
-use App\Models\Hoursbank;
+use Filament\Pages\Dashboard as BaseDashboard;
 use App\Models\Timeoff;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms;
-use Filament\Actions;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 
-class EmployeeDashboard extends Page implements HasForms
+class EmployeeDashboard extends BaseDashboard implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static string $view = 'filament.pages.employee-dashboard';
-    protected static bool $shouldRegisterNavigation = false;
+    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static bool $shouldRegisterNavigation = true;
+    protected static ?int $navigationSort = -1;
 
     public ?array $data = [];
 
@@ -33,6 +29,7 @@ class EmployeeDashboard extends Page implements HasForms
     {
         return [
             Forms\Components\Section::make('Solicitar Férias ou Justificativa de Ausência')
+                ->description('Preencha o formulário para solicitar férias ou justificar uma ausência.')
                 ->schema([
                     Forms\Components\Select::make('type')
                         ->label('Tipo de Solicitação')
@@ -51,7 +48,8 @@ class EmployeeDashboard extends Page implements HasForms
                         ->label('Motivo/Observações')
                         ->rows(3),
                 ])
-                ->columns(2),
+                ->columns(2)
+                ->columnSpan('full'),
         ];
     }
 

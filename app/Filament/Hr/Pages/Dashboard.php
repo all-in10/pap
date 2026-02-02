@@ -13,6 +13,12 @@ class Dashboard extends BaseDashboard
 
     protected static string $view = 'filament-panels::pages.dashboard';
 
+    public static function getNavigationUrl(): string
+    {
+        // Dashboard should point to the panel root instead of a separate page route
+        return \Filament\Facades\Filament::getUrl();
+    }
+
     public function getWidgets(): array
     {
         return [
