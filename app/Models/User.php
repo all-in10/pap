@@ -39,18 +39,15 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'role' => UserRole::class,
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'role' => UserRole::class,
+    ];
 
     // Role helpers
     public const ROLE_ROOT = 'root';
@@ -89,6 +86,23 @@ class User extends Authenticatable
             UserRole::HR => '/hr',
             UserRole::EMPLOYEE => '/employee',
             default => '/',
+        };
+    }
+
+    /**
+     * Check whether this user is allowed to access the given panel slug.
+     * Accepts the first segment of the request path (e.g. 'admin', 'hr', 'employee').
+     */
+    public function canAccessPanel(string $panel): bool
+    {
+        // Root should only have access to the admin panel. Use explicit role checks
+        // to avoid helper methods that implicitly include root/admin together.
+        return match ($panel) {
+            'admin' => $this->role === UserRole::ADMIN || $this->role === UserRole::ROOT,
+            'hr' => $this->role === UserRole::HR || $this->role === UserRole::ADMIN,
+            'employee' => $this->role === UserRole::EMPLOYEE,
+            'filament' => $this->role === UserRole::ADMIN || $this->role === UserRole::HR,
+            default => false,
         };
     }
 

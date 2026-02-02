@@ -18,8 +18,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\ForcePasswordChange;
+use App\Http\Middleware\ValidateUserPanelRole;
 use App\Http\Middleware\EnsureEmployeePanelAccess;
-use App\Filament\Pages\Settings;
+use App\Filament\Pages\Settings; 
 
 class EmployeePanelProvider extends PanelProvider
 {
@@ -67,6 +68,7 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\ValidateUserPanelRole::class,
                 \App\Http\Middleware\EnsureEmployeePanelAccess::class,
             ]);
     }

@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Pages\Settings;
 use App\Http\Middleware\ForcePasswordChange;
+use App\Http\Middleware\ValidateUserPanelRole;
 use App\Http\Middleware\EnsureHrPanelAccess;
 
 class HrPanelProvider extends PanelProvider
@@ -75,6 +76,7 @@ class HrPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                \App\Http\Middleware\ValidateUserPanelRole::class,
                 \App\Http\Middleware\EnsureHrPanelAccess::class,
             ]);
             

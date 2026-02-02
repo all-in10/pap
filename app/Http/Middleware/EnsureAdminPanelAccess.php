@@ -26,7 +26,7 @@ class EnsureAdminPanelAccess
             return $next($request);
         }
 
-        // Log and audit denied access
+        // Log and audit denied access and present a 403 page with a button to the user's panel.
         Log::warning('Unauthorized admin panel access attempt', ['user_id' => $user->id ?? null, 'path' => $request->path()]);
 
         try {
@@ -35,7 +35,9 @@ class EnsureAdminPanelAccess
             Log::error('Failed to persist audit log for panel access denied: ' . $e->getMessage(), ['exception' => $e]);
         }
 
-        // If not admin/root, redirect to the user's own panel
-        return redirect($user->panelPath());
+        return response()->view('errors.panel_unauthorized', [
+            'panel' => 'Admin',
+            'redirectTo' => $user->panelPath(),
+        ], 403);
     }
 }
