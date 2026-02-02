@@ -137,6 +137,15 @@ class User extends Authenticatable
                 $user->email_verified_at = $user->created_at;
                 $user->saveQuietly();
             }
+            \App\Services\Audit::recordModelEvent('created', $user);
+        });
+
+        static::updated(function (User $user) {
+            \App\Services\Audit::recordModelEvent('updated', $user);
+        });
+
+        static::deleted(function (User $user) {
+            \App\Services\Audit::recordModelEvent('deleted', $user);
         });
 
         // Prevent changing email_verified_at once it's set

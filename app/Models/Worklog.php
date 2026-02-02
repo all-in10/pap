@@ -74,15 +74,24 @@ class Worklog extends Model
             }
         });
 
+        // Audit log para criação, edição e remoção
+        static::created(function ($worklog) {
+            \App\Services\Audit::recordModelEvent('created', $worklog);
+        });
+        static::updated(function ($worklog) {
+            \App\Services\Audit::recordModelEvent('updated', $worklog);
+        });
+        static::deleted(function ($worklog) {
+            \App\Services\Audit::recordModelEvent('deleted', $worklog);
+        });
+
         // Atualiza o banco de horas após salvar
         static::saved(function ($worklog) {
             $worklog->updateHoursbank();
         });
 
         // Atualiza o banco de horas se excluir o Worklog
-        static::deleted(function ($worklog) {
-            $worklog->updateHoursbank();
-        });
+        // (já coberto acima)
     }
 
     /**

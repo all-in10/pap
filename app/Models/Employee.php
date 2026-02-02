@@ -53,6 +53,16 @@ class Employee extends Model
                 'date_hired'     => $employee->date_hired,
                 'status'         => 'active',
             ]);
+
+            \App\Services\Audit::recordModelEvent('created', $employee);
+        });
+
+        static::updated(function ($employee) {
+            \App\Services\Audit::recordModelEvent('updated', $employee);
+        });
+
+        static::deleted(function ($employee) {
+            \App\Services\Audit::recordModelEvent('deleted', $employee);
         });
     }
 

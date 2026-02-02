@@ -7,7 +7,7 @@ use App\Models\Timeoff;
 
 class TimeoffsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Tipos de Solicitações de licenças';
+    protected static ?string $heading = 'Estado de aprovaçãode licenças';
 
     protected function getType(): string
     {

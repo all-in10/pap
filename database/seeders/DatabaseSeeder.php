@@ -19,6 +19,66 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // 0. Cria 3 usuários fixos: admin, hr, employee
+        $admin = \App\Models\User::updateOrCreate([
+            'email' => 'admin@test.test'
+        ], [
+            'name' => 'admin',
+            'email' => 'admin@test.test',
+            'role' => \App\Enums\UserRole::ROOT,
+            'password' => \Illuminate\Support\Facades\Hash::make('1'),
+            'must_change_password' => true,
+        ]);
+
+        $hr = \App\Models\User::updateOrCreate([
+            'email' => 'hr@test.test'
+        ], [
+            'name' => 'hr',
+            'email' => 'hr@test.test',
+            'role' => \App\Enums\UserRole::HR,
+            'password' => \Illuminate\Support\Facades\Hash::make('1'),
+            'must_change_password' => true,
+        ]);
+
+        $employee = \App\Models\User::updateOrCreate([
+            'email' => 'employee@test.test'
+        ], [
+            'name' => 'employee',
+            'email' => 'employee@test.test',
+            'role' => \App\Enums\UserRole::EMPLOYEE,
+            'password' => \Illuminate\Support\Facades\Hash::make('1'),
+            'must_change_password' => true,
+        ]);
+
+        // Audit logs para criação dos utilizadores
+        \App\Models\AuditLog::create([
+            'user_id' => $admin->id,
+            'event' => 'created',
+            'auditable_type' => get_class($admin),
+            'auditable_id' => $admin->id,
+            'description' => 'Utilizador admin criado pelo seeder.',
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'seeder',
+        ]);
+        \App\Models\AuditLog::create([
+            'user_id' => $hr->id,
+            'event' => 'created',
+            'auditable_type' => get_class($hr),
+            'auditable_id' => $hr->id,
+            'description' => 'Utilizador hr criado pelo seeder.',
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'seeder',
+        ]);
+        \App\Models\AuditLog::create([
+            'user_id' => $employee->id,
+            'event' => 'created',
+            'auditable_type' => get_class($employee),
+            'auditable_id' => $employee->id,
+            'description' => 'Utilizador employee criado pelo seeder.',
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'seeder',
+        ]);
+
         // 1. Cria cargos
         Designation::factory()->count(5)->create();
 

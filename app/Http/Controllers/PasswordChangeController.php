@@ -22,12 +22,37 @@ class PasswordChangeController extends Controller
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[a-z]/',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/',
+                function ($attribute, $value, $fail) {
+                    if (stripos($value, 'password') !== false) {
+                        $fail('A palavra-passe não pode conter "password".');
+                    }
+                },
+            ],
+        ], [
+            'required' => 'O campo :attribute é obrigatório.',
+            'string' => 'O campo :attribute deve ser uma cadeia de caracteres.',
+            'min' => 'A palavra-passe deve ter pelo menos :min caracteres.',
+            'confirmed' => 'A confirmação da palavra-passe não coincide.',
+            'regex' => 'A palavra-passe deve conter letras maiúsculas, minúsculas, números e símbolos.',
         ]);
 
         /** @var \App\Models\User $user */
         $user = \Illuminate\Support\Facades\Auth::user();
-        
+
+        // Impede que a nova palavra-passe seja igual à atual
+        if ($user && Hash::check($validated['password'], $user->password)) {
+            return back()->withErrors(['password' => 'A nova palavra-passe não pode ser igual à atual.'])->withInput();
+        }
+
         if ($user) {
             $user->update([
                 'password' => Hash::make($validated['password']),
@@ -36,6 +61,6 @@ class PasswordChangeController extends Controller
         }
 
         return redirect('/app')
-            ->with('success', 'Password changed successfully!');
+            ->with('success', 'Palavra-passe alterada com sucesso!');
     }
 }

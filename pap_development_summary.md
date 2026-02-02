@@ -1,11 +1,28 @@
 # Resumo do Desenvolvimento da Aplicação PAP
 
 ## Visão Geral
-Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 18 de Janeiro de 2026.
+Este documento resume o processo de desenvolvimento, decisões arquitetónicas e funcionalidades principais implementadas na aplicação PAP até 2 de Fevereiro de 2026.
 
 ---
 
 ## Registo de Alterações
+
+- **2026-02-02**: Melhorias de auditoria, widgets, layout e internacionalização.
+  - Branch ativa: `a-santa-redencao`, sincronizada com `origin/a-santa-redencao`.
+  - Auditoria reforçada: todos os modelos principais (User, Employee, Worklog) agora registam criação, edição e remoção automaticamente nos audit logs. Tentativas de acesso negado a painéis também são auditadas.
+  - Migração de audit logs atualizada para incluir campo `description`.
+  - Seeder atualizado para criar registos de auditoria ao criar utilizadores.
+  - Tradução completa para PT-PT, incluindo mensagens de validação e interface.
+  - PasswordChangeController ajustado para mensagens e lógica em português.
+  - Novo layout do dashboard admin: widgets compactos, responsivos e organizados em 3 colunas.
+  - Novos widgets Filament:
+    - `GlobalAverageHours`: média semanal de horas por colaborador.
+    - `WeeklyAverageBulletChart`: gráfico de pontos mostrando evolução semanal de horas.
+    - `DepartmentDistributionChart`: gráfico doughnut da distribuição de pessoal por departamento.
+  - Widget `TimeoffsChart` ajustado para visualização doughnut e cores consistentes.
+  - Removido teste `PanelRootAccessTest.php` (não relevante para o fluxo atual).
+  - Diretório `resources/lang/pt-pt` criado para traduções personalizadas.
+  - Vários ficheiros modificados para refletir as melhorias acima.
 
 - **2026-02-01**: Correção de aviso Intelephense, reforço do fluxo de login e políticas de acesso a painéis.
   - Corrigido o aviso Intelephense P1013 "Undefined method 'user'" em `AuditLogResource` (tipagem e assinatura `Tables\Table`).

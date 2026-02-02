@@ -6,6 +6,10 @@ use Filament\Pages\Dashboard as BaseDashboard;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Widgets\ContractsChart;
 use App\Filament\Widgets\TimeoffsChart;
+use App\Filament\Widgets\DepartmentDistributionChart;
+use App\Filament\Widgets\GlobalAverageHours;
+use App\Filament\Widgets\WeeklyAverageBulletChart;
+use Carbon\Traits\Week;
 
 class Dashboard extends BaseDashboard
 {
@@ -17,13 +21,20 @@ class Dashboard extends BaseDashboard
     {
         return [
             StatsOverview::class,
+            WeeklyAverageBulletChart::class,
             ContractsChart::class,
+            GlobalAverageHours::class,
             TimeoffsChart::class,
+            DepartmentDistributionChart::class,
         ];
     }
-
+    
     public function getColumns(): int | string | array
     {
-        return 2;
+        return [
+            'sm' => 1,
+            'md' => 2,
+            'lg' => 3,
+        ];
     }
 }
