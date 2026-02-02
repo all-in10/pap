@@ -23,8 +23,9 @@ class HRPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('hR')
-            ->path('hR')
+            ->id('hr')
+            ->path('hr')
+            ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])

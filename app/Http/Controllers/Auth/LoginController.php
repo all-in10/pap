@@ -18,15 +18,7 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            // Redireciona conforme o role
-            if ($user->role === 'admin') {
-                return redirect()->intended('/admin');
-            } elseif ($user->role === 'hr') {
-                return redirect()->intended('/hR');
-            } else {
-                return redirect()->intended('/employee');
-            }
+            return redirect()->intended('/');
         }
         return back()->withErrors(['email' => 'Credenciais inválidas'])->withInput();
     }
