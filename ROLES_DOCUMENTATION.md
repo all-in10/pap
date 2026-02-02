@@ -42,8 +42,8 @@ UserRole::EMPLOYEE  // 'employee'
 #### Métodos de Verificação:
 ```php
 $user->isRoot()                          // boolean
-$user->isAdmin()                         // boolean (inclui Root)
-$user->isHr()                            // boolean (inclui Admin, Root)
+$user->isAdmin()                         // boolean 
+$user->isHr()                            // boolean 
 $user->isEmployee()                      // boolean
 $user->hasPrivilegeOf(UserRole $role)    // boolean
 ```

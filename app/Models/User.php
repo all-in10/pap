@@ -77,6 +77,19 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the URL path for the user's panel.
+     */
+    public function panelPath(): string
+    {
+        return match ($this->role) {
+            UserRole::ROOT, UserRole::ADMIN => '/admin',
+            UserRole::HR => '/hr',
+            UserRole::EMPLOYEE => '/employee',
+            default => '/',
+        };
+    }
+
+    /**
      * Check if this user has at least the privilege level of a given role
      */
     public function hasPrivilegeOf(UserRole $role): bool

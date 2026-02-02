@@ -37,7 +37,7 @@
                     </a>
                 @else
                     <a
-                        href="{{ route('login') }}"
+                        href="{{ $panelLoginRoutes['generic'] ?? route('login') }}"
                         class="inline-block px-5 py-1.5 dark:text-[#EDEDEC] border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] dark:border-[#3E3E3A] dark:hover:border-[#62605b] rounded-sm text-sm leading-normal"
                     >
                         Login
@@ -60,9 +60,15 @@
                             <span>
                                 Se é
                                 <strong>Funcionário</strong>, aceda a
+                                @if(isset($panelLoginRoutes['employee']))
+                                <a href="{{ $panelLoginRoutes['employee'] }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                    <span>seu painel pessoal</span>
+                                </a>
+                                @else
                                 <a href="{{ route('filament.employee.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>seu painel pessoal</span>
                                 </a>
+                                @endif
                             </span>
                         </li>
                         <li class="flex items-center gap-4 py-2 relative before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A] before:bottom-1/2 before:top-0 before:left-[0.4rem] before:absolute">
@@ -74,15 +80,21 @@
                             <span>
                                 Se é
                                 <strong>Administrador</strong>, aceda ao
+                                @if(isset($panelLoginRoutes['admin']))
+                                <a href="{{ $panelLoginRoutes['admin'] }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
+                                    <span>painel de administração</span>
+                                </a>
+                                @else
                                 <a href="{{ route('filament.admin.auth.login') }}" class="inline-flex items-center space-x-1 font-medium underline underline-offset-4 text-[#f53003] dark:text-[#FF4433]">
                                     <span>painel de administração</span>
                                 </a>
+                                @endif
                             </span>
                         </li>
                     </ul>
                     <ul class="flex gap-3 text-sm leading-normal">
                         <li>
-                            <a href="{{ route('login') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg:white dark:hover:border:white hover:bg-black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">
+<a href="{{ $panelLoginRoutes['generic'] ?? route('login') }}" class="inline-block dark:bg-[#eeeeec] dark:border-[#eeeeec] dark:text-[#1C1C1A] dark:hover:bg:white dark:hover:border:white hover:bg:black hover:border-black px-5 py-1.5 bg-[#1b1b18] rounded-sm border border-black text-white text-sm leading-normal">
                                 Entrar no Sistema
                             </a>
                         </li>
@@ -240,7 +252,7 @@
             </main>
         </div>
 
-        @if (Route::has('login'))
+        @if (isset($panelLoginRoutes['generic']))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
     </body>

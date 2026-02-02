@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use App\Models\User;
 
 class AppServiceProvider extends ServiceProvider
@@ -45,6 +46,19 @@ class AppServiceProvider extends ServiceProvider
         // Register route middleware alias 'role' so routes can use ->middleware('role:admin')
         if ($this->app->bound('router')) {
             $this->app->router->aliasMiddleware('role', \App\Http\Middleware\EnsureRole::class);
+
+            // Register middleware to redirect already-authenticated users away from login pages
+            $this->app->router->aliasMiddleware('redirect.login', \App\Http\Middleware\RedirectAuthenticatedFromLogin::class);
         }
+
+        // Share helpful login links with the welcome and auth.login views so the views act as a bridge
+        view()->composer(['welcome', 'auth.login'], function ($view) {
+            $view->with('panelLoginRoutes', [
+                'admin' => Route::has('filament.admin.auth.login') ? route('filament.admin.auth.login') : '/admin/login',
+                'employee' => Route::has('filament.employee.auth.login') ? route('filament.employee.auth.login') : '/employee/login',
+                'hr' => '/hr/login',
+                'generic' => route('login'),
+            ]);
+        });
     }
 }
