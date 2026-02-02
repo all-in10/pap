@@ -15,25 +15,28 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?string $navigationLabel = 'Users';
-    protected static ?string $modelLabel = 'Users';
-    protected static ?string $navigationGroup = 'User Management';
+    protected static ?string $navigationLabel = 'Usuários';
+    protected static ?string $modelLabel = 'Usuários';
+    protected static ?string $navigationGroup = 'Gerenciamento de Usuários';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\TextInput::make('name')
+                ->label('Nome')
                 ->required()
                 ->maxLength(255),
 
             Forms\Components\TextInput::make('email')
+                ->label('E-mail')
                 ->email()
                 ->required()
                 ->maxLength(255),
 
-            Forms\Components\DateTimePicker::make('email_verified_at'),
+            Forms\Components\DateTimePicker::make('email_verified_at')->label('E-mail Verificado Em'),
 
             Forms\Components\TextInput::make('password')
+                ->label('Senha')
                 ->password()
                 ->required()
                 ->maxLength(255),
@@ -45,21 +48,26 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nome')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
+                    ->label('E-mail')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email_verified_at')
+                    ->label('E-mail Verificado Em')
                     ->dateTime()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Criado em')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Atualizado em')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -22,11 +22,11 @@ class DepartmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $navigationLabel = 'Department';
+    protected static ?string $navigationLabel = 'Departamentos';
 
-    protected static ?string $modelLabel = 'Departments';
+    protected static ?string $modelLabel = 'Departamento';
 
-    protected static ?string $navigationGroup = 'System Management';
+    protected static ?string $navigationGroup = 'Gerenciamento do Sistema';
 
     protected static ?int $navigationSort = 4;
 
@@ -34,9 +34,11 @@ class DepartmentResource extends Resource
     {
         return $form->schema([
             Forms\Components\TextInput::make('name')
+                ->label('Nome')
                 ->required()
                 ->maxLength(255),
             Forms\Components\TextInput::make('description')
+                ->label('Descrição')
                 ->maxLength(255),
         ]);
     }
@@ -78,9 +80,9 @@ class DepartmentResource extends Resource
         return $infolist->schema([
             Section::make()->schema([
                 TextEntry::make('name')
-                    ->label('Department Name'),
+                    ->label('Nome do Departamento'),
                 TextEntry::make('employees_count')
-                    ->label('Number of Employees'),
+                    ->label('Número de Funcionários'),
             ]),
         ]);
     }

@@ -11,7 +11,7 @@ class Contract extends Model
 
     protected $fillable = [
         'employee_id',
-        'contract_type',
+        'contract_type_id',
         'salary',
         'start_date',
         'end_date',
@@ -31,11 +31,16 @@ class Contract extends Model
         // Defaults caso criado manualmente
         static::creating(function ($contract) {
             $contract->status ??= 'active';
-            $contract->contract_type ??= 'non_defined';
+            $contract->contract_type_id ??= \App\Models\ContractType::firstWhere('name', 'sem_termo')->id ?? null;
             $contract->salary ??= 0;
         });
     }
 
+    // RELACIONAMENTO
+    public function contractType()
+    {
+        return $this->belongsTo(ContractType::class);
+    }
     // RELACIONAMENTO
     public function employee()
     {

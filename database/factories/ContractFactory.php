@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Employee;
+use App\Models\ContractType;
 
 class ContractFactory extends Factory
 {
@@ -17,15 +18,23 @@ class ContractFactory extends Factory
      */
     public function definition(): array
     {
-        $contractTypes = ['full_time', 'temporary', 'internship', 'non_defined'];
         $statuses = ['active', 'terminated', 'suspended'];
 
         $startDate = $this->faker->dateTimeBetween('-2 years', 'now');
         $endDate = $this->faker->optional()->dateTimeBetween($startDate, '+2 years');
 
+        // Escolhe um ContractType existente ou cria um por padrão
+        $contractType = ContractType::inRandomOrder()->first();
+        if (!$contractType) {
+            $contractType = ContractType::create([
+                'name' => 'sem_termo',
+                'label' => 'Contrato sem termo',
+            ]);
+        }
+
         return [
             'employee_id' => Employee::factory(),
-            'contract_type' => $this->faker->randomElement($contractTypes),
+            'contract_type_id' => $contractType->id,
             'salary' => $this->faker->randomFloat(2, 1000, 10000),
             'start_date' => $startDate->format('Y-m-d'),
             'end_date' => $endDate ? $endDate->format('Y-m-d') : null,

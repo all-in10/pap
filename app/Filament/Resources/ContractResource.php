@@ -31,18 +31,15 @@ class ContractResource extends Resource
                 ->nullable()
                 ->helperText('Será criado automaticamente se vazio.'),
 
-            // Tipo de Contrato
-            Forms\Components\Select::make('contract_type')
+            // Tipo de Contrato (relacionado ao ContractType)
+            Forms\Components\Select::make('contract_type_id')
                 ->label('Tipo de Contrato')
-                ->options([
-                    'full_time'   => 'Full Time',
-                    'temporary'   => 'Temporary',
-                    'internship'  => 'Internship',
-                    'non_defined' => 'Não Definido',
-                ])
-                ->default('non_defined')
+                ->options(fn () => \App\Models\ContractType::pluck('label', 'id')->toArray())
+                ->default(fn () => \App\Models\ContractType::firstWhere('name', 'sem_termo')->id ?? null)
                 ->required()
-                ->reactive(),
+                ->reactive()
+                ->searchable()
+                ->preload(),
 
             // Salário
             Forms\Components\TextInput::make('salary')
@@ -60,11 +57,14 @@ class ContractResource extends Resource
                 ->label('Data de Fim')
                 ->visible(
                     fn(callable $get) =>
-                    in_array($get('contract_type'), ['temporary', 'internship'])
+                    in_array($get('contract_type_id'), [
+                        \App\Models\ContractType::firstWhere('name', 'temporary')->id ?? -1,
+                        \App\Models\ContractType::firstWhere('name', 'internship')->id ?? -1,
+                    ])
                 )
                 ->required(
                     fn(callable $get) =>
-                    $get('contract_type') === 'temporary'
+                    $get('contract_type_id') === (\App\Models\ContractType::firstWhere('name', 'temporary')->id ?? -1)
                 )
                 ->helperText('Obrigatório apenas para contratos temporários.')
                 ->nullable(),
@@ -97,13 +97,13 @@ class ContractResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('contract_type')
+                Tables\Columns\TextColumn::make('contractType.label')
                     ->label('Tipo de Contrato')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('salary')
                     ->label('Salário')
-                    ->money('BRL', true),
+                    ->money('EUR', true),
 
                 Tables\Columns\TextColumn::make('start_date')
                     ->label('Início')

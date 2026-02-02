@@ -22,11 +22,11 @@ class CountryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-flag';
 
-    protected static ?string $navigationLabel = 'Country';
+    protected static ?string $navigationLabel = 'Países';
 
-    protected static ?string $modelLabel = 'Employees Country';
+    protected static ?string $modelLabel = 'País';
 
-    protected static ?string $navigationGroup = 'System Management';
+    protected static ?string $navigationGroup = 'Gerenciamento do Sistema';
 
     protected static ?int $navigationSort = 1;
 
@@ -56,15 +56,15 @@ class CountryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Name')
+                    ->label('Nome')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('code')
-                    ->label('Code')
+                    ->label('Código')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('phonecode')
-                    ->label('Phone Code'),
+                    ->label('Código de Telefone'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->searchable()
@@ -94,11 +94,11 @@ class CountryResource extends Resource
         return $infolist->schema([
             Section::make()->schema([
                 TextEntry::make('name')
-                    ->label('Country Name'),
+                    ->label('Nome do País'),
                 TextEntry::make('code')
-                    ->label('Country Code'),
+                    ->label('Código do País'),
                 TextEntry::make('phonecode')
-                    ->label('Phone Code'),
+                    ->label('Código de Telefone'),
             ]),
         ]);
     }

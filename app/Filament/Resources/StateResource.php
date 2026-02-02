@@ -22,11 +22,11 @@ class StateResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-library';
 
-    protected static ?string $navigationLabel = 'State';
+    protected static ?string $navigationLabel = 'Estados';
 
-    protected static ?string $modelLabel = 'States';
+    protected static ?string $modelLabel = 'Estado';
 
-    protected static ?string $navigationGroup = 'System Management';
+    protected static ?string $navigationGroup = 'Gerenciamento do Sistema';
 
     protected static ?int $navigationSort = 2;
 
@@ -35,10 +35,12 @@ class StateResource extends Resource
         return $form->schema([
             Forms\Components\Select::make('country_id')
                 ->relationship('country', 'name')
+                ->label('País')
                 ->searchable()
                 ->preload()
                 ->required(),
             Forms\Components\TextInput::make('name')
+                ->label('Nome do Estado')
                 ->required()
                 ->maxLength(255),
         ]);
@@ -49,10 +51,11 @@ class StateResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label('State Name')
+                    ->label('Nome do Estado')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('country.name')
+                    ->label('País')
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -83,11 +86,11 @@ class StateResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist->schema([
-            Section::make('State Details')->schema([
+            Section::make('Detalhes do Estado')->schema([
                 TextEntry::make('country.name')
-                    ->label('Country'),
+                    ->label('País'),
                 TextEntry::make('name')
-                    ->label('State Name'),
+                    ->label('Nome do Estado'),
             ]),
         ]);
     }
