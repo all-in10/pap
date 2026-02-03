@@ -27,26 +27,31 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandname('TeamCore')
+            ->brandLogo(asset('images/Teamcorelogo.svg'))
             ->colors([
-                'danger' => Color::Rose,
-                'gray' => Color::Gray,
-                'info' => Color::Blue,
-                'primary' => Color::Indigo,
-                'success' => Color::Emerald,
-                'warning' => Color::Orange,
+                'primary' => '#582f0e',
+                'secondary' => '#7f4f24',
+                'info' => '#936639',
+                'danger' => '#a68a64',
+                'warning' => '#b6ad90',
+                'success' => '#c2c5aa',
+                'gray' => '#acb79bff',
+                'muted' => '#656d4a',
+                'accent' => '#414833',
+                'neutral' => '#333d29',
             ])
-            ->favicon(asset('images/logo.ico'))
+            ->favicon(asset('images/Document.svg'))
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                \App\Filament\Widgets\GeneralStats::class,
             ])
             ->middleware([
                 EncryptCookies::class,

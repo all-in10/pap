@@ -18,6 +18,7 @@ class DesignationResource extends Resource
     protected static ?string $navigationLabel = 'Cargos';
     protected static ?string $pluralModelLabel = 'Cargos';
     protected static ?string $modelLabel = 'Cargo';
+    protected static ?string $navigationGroup = 'Funcionários';
 
     public static function form(Form $form): Form
     {

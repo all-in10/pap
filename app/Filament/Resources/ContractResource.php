@@ -18,6 +18,7 @@ class ContractResource extends Resource
     protected static ?string $navigationLabel = 'Contratos';
     protected static ?string $pluralModelLabel = 'Contratos';
     protected static ?string $modelLabel = 'Contrato';
+    protected static ?string $navigationGroup = 'RH';
 
     public static function form(Form $form): Form
     {

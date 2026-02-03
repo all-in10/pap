@@ -7,6 +7,7 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
+use App\Filament\Pages\EmployeeDashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -26,12 +27,25 @@ class EmployeePanelProvider extends PanelProvider
             ->id('employee')
             ->path('employee')
             ->login()
+            ->brandLogo(asset('images/Teamcorelogo.svg'))
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => '#582f0e',
+                'secondary' => '#7f4f24',
+                'info' => '#936639',
+                'danger' => '#a68a64',
+                'warning' => '#b6ad90',
+                'success' => '#c2c5aa',
+                'gray' => '#acb79bff',
+                'muted' => '#656d4a',
+                'accent' => '#414833',
+                'neutral' => '#333d29',
             ])
+            ->favicon(asset('images/Document.svg'))
+
             ->discoverResources(in: app_path('Filament/Employee/Resources'), for: 'App\\Filament\\Employee\\Resources')
             ->discoverPages(in: app_path('Filament/Employee/Pages'), for: 'App\\Filament\\Employee\\Pages')
             ->pages([
+                //EmployeeDashboard::class,
                 Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Employee/Widgets'), for: 'App\\Filament\\Employee\\Widgets')

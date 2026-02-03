@@ -34,9 +34,6 @@ class WorklogResource extends Resource
             ->schema([
                 Select::make('employee_id')->relationship('employee', 'first_name')->label('Funcionário')->searchable()->preload()->required(),
                 DatePicker::make('date')->label('Data')->required(),
-                TimePicker::make('start_time')->label('Hora Início'),
-                TimePicker::make('end_time')->label('Hora Término'),
-                TextInput::make('duration')->label('Duração')->numeric()->step(0.25),
                 TextInput::make('type')->label('Tipo'),
                 Toggle::make('approved')->label('Aprovado'),
                 Textarea::make('description')->label('Descrição'),

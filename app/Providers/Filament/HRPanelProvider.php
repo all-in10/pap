@@ -26,9 +26,21 @@ class HRPanelProvider extends PanelProvider
             ->id('hr')
             ->path('hr')
             ->login()
+            ->brandLogo(asset('images/Teamcorelogo.svg'))
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => '#582f0e',
+                'secondary' => '#7f4f24',
+                'info' => '#936639',
+                'danger' => '#a68a64',
+                'warning' => '#b6ad90',
+                'success' => '#c2c5aa',
+                'gray' => '#acb79bff',
+                'muted' => '#656d4a',
+                'accent' => '#414833',
+                'neutral' => '#333d29',
             ])
+            ->favicon(asset('images/Document.svg'))
+
             ->discoverResources(in: app_path('Filament/HR/Resources'), for: 'App\\Filament\\HR\\Resources')
             ->discoverPages(in: app_path('Filament/HR/Pages'), for: 'App\\Filament\\HR\\Pages')
             ->pages([
@@ -38,6 +50,7 @@ class HRPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                \App\Filament\Widgets\GeneralStats::class,
             ])
             ->middleware([
                 EncryptCookies::class,

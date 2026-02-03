@@ -22,7 +22,7 @@ class HourbankResource extends Resource
     protected static ?string $navigationLabel = 'Banco de Horas';
     protected static ?string $pluralModelLabel = 'Bancos de Horas';
     protected static ?string $modelLabel = 'Banco de Horas';
-    protected static ?string $navigationGroup = 'RH';
+    protected static ?string $navigationGroup = 'Funcionários';
 
     public static function form(Form $form): Form
     {

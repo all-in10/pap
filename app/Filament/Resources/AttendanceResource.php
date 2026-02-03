@@ -24,7 +24,7 @@ class AttendanceResource extends Resource
 {
     protected static ?string $model = Attendance::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
     protected static ?string $navigationLabel = 'Registo de Horas';
     protected static ?string $pluralModelLabel = 'Registos de Horas';
     protected static ?string $modelLabel = 'Registo de Horas';

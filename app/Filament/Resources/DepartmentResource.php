@@ -19,16 +19,10 @@ use Filament\Infolists\Components\TextEntry;
 class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-
     protected static ?string $navigationLabel = 'Departamentos';
-
     protected static ?string $modelLabel = 'Departamento';
-
-    protected static ?string $navigationGroup = 'Gerenciamento do Sistema';
-
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationGroup = 'RH';
 
     public static function form(Form $form): Form
     {
