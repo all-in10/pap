@@ -23,12 +23,15 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $default = env('DEFAULT_USER_PASSWORD', 'ChangeMe123!');
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make($default),
             'remember_token' => Str::random(10),
+            'must_change_password' => true,
         ];
     }
 

@@ -40,8 +40,9 @@ class UserResource extends Resource
             Forms\Components\TextInput::make('password')
                 ->label('Senha')
                 ->password()
-                ->required()
-                ->maxLength(255),
+                ->maxLength(255)
+                ->helperText('Se vazio, será atribuída a senha padrão e o utilizador será forçado a alterá-la no primeiro acesso.')
+                ->dehydrateStateUsing(fn($state) => $state ? \Illuminate\Support\Facades\Hash::make($state) : null),
         ]);
     }
 
@@ -80,11 +81,52 @@ class UserResource extends Resource
             ])
             ->filters([])
             ->actions([
+                Tables\Actions\Action::make('forcePasswordChange')
+                    ->label('Forçar troca de senha')
+                    ->icon('heroicon-o-key')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Forçar troca de senha')
+                    ->modalDescription('Irá definir a senha padrão e forçar o utilizador a alterá-la no primeiro acesso.')
+                    ->action(function ($record) {
+                        $default = env('DEFAULT_USER_PASSWORD', 'ChangeMe123!');
+
+                        $record->password = \Illuminate\Support\Facades\Hash::make($default);
+                        $record->must_change_password = true;
+                        $record->password_changed_at = null;
+                        $record->save();
+
+                        \Filament\Notifications\Notification::make()
+                            ->title('Ação realizada')
+                            ->success()
+                            ->body('Senha padrão definida e usuário forçado a alterar no próximo login.')
+                            ->send();
+                    }),
+
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('forcePasswordChange')
+                        ->label('Forçar troca de senha')
+                        ->requiresConfirmation()
+                        ->action(function (\Illuminate\Support\Collection $records) {
+                            $default = env('DEFAULT_USER_PASSWORD', 'ChangeMe123!');
+
+                            foreach ($records as $record) {
+                                $record->password = \Illuminate\Support\Facades\Hash::make($default);
+                                $record->must_change_password = true;
+                                $record->password_changed_at = null;
+                                $record->save();
+                            }
+
+                            \Filament\Notifications\Notification::make()
+                                ->title(count($records) . ' utilizadores atualizados')
+                                ->success()
+                                ->send();
+                        }),
+
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

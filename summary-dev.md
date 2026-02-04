@@ -40,6 +40,10 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 - **2026-02-04 — Exportação de contratos em PDF:** Implementei geração e download de contratos em PDF usando `barryvdh/laravel-dompdf`. Instalei o pacote, criei `ContractPdfController`, adicionei a view `resources/views/contracts/pdf.blade.php`, registrei a rota `contracts.download` e integrei uma ação de download no `ContractResource` do Filament.
 
+- **2026-02-04 — Validação de acesso por Painel:** Implementei uma validação que garante que o `role` do utilizador corresponde ao painel que está a tentar aceder. Criei o middleware `EnsurePanelRole` que é executado após a autenticação nos `PanelProvider`s (`Admin`, `HR`, `Employee`); quando o role não corresponde o utilizador recebe uma página de "Acesso Negado" com um botão que o leva à página de login correta: `/admin/login`, `/hr/login` ou `/employee/login`. Adicionei também um teste de integração inicial (`tests/Feature/PanelRoleMiddlewareTest.php`) para validar o comportamento.
+
+- **2026-02-04 — Política de senhas e troca forçada:** Adicionei suporte para política de senha inicial e fluxo de troca obrigatória. Criei a migration que adiciona `must_change_password` e `password_changed_at` à tabela `users`, atualizei o `User` model para preencher automaticamente uma senha padrão (definível via env `DEFAULT_USER_PASSWORD`) quando uma senha não é fornecida, e marquei `must_change_password=true` nesses casos. Atualizei a `UserFactory` para usar a senha padrão e marcar `must_change_password`. Implementei o middleware `EnforcePasswordChange` que redireciona utilizadores com `must_change_password=true` para a página `/password/change` até atualizarem a senha. Criei as rotas, controller (`UserPasswordController`) e view para a alteração de senha e adicionei testes (`tests/Feature/PasswordPolicyTest.php`).
+
 ---
 
 ## 1. Fundação do Projeto
@@ -59,10 +63,9 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 ## 2. Gestão de Funções e Autorização
 
-- **Funções:** Defini roles principais: `ROOT`, `ADMIN`, `HR` e `EMPLOYEE` através de uma enumeração `UserRole`.
+- **Funções:** Defini roles principais: `ADMIN`, `HR` e `EMPLOYEE` através de uma enumeração `UserRole`.
 - **Controlo de Acesso:**
     - Implementei policies detalhadas que restringem ações com granularidade por recurso e painel.
-    - Garanti que apenas `ROOT` tenha permissões para editar/eliminar registos sensíveis (ex.: Users, Worklogs).
     - Concedi a HR permissões para criar/editar funcionários, contratos e gerir férias, mas sem capacidade de deleção crítica.
     - Limitei funcionários à gestão dos seus próprios registos e submissões.
     - Modelei gates e um serviço de acesso para centralizar verificações reutilizáveis.

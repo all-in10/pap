@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Aplicar middleware que força a alteração de senha após autenticação
+        if ($this->app->runningInConsole() === false) {
+            $router = $this->app->make(\Illuminate\Routing\Router::class);
+            $router->pushMiddlewareToGroup('web', \App\Http\Middleware\EnforcePasswordChange::class);
+        }
     }
 }
