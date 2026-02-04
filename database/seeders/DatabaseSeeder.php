@@ -53,7 +53,8 @@ class DatabaseSeeder extends Seeder
             if (!\App\Models\User::where('employee_id', $employee->id)->exists()) {
                 $user = \App\Models\User::factory()->create([
                     'name' => $employee->first_name . ' ' . $employee->last_name,
-                    'employee_id' => $employee->id
+                    'employee_id' => $employee->id,
+                    'role' => $index % 2 === 0 ? 'admin' : 'hr',
                 ]);
             }
         }

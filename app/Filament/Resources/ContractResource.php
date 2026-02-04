@@ -126,6 +126,12 @@ class ContractResource extends Resource
                     }),
             ])
             ->actions([
+                Tables\Actions\Action::make('download')
+                    ->label('Download')
+                    ->icon('heroicon-o-arrow-down-on-square')
+                    ->url(fn($record) => route('contracts.download', $record))
+                    ->openUrlInNewTab(),
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
