@@ -14,6 +14,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Auth;
 
 class TimeoffResource extends Resource
 {
@@ -27,13 +28,19 @@ class TimeoffResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $user = Auth::user();
+        $isEmployee = $user && strtoupper($user->role) === 'EMPLOYEE';
+
         return $form->schema([
             Select::make('employee_id')
                 ->relationship('employee', 'first_name')
                 ->label('Funcionário')
                 ->searchable()
                 ->preload()
-                ->required(),
+                ->required()
+                ->hidden($isEmployee)  // Esconder para Employee
+                ->default($isEmployee ? $user->employee_id : null)  // Pré-preencher para Employee
+                ->disabled($isEmployee),  // Desabilitar para Employee
             DatePicker::make('start_date')->label('Data de Início')->required(),
             DatePicker::make('end_date')->label('Data de Término')->required(),
             Select::make('category_id')
@@ -53,7 +60,9 @@ class TimeoffResource extends Resource
                     'approved' => 'Aprovado',
                     'rejected' => 'Rejeitado',
                 ])
-                ->required(),
+                ->required()
+                ->hidden($isEmployee)  // Employee não vê status
+                ->default($isEmployee ? 'pending' : null),  // Pré-preencher com 'pending' para Employee
             Textarea::make('reason')->label('Motivo'),
         ]);
     }
@@ -80,6 +89,19 @@ class TimeoffResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = parent::getEloquentQuery();
+        $user = Auth::user();
+
+        // Se é Employee, mostrar apenas seus próprios pedidos
+        if ($user && strtoupper($user->role) === 'EMPLOYEE' && $user->employee_id) {
+            $query->where('employee_id', $user->employee_id);
+        }
+
+        return $query;
+    }
+
     public static function getPages(): array
     {
         return [
@@ -87,5 +109,29 @@ class TimeoffResource extends Resource
             'create' => Pages\CreateTimeoff::route('/create'),
             'edit' => Pages\EditTimeoff::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+        $user = Auth::user();
+        return $user && in_array(strtoupper($user->role), ['ADMIN', 'HR', 'EMPLOYEE']);
+    }
+
+    public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = Auth::user();
+        return $user && in_array(strtoupper($user->role), ['ADMIN', 'HR']);
+    }
+
+    public static function canDelete(\Illuminate\Database\Eloquent\Model $record): bool
+    {
+        $user = Auth::user();
+        return $user && in_array(strtoupper($user->role), ['ADMIN', 'HR']);
+    }
+
+    public static function canViewAny(): bool
+    {
+        $user = Auth::user();
+        return $user && in_array(strtoupper($user->role), ['ADMIN', 'HR', 'EMPLOYEE']);
     }
 }

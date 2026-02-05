@@ -31,6 +31,12 @@ class Employee extends Model
         'designation_id',
     ];
 
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'date_hired' => 'date',
+        'is_active' => 'boolean',
+    ];
+
     protected static function booted()
     {
         // Automação: cria User, Hourbank e Contrato ao criar Employee

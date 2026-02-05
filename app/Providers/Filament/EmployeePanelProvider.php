@@ -19,6 +19,9 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+// Employee Resources
+use App\Filament\Resources\TimeoffResource;
+
 class EmployeePanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -42,7 +45,10 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->favicon(asset('images/Document.svg'))
 
-            ->discoverResources(in: app_path('Filament/Employee/Resources'), for: 'App\\Filament\\Employee\\Resources')
+            // Employee pode aceder apenas ao TimeoffResource
+            ->resources([
+                TimeoffResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/Employee/Pages'), for: 'App\\Filament\\Employee\\Pages')
             ->pages([
                 //EmployeeDashboard::class,
@@ -52,6 +58,7 @@ class EmployeePanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                \App\Filament\Widgets\EmployeeInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

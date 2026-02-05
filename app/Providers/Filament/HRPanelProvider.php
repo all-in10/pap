@@ -18,6 +18,18 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
+// HR Resources
+use App\Filament\Resources\EmployeeResource;
+use App\Filament\Resources\ContractResource;
+use App\Filament\Resources\DepartmentResource;
+use App\Filament\Resources\DesignationResource;
+use App\Filament\Resources\TimeoffResource;
+use App\Filament\Resources\TimeoffCategoryResource;
+use App\Filament\Resources\BenefitResource;
+use App\Filament\Resources\WorklogResource;
+use App\Filament\Resources\HourbankResource;
+use App\Filament\Resources\AttendanceResource;
+
 class HRPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -41,7 +53,19 @@ class HRPanelProvider extends PanelProvider
             ])
             ->favicon(asset('images/Document.svg'))
 
-            ->discoverResources(in: app_path('Filament/HR/Resources'), for: 'App\\Filament\\HR\\Resources')
+            // HR pode aceder apenas a estes resources
+            ->resources([
+                EmployeeResource::class,
+                ContractResource::class,
+                DepartmentResource::class,
+                DesignationResource::class,
+                TimeoffResource::class,
+                TimeoffCategoryResource::class,
+                BenefitResource::class,
+                WorklogResource::class,
+                HourbankResource::class,
+                AttendanceResource::class,
+            ])
             ->discoverPages(in: app_path('Filament/HR/Pages'), for: 'App\\Filament\\HR\\Pages')
             ->pages([
                 Pages\Dashboard::class,
