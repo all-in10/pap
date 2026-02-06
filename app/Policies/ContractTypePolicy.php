@@ -12,7 +12,7 @@ class ContractTypePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -20,7 +20,7 @@ class ContractTypePolicy
      */
     public function view(User $user, ContractType $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -28,7 +28,7 @@ class ContractTypePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -36,7 +36,7 @@ class ContractTypePolicy
      */
     public function update(User $user, ContractType $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -44,7 +44,7 @@ class ContractTypePolicy
      */
     public function delete(User $user, ContractType $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -52,7 +52,7 @@ class ContractTypePolicy
      */
     public function restore(User $user, ContractType $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -60,6 +60,6 @@ class ContractTypePolicy
      */
     public function forceDelete(User $user, ContractType $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 }

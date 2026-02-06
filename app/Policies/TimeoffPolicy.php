@@ -12,7 +12,7 @@ class TimeoffPolicy
      */
     public function before(User $user): ?bool
     {
-        if ($user->role === 'ADMIN') {
+        if ($user->role === 'admin') {
             return true;
         }
 
@@ -24,7 +24,7 @@ class TimeoffPolicy
      */
     public function viewAny(User $user): bool
     {
-        return in_array(strtoupper($user->role), ['ADMIN', 'HR', 'EMPLOYEE']);
+        return in_array(strtolower($user->role), ['admin', 'hr', 'employee']);
     }
 
     /**
@@ -33,14 +33,14 @@ class TimeoffPolicy
      */
     public function view(User $user, Timeoff $timeoff): bool
     {
-        $role = strtoupper($user->role);
+        $role = strtolower($user->role);
         
-        if ($role === 'HR') {
+        if ($role === 'hr') {
             return true;
         }
 
         // Employee apenas vê suas próprias férias
-        if ($role === 'EMPLOYEE') {
+        if ($role === 'employee') {
             return $timeoff->employee_id === $user->employee_id;
         }
 
@@ -52,7 +52,7 @@ class TimeoffPolicy
      */
     public function create(User $user): bool
     {
-        return in_array(strtoupper($user->role), ['ADMIN', 'HR', 'EMPLOYEE']);
+        return in_array(strtolower($user->role), ['admin', 'hr', 'employee']);
     }
 
     /**
@@ -60,7 +60,7 @@ class TimeoffPolicy
      */
     public function update(User $user, Timeoff $timeoff): bool
     {
-        return in_array(strtoupper($user->role), ['ADMIN', 'HR']);
+        return in_array(strtolower($user->role), ['admin', 'hr']);
     }
 
     /**
@@ -68,7 +68,7 @@ class TimeoffPolicy
      */
     public function delete(User $user, Timeoff $timeoff): bool
     {
-        return in_array(strtoupper($user->role), ['ADMIN', 'HR']);
+        return in_array(strtolower($user->role), ['admin', 'hr']);
     }
 
     /**
@@ -76,7 +76,7 @@ class TimeoffPolicy
      */
     public function restore(User $user, Timeoff $timeoff): bool
     {
-        return in_array(strtoupper($user->role), ['ADMIN', 'HR']);
+        return in_array(strtolower($user->role), ['admin', 'hr']);
     }
 
     /**
@@ -84,6 +84,6 @@ class TimeoffPolicy
      */
     public function forceDelete(User $user, Timeoff $timeoff): bool
     {
-        return in_array(strtoupper($user->role), ['ADMIN', 'HR']);
+        return in_array(strtolower($user->role), ['admin', 'hr']);
     }
 }

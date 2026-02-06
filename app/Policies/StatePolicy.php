@@ -12,7 +12,7 @@ class StatePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -20,7 +20,7 @@ class StatePolicy
      */
     public function view(User $user, State $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -28,7 +28,7 @@ class StatePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -36,7 +36,7 @@ class StatePolicy
      */
     public function update(User $user, State $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -44,7 +44,7 @@ class StatePolicy
      */
     public function delete(User $user, State $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -52,7 +52,7 @@ class StatePolicy
      */
     public function restore(User $user, State $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 
     /**
@@ -60,6 +60,6 @@ class StatePolicy
      */
     public function forceDelete(User $user, State $model): bool
     {
-        return $user->role === 'ADMIN';
+        return $user->role === 'admin';
     }
 }
