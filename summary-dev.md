@@ -44,6 +44,10 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 - **2026-02-04 — Política de senhas e troca forçada:** Adicionei suporte para política de senha inicial e fluxo de troca obrigatória. Criei a migration que adiciona `must_change_password` e `password_changed_at` à tabela `users`, atualizei o `User` model para preencher automaticamente uma senha padrão (definível via env `DEFAULT_USER_PASSWORD`) quando uma senha não é fornecida, e marquei `must_change_password=true` nesses casos. Atualizei a `UserFactory` para usar a senha padrão e marcar `must_change_password`. Implementei o middleware `EnforcePasswordChange` que redireciona utilizadores com `must_change_password=true` para a página `/password/change` até atualizarem a senha. Criei as rotas, controller (`UserPasswordController`) e view para a alteração de senha e adicionei testes (`tests/Feature/PasswordPolicyTest.php`).
 
+- **2026-02-10 — Widgets gráficos e visualizações de dados:** Implementei 9 novos widgets para enriquecer os dashboards: 3 widgets de estatísticas para cada painel (Admin, HR, Funcionário) seguindo o padrão `StatsOverviewWidget` sem dependência de arquivos Blade. Adicionei 4 widgets gráficos avançados ao painel Admin: `DepartmentChartWidget` (gráfico de barras horizontal), `ContractStatusChartWidget` (gráfico donut), `AttendanceChartWidget` (gráfico de linhas multi-série) e `ContractTypeDistributionWidget` (gráfico radar). Todos os widgets usam a paleta de cores corporativa (#582f0e, #7f4f24, #936639, etc.) e são totalmente responsivos.
+
+- **2026-02-10 — Correção de cálculos de horas e pausa:** Revisei e corrigiu a lógica de cálculo de horas trabalhadas, extras e pausa na tabela `Attendance`. Identifiquei e eliminei o uso de `intdiv()` que truncava decimais (8h45m virava 8h), alterando para `round($workedMinutes / 60, 2)` que preserva precisão com 2 casas decimais. Atualizei os casts dos modelos: `hours_worked` e `extra_hours` são agora `float` ao invés de `integer`, permitindo armazenar valores como 8.75 (8h45m). Adicionei validação e logging para pausas negativas, melhorando a detecção de erros de entrada. Atualizei a exibição na tabela para `number_format($state, 2)` mostrando 8.75h ao invés de 8h.
+
 ---
 
 ## 1. Fundação do Projeto
@@ -115,13 +119,53 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 ---
 
-## 8. Estado
+## 8. Widgets e Dashboards Avançados
+
+- **Widgets de Estatísticas:** Implementei 9 widgets seguindo o padrão `StatsOverviewWidget` (sem dependência Blade):
+  - **Admin:** `GeneralStats` (usuários, colaboradores, contratos, férias), `DepartmentStatsWidget` (contagem de departamentos), `ContractOverviewWidget` (contratos ativo/inativo/expirando), `AttendanceOverviewWidget` (taxa de presença, faltas, média de horas)
+  - **HR:** `EmployeeDirectoryWidget`, `PendingTimeoffsWidget`, `ContractExpirationAlertWidget`
+  - **Funcionário:** `MyTimeoffHistoryWidget`, `MyAttendanceWidget`, `HourBankDetailWidget`
+
+- **Widgets Gráficos (ChartWidget):** Adicionei 4 gráficos interativos ao painel Admin com Chart.js:
+  - `DepartmentChartWidget` (Bar chart horizontal) - Top 10 departamentos por colaboradores
+  - `ContractStatusChartWidget` (Doughnut chart) - Distribuição de status (Ativo/Encerrado/Suspenso)
+  - `AttendanceChartWidget` (Line chart) - Tendências diárias de presença (3 séries: Presentes/Ausentes/Atrasados)
+  - `ContractTypeDistributionWidget` (Radar chart) - Distribuição por tipo de contrato
+
+- **Responsividade:** Todos os widgets adaptam-se a desktop, tablet e mobile com `responsive: true` e `maintainAspectRatio: true`.
+- **Cores:** Utilizadade da paleta corporativa (#582f0e primária, #7f4f24 principal, #c2c5aa sucesso, #a68a64 perigo).
+
+---
+
+## 9. Melhorias no Cálculo e Registo de Horas
+
+- **Cálculo de Horas com Decimais:**
+  - Corrigido: Antes usava `intdiv()` que truncava (8h45m → 8h). Agora usa `round($workedMinutes / 60, 2)` preservando decimais (8h45m → 8.75h).
+  - Casts atualizados: `hours_worked` e `extra_hours` são now `float` (antes eram `integer`).
+  - Precisão: Mantém 2 casas decimais em toda a cadeia de cálculo (Model, Resource, View).
+
+- **Validação de Pausa:**
+  - Adicionado logging quando pausa negativa é detectada (erro de entrada do utilizador).
+  - Reseta automaticamente para 0 com aviso nos logs (facilitará debugging).
+
+- **Display na Interface:**
+  - Tabelas agora mostram `8.75h` (número_format com 2 casas) ao invés de `8h`.
+  - Formulário exibe hints: "Calculado automaticamente (ex: 8.50 = 8h30m)" e "Acima de 8 horas/dia".
+
+---
+
+## 10. Estado
+
+## 10. Estado
 
 - Implementei e validei todas as funcionalidades solicitadas.
 - A funcionalidade de exportação de contratos em PDF está disponível e testada localmente.
 - As políticas de acesso, notificações e dashboards estão em funcionamento conforme especificado.
-- Considero a aplicação estável e pronta para testes finais, homologação e implementação.
+- **Novo:** 9 widgets de estatísticas integrados nos 3 painéis (Admin, HR, Funcionário).
+- **Novo:** 4 gráficos avançados no painel Admin (Bar, Doughnut, Line, Radar) com dados em tempo real.
+- **Novo:** Cálculo de horas corrigido com precisão decimal (8.75h ao invés de truncar para 8h).
+- A aplicação está estável e pronta para testes finais, homologação e implementação.
 
 ---
 
-_Última atualização: 4 de Fevereiro de 2026_
+_Última atualização: 10 de Fevereiro de 2026_
