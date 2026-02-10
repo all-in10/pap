@@ -136,6 +136,11 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('email')->label('E-mail')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('department.name')->label('Departamento')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('date_hired')->label('Data de Contratação')->date()->sortable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Ativo')
+                    ->boolean()
+                    ->sortable()
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

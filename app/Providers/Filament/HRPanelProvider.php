@@ -29,6 +29,9 @@ use App\Filament\Resources\BenefitResource;
 use App\Filament\Resources\WorklogResource;
 use App\Filament\Resources\HourbankResource;
 use App\Filament\Resources\AttendanceResource;
+use App\Filament\Widgets\HR\EmployeeDirectoryWidget;
+use App\Filament\Widgets\HR\PendingTimeoffsWidget;
+use App\Filament\Widgets\HR\ContractExpirationAlertWidget;
 
 class HRPanelProvider extends PanelProvider
 {
@@ -75,6 +78,9 @@ class HRPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
                 \App\Filament\Widgets\GeneralStats::class,
+                EmployeeDirectoryWidget::class,
+                PendingTimeoffsWidget::class,
+                ContractExpirationAlertWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

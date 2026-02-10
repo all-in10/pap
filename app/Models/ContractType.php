@@ -15,4 +15,22 @@ class ContractType extends Model
     {
         return $this->hasMany(Contract::class);
     }
+
+    /**
+     * Verifica se este tipo de contrato requer data de fim
+     */
+    public function requiresEndDate(): bool
+    {
+        return in_array($this->name, ['temporario', 'tempo_parcial', 'estagio', 'termo_certo', 'termo_incerto']);
+    }
+
+    /**
+     * Obtém IDs dos tipos que requerem data de fim
+     */
+    public static function requiresEndDateIds(): array
+    {
+        return static::whereIn('name', ['temporario', 'tempo_parcial', 'estagio', 'termo_certo', 'termo_incerto'])
+            ->pluck('id')
+            ->toArray();
+    }
 }

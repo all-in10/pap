@@ -39,6 +39,7 @@ class ContractResource extends Resource
                 ->default(fn () => \App\Models\ContractType::firstWhere('name', 'sem_termo')->id ?? null)
                 ->required()
                 ->reactive()
+                ->live()
                 ->searchable()
                 ->preload(),
 
@@ -48,26 +49,43 @@ class ContractResource extends Resource
                 ->numeric()
                 ->required(),
 
-            // Datas
+            // Data de Início (sempre visível)
             Forms\Components\DatePicker::make('start_date')
                 ->label('Data de Início')
+                ->native(false)
                 ->required()
-                ->default(fn($get) => $get('employee.date_hired') ?? now()),
+                ->helperText('Data em que o contrato começa'),
 
+            // Data de Fim (apenas para contratos temporários, a termo, etc)
             Forms\Components\DatePicker::make('end_date')
                 ->label('Data de Fim')
+                ->native(false)
                 ->visible(
-                    fn(callable $get) =>
-                    in_array($get('contract_type_id'), [
-                        \App\Models\ContractType::firstWhere('name', 'temporary')->id ?? -1,
-                        \App\Models\ContractType::firstWhere('name', 'internship')->id ?? -1,
-                    ])
+                    fn(callable $get) => 
+                    in_array(
+                        $get('contract_type_id'),
+                        \App\Models\ContractType::requiresEndDateIds()
+                    )
                 )
                 ->required(
-                    fn(callable $get) =>
-                    $get('contract_type_id') === (\App\Models\ContractType::firstWhere('name', 'temporary')->id ?? -1)
+                    fn(callable $get) => 
+                    in_array(
+                        $get('contract_type_id'),
+                        \App\Models\ContractType::requiresEndDateIds()
+                    )
                 )
-                ->helperText('Obrigatório apenas para contratos temporários.')
+                ->rules([
+                    'nullable',
+                    function (callable $get) {
+                        return function ($attribute, $value, $fail) use ($get) {
+                            $startDate = $get('start_date');
+                            if ($startDate && $value && $value <= $startDate) {
+                                $fail('A data de fim deve ser posterior à data de início.');
+                            }
+                        };
+                    },
+                ])
+                ->helperText('Obrigatório para contratos temporários, tempo parcial e estágios.')
                 ->nullable(),
 
             // Status

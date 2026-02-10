@@ -11,6 +11,8 @@ use App\Models\Timeoff;
 
 class GeneralStats extends StatsOverviewWidget
 {
+    protected static ?int $sort = 1;
+
     protected function getStats(): array
     {
         return [

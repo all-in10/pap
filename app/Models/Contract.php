@@ -52,4 +52,32 @@ class Contract extends Model
     {
         return $this->status === 'active';
     }
+
+    /**
+     * Verifica se este contrato requer data de fim
+     */
+    public function requiresEndDate(): bool
+    {
+        return $this->contractType?->requiresEndDate() ?? false;
+    }
+
+    /**
+     * Obtém o tipo de contrato em formato legível
+     */
+    public function getContractTypeLabel(): string
+    {
+        return $this->contractType?->label ?? 'Tipo não definido';
+    }
+
+    /**
+     * Verifica se a data de fim é válida (se necessária)
+     */
+    public function hasValidEndDate(): bool
+    {
+        if (!$this->requiresEndDate()) {
+            return true;
+        }
+
+        return $this->end_date !== null && $this->end_date > $this->start_date;
+    }
 }

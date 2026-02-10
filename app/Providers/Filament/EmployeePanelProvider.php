@@ -21,6 +21,9 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 // Employee Resources
 use App\Filament\Resources\TimeoffResource;
+use App\Filament\Widgets\Employee\MyTimeoffHistoryWidget;
+use App\Filament\Widgets\Employee\MyAttendanceWidget;
+use App\Filament\Widgets\Employee\HourBankDetailWidget;
 
 class EmployeePanelProvider extends PanelProvider
 {
@@ -59,6 +62,9 @@ class EmployeePanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
                 \App\Filament\Widgets\EmployeeInfoWidget::class,
+                MyTimeoffHistoryWidget::class,
+                MyAttendanceWidget::class,
+                HourBankDetailWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

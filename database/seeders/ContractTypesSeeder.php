@@ -14,6 +14,7 @@ class ContractTypesSeeder extends Seeder
             ['name' => 'termo_certo', 'label' => 'Contrato a termo certo'],
             ['name' => 'termo_incerto', 'label' => 'Contrato a termo incerto'],
             ['name' => 'temporario', 'label' => 'Contrato de trabalho temporário'],
+            ['name' => 'estagio', 'label' => 'Contrato de estágio'],
             ['name' => 'tempo_parcial', 'label' => 'Contrato de trabalho a tempo parcial'],
             ['name' => 'prestacao_servicos', 'label' => 'Contrato de prestação de serviços (recibos verdes)'],
         ];

@@ -17,6 +17,14 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Widgets\Admin\DepartmentStatsWidget;
+use App\Filament\Widgets\Admin\ContractOverviewWidget;
+use App\Filament\Widgets\Admin\AttendanceOverviewWidget;
+use App\Filament\Widgets\Admin\DepartmentChartWidget;
+use App\Filament\Widgets\Admin\ContractStatusChartWidget;
+use App\Filament\Widgets\Admin\AttendanceChartWidget;
+use App\Filament\Widgets\Admin\ContractTypeDistributionWidget;
+use App\Filament\Widgets\GeneralStats;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -51,7 +59,14 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
-                \App\Filament\Widgets\GeneralStats::class,
+                GeneralStats::class,
+                DepartmentStatsWidget::class,
+                ContractOverviewWidget::class,
+                AttendanceOverviewWidget::class,
+                DepartmentChartWidget::class,
+                ContractStatusChartWidget::class,
+                AttendanceChartWidget::class,
+                ContractTypeDistributionWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
