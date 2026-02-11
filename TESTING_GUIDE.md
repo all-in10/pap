@@ -349,5 +349,3 @@ php artisan db:seed --class=WidgetTestSeeder
 - Pronto para testes
 
 **Próximo:** 🧪 Testes em ambiente real
-$ git config --global user.name "Victor Gabriel"
-$ git config --global user.email 03012008victorgabriel@gmail.com
