@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->unsavedChangesAlerts()
             ->login()
             ->brandLogo(asset('images/Teamcorelogo.svg'))
             ->colors([

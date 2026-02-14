@@ -34,8 +34,6 @@ class WorklogResource extends Resource
             ->schema([
                 Select::make('employee_id')->relationship('employee', 'first_name')->label('Funcionário')->searchable()->preload()->required(),
                 DatePicker::make('date')->label('Data')->required(),
-                TextInput::make('type')->label('Tipo'),
-                Toggle::make('approved')->label('Aprovado'),
                 Textarea::make('description')->label('Descrição'),
             ]);
     }
@@ -44,12 +42,9 @@ class WorklogResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->label('ID')->sortable(),
+                TextColumn::make('id')->label('ID')->sortable()->hidden(),
                 TextColumn::make('employee.first_name')->label('Funcionário'),
                 TextColumn::make('date')->date()->label('Data'),
-                TextColumn::make('duration')->label('Duração'),
-                TextColumn::make('type')->label('Tipo'),
-                IconColumn::make('approved')->boolean()->label('Aprovado'),
                 TextColumn::make('created_at')->dateTime()->label('Criado em'),
             ])
             ->actions([

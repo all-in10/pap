@@ -40,6 +40,12 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ContractType::class, ContractTypePolicy::class);
         Gate::policy(Timeoff::class, TimeoffPolicy::class);
 
+        // Gates para permissões gerais
+        Gate::define('export-data', fn (User $user) => $user->role !== 'employee');
+        Gate::define('view-audit', fn (User $user) => $user->role === 'admin');
+        Gate::define('is-admin', fn (User $user) => $user->role === 'admin');
+        Gate::define('is-admin-or-hr', fn (User $user) => in_array($user->role, ['admin', 'hr']));
+
         // Aplicar middleware que força a alteração de senha após autenticação
         if ($this->app->runningInConsole() === false) {
             $router = $this->app->make(\Illuminate\Routing\Router::class);

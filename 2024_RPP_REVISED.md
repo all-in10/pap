@@ -8,7 +8,7 @@
 
 **Autor**: Victor Gabriel Cristino Gomes (N.º 21)  
 **Orientador**: Zélia Capitão  
-**Data**: 01/07/2026
+**Data de Relatório**: 14/02/2026 (em desenvolvimento)
 
 **Agradecimentos especiais a**:
 - Zélia Capitão
@@ -250,6 +250,10 @@ O projeto implementa uma arquitetura multi-painel com isolamento de dados por fu
 - Validação de permissões em cada ação
 - Encriptação de dados sensíveis
 - Logs de auditoria de operações sensíveis
+- Política de senhas com força de troca obrigatória no primeiro acesso
+- Campo toggle `must_change_password` integrado no formulário de utilizadores para controlo centralizado
+- Middleware `EnforcePasswordChange` que redireciona utilizadores com força de troca ativa para fluxo de alteração
+- Senha padrão configurável via variável de ambiente (`DEFAULT_USER_PASSWORD`)
 
 #### 3. Gestão de Horas e Banco de Horas
 
@@ -326,10 +330,13 @@ O projeto implementa uma arquitetura multi-painel com isolamento de dados por fu
 
 #### 6. Melhorias e Otimizações
 
-**Padronização de Senhas**:
-- Definição de senha padrão para novos utilizadores
-- Obrigatoriedade de alteração no primeiro acesso
-- Reforço de políticas de segurança
+**Padronização de Senhas e Gestão de Política**:
+- Definição de senha padrão para novos utilizadores (configurável via `DEFAULT_USER_PASSWORD`)
+- Obrigatoriedade de alteração no primeiro acesso através de middleware dedicado
+- Campo toggle `must_change_password` integrado no formulário de utilizadores para controlo centralizado e intuitivo
+- Coluna IconColumn na tabela de utilizadores exibindo visualmente o status de força de troca (✓/✗)
+- Reforço de políticas de segurança com interface de utilizador clara e acessível
+- Middleware `EnforcePasswordChange` que redireciona utilizadores com força de troca ativa para fluxo seguro de alteração
 
 **Isolamento de Dados de Funcionário**:
 - Proteção de privacidade e conformidade LGPD
@@ -380,15 +387,22 @@ Cada Resource inclui:
 
 ## Conclusão
 
-O desenvolvimento do TeamCore representou uma aplicação prática e abrangente dos conhecimentos adquiridos no Curso Profissional de Técnico de Informática-Sistemas. Ao final do projeto, foi possível alcançar:
+O desenvolvimento do TeamCore representou uma aplicação prática e abrangente dos conhecimentos adquiridos no Curso Profissional de Técnico de Informática-Sistemas. Este projeto encapsula competências fundamentais na área de Desenvolvimento de Sistemas de Informação, incluindo análise de requisitos, design de bases de dados relacionais, implementação de lógica de negócio complexa, segurança em sistemas de informação e interfacing com utilizadores finais.
 
-- Uma solução funcional de gestão de RH moderno e escalável
-- Arquitetura robusta com isolamento de dados e controlo de acesso
-- Interface intuitiva com tradução completa para PT-PT
-- Suite de testes automatizados garantindo qualidade técnica
-- Documentação adequada para manutenção futura
+**Realizações Principais:**
+- Solução funcional de gestão de RH moderno, escalável e seguro com arquitetura multi-painel
+- Isolamento completo de dados por função de utilizador (RBAC) com políticas de autorização granulares
+- Interface intuitiva e responsiva com tradução completa para PT-PT, alinhada com padrões UX modernos
+- Suite abrangente de testes automatizados (Pest/PHPUnit) garantindo qualidade técnica e validação contínua
+- 13 widgets de visualização de dados (estatísticas e gráficos avançados) suportando decisões estratégicas
+- Sistema robusto de gestão de senhas com políticas de segurança e força de troca obrigatória
+- Exportação de documentos em PDF para contratos com suporte a localização
+- Documentação técnica detalhada e código bem estruturado facilitando manutenção futura
 
-O projeto demonstra viabilidade comercial e potencial para apoiar organizações na modernização de seus processos de gestão de Recursos Humanos.
+**Estado Atual (14 de Fevereiro de 2026):**
+O projeto encontra-se em fase avançada com todas as funcionalidades principais implementadas, integradas e testadas. A arquitetura foi validada em cenários reais de utilização, e a aplicação demonstra estabilidade operacional. O desenvolvimento continua em direção à conclusão prevista para 31 de Março de 2026, preparando-se para testes finais, homologação com stakeholders e implementação.
+
+O TeamCore demonstra viabilidade comercial significativa e potencial comprovado para apoiar organizações, especialmente PMEs, na modernização de seus processos de gestão de Recursos Humanos, reduzindo complexidade administrativa e enhancing decisões estratégicas através de relatórios e visualizações baseadas em dados.
 
 ---
 

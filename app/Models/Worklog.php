@@ -4,24 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\RecordsActivity;
 
 class Worklog extends Model
 {
-    use HasFactory;
+    use HasFactory, RecordsActivity;
 
     protected $fillable = [
         'employee_id',
         'date',
-        'duration',
         'description',
-        'type',
-        'approved',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'duration' => 'float',
-        'approved' => 'boolean',
     ];
 
     public function employee()

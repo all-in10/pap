@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas até 4 de Fevereiro de 2026. Descrevo as funcionalidades principais, os marcos do desenvolvimento e as ações que recomendo para os próximos passos. O sistema evoluiu para múltiplos painéis (Admin, HR, Funcionário, App) com políticas de acesso refinadas, notificações personalizadas e interface totalmente localizada para PT-PT.
+Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas até 14 de Fevereiro de 2026. Descrevo as funcionalidades principais, os marcos do desenvolvimento e as ações que recomendo para os próximos passos. O sistema evoluiu para múltiplos painéis (Admin, HR, Funcionário, App) com políticas de acesso refinadas, notificações personalizadas, interface totalmente localizada para PT-PT e widgets avançados de visualização de dados.
 
 ---
 
@@ -47,6 +47,8 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 - **2026-02-10 — Widgets gráficos e visualizações de dados:** Implementei 9 novos widgets para enriquecer os dashboards: 3 widgets de estatísticas para cada painel (Admin, HR, Funcionário) seguindo o padrão `StatsOverviewWidget` sem dependência de arquivos Blade. Adicionei 4 widgets gráficos avançados ao painel Admin: `DepartmentChartWidget` (gráfico de barras horizontal), `ContractStatusChartWidget` (gráfico donut), `AttendanceChartWidget` (gráfico de linhas multi-série) e `ContractTypeDistributionWidget` (gráfico radar). Todos os widgets usam a paleta de cores corporativa (#582f0e, #7f4f24, #936639, etc.) e são totalmente responsivos.
 
 - **2026-02-10 — Correção de cálculos de horas e pausa:** Revisei e corrigiu a lógica de cálculo de horas trabalhadas, extras e pausa na tabela `Attendance`. Identifiquei e eliminei o uso de `intdiv()` que truncava decimais (8h45m virava 8h), alterando para `round($workedMinutes / 60, 2)` que preserva precisão com 2 casas decimais. Atualizei os casts dos modelos: `hours_worked` e `extra_hours` são agora `float` ao invés de `integer`, permitindo armazenar valores como 8.75 (8h45m). Adicionei validação e logging para pausas negativas, melhorando a detecção de erros de entrada. Atualizei a exibição na tabela para `number_format($state, 2)` mostrando 8.75h ao invés de 8h.
+
+- **2026-02-14 — Refactoring da política de força de troca de senha:** Migrei o controlo de força de troca de senha do nível de ações (actions e bulk actions) para o form do utilizador. Adicionei um toggle `must_change_password` no formulário de criação/edição, permitindo gerenciar a política de forma mais intuitiva e centralizada. Adicionei uma coluna IconColumn na tabela de utilizadores que exibe o status booleano (✓/✗) do campo `must_change_password`. Removidas as actions individuais e bulk actions que realizavam a força de troca, simplificando a interface e centralizando a lógica de negócio no formulário.
 
 ---
 
@@ -112,10 +114,26 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 ## 7. Recomendações e Próximas Etapas
 
-- Recomendo executar as migrações e seeders em ambiente de staging antes de produção.
-- Sugiro testar todos os painéis Filament para permissões, dashboards e fluxos críticos.
-- Recomendo adicionar testes automatizados específicos para a geração e download de PDFs (verificar cabeçalho, A4, incorporação de fontes e localização).
-- Considero úteis melhorias futuras: fluxo de aprovação de horas extras, relatórios analíticos, exportação CSV e notificações avançadas.
+**Para Homologação e Produção:**
+- Executar suite completa de testes em ambiente de staging antes de produção
+- Validar todos os painéis Filament (Admin, HR, Funcionário) para permissões, dashboards, widgets e fluxos críticos
+- Testar autenticação em múltiplos navegadores e dispositivos (responsividade)
+- Validar performance de queries ao carregar widgets com datasets grandes
+- Testes específicos para geração e download de PDFs (cabeçalho, formatting A4, fontes, localização PT-PT)
+- Verificação de segurança: CSRF, SQL injection, autorização em endpoints críticos
+- Validação de conformidade com políticas de privacidade (LGPD) para dados de funcionários
+
+**Melhorias Futuras (Roadmap):**
+- Integração com sistema de folha de pagamento (API)
+- Fluxo de aprovação de horas extras com notificações de stakeholders
+- Relatórios analíticos avançados (BI Dashboard, drill-down por departamento/período)
+- Exportação em múltiplos formatos (CSV, Excel, JSON)
+- Notificações em tempo real (WebSockets) para eventos críticos
+- Aplicação móvel nativa (iOS/Android) como complemento ao web
+- Internacionalização (i18n) para suportar múltiplos idiomas além de PT-PT
+- Integração com calendários (Google Calendar, Outlook) para síncrono de férias
+- Sistema de auditoria com logs detalhados de todas as operações sensíveis
+- Backup e disaster recovery automático
 
 ---
 
@@ -154,18 +172,25 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 ---
 
-## 10. Estado
+## 10. Estado Atual do Projeto
 
-## 10. Estado
+**Status Geral**: A aplicação encontra-se numa fase avançada de desenvolvimento, com todas as funcionalidades principais implementadas e testadas. Conclusão prevista para 31 de Março de 2026.
 
-- Implementei e validei todas as funcionalidades solicitadas.
-- A funcionalidade de exportação de contratos em PDF está disponível e testada localmente.
-- As políticas de acesso, notificações e dashboards estão em funcionamento conforme especificado.
-- **Novo:** 9 widgets de estatísticas integrados nos 3 painéis (Admin, HR, Funcionário).
-- **Novo:** 4 gráficos avançados no painel Admin (Bar, Doughnut, Line, Radar) com dados em tempo real.
-- **Novo:** Cálculo de horas corrigido com precisão decimal (8.75h ao invés de truncar para 8h).
-- A aplicação está estável e pronta para testes finais, homologação e implementação.
+**Implementações Concluídas:**
+- Todas as funcionalidades principais de gestão de RH conforme especificado
+- Exportação de contratos em PDF integrada e testada
+- Sistema de controlo de acesso granular (RBAC) com três painéis isolados (Admin, HR, Funcionário)
+- Políticas de autorização, notificações contextuais e validações conforme requisitos
+- 9 widgets de estatísticas distribuídos nos 3 painéis (Admin, HR, Funcionário)
+- 4 gráficos avançados no painel Admin (Bar, Doughnut, Line, Radar) com dados em tempo real
+- Cálculo de horas com precisão decimal (8.75h ao invés de valores truncados)
+- Sistema de política de senha com força de troca obrigatória no primeiro acesso
+- Tradução completa para PT-PT em toda a interface
+- Suite de testes automatizados com Pest para validação contínua
+- Gestão de força de troca de senha integrada no formulário com toggle e visualização de status em tabela
+
+**Estado de Estabilidade**: A aplicação está estável e pronta para testes finais, homologação e eventual implementação. Não existem issues críticas conhecidas.
 
 ---
 
-_Última atualização: 10 de Fevereiro de 2026_
+_Última atualização: 14 de Fevereiro de 2026_

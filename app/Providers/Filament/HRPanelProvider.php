@@ -41,6 +41,7 @@ class HRPanelProvider extends PanelProvider
         return $panel
             ->id('hr')
             ->path('hr')
+            ->unsavedChangesAlerts()
             ->login()
             ->brandLogo(asset('images/Teamcorelogo.svg'))
             ->colors([

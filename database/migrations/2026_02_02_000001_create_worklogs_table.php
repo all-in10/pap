@@ -12,9 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained()->cascadeOnDelete();
             $table->date('date');
-            $table->string('type')->default('regular');
             $table->text('description')->nullable();
-            $table->boolean('approved')->default(false);
             $table->timestamps();
         });
     }

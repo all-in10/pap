@@ -4,14 +4,14 @@ namespace App\Policies;
 
 use App\Models\User;
 
-class UserPolicy
+class UserPolicy extends BasePolicy
 {
     /**
      * Apenas ADMIN pode visualizar utilizadores
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === 'admin';
+        return $this->isAdmin($user);
     }
 
     /**
@@ -19,7 +19,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->role === 'admin';
+        return $this->isAdmin($user);
     }
 
     /**
@@ -27,7 +27,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'admin';
+        return $this->isAdmin($user);
     }
 
     /**
@@ -35,7 +35,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->role === 'admin';
+        return $this->isAdmin($user);
     }
 
     /**
@@ -43,7 +43,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->role === 'admin';
+        return $this->isAdmin($user);
     }
 
     /**
@@ -51,14 +51,31 @@ class UserPolicy
      */
     public function restore(User $user, User $model): bool
     {
-        return $user->role === 'admin';
+        return $this->isAdmin($user);
     }
 
     /**
-     * Apenas ADMIN pode eliminar permanentemente utilizadores
+     * Apenas ADMIN pode eliminar permanentemente
      */
     public function forceDelete(User $user, User $model): bool
     {
-        return $user->role === 'admin';
+        return $this->isAdmin($user);
+    }
+
+    /**
+     * Admin e HR podem exportar utilizadores
+     */
+    public function export(User $user): bool
+    {
+        return parent::export($user);
+    }
+
+    /**
+     * Apenas ADMIN pode visualizar auditoria de utilizadores
+     */
+    public function viewAudit(User $user): bool
+    {
+        return parent::viewAudit($user);
     }
 }
+

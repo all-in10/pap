@@ -6,9 +6,11 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\RecordsActivity;
 
 class Attendance extends Model
 {
+    use RecordsActivity;
     use HasFactory;
 
     /**

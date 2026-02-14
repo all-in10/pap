@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\RecordsActivity;
 
 class Employee extends Model
 {
-    use HasFactory;
+    use HasFactory, RecordsActivity;
 
     protected $fillable = [
         'first_name',

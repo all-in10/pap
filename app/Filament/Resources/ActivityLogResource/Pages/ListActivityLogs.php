@@ -1,43 +1,48 @@
 <?php
 
-namespace App\Filament\Resources\WorklogResource\Pages;
+namespace App\Filament\Resources\ActivityLogResource\Pages;
 
-use App\Filament\Resources\WorklogResource;
+use App\Filament\Resources\ActivityLogResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\Action;
 
-class ListWorklogs extends ListRecords
+class ListActivityLogs extends ListRecords
 {
-    protected static string $resource = WorklogResource::class;
+    protected static string $resource = ActivityLogResource::class;
 
     protected function getHeaderActions(): array
     {
-        $actions = [
-            Actions\CreateAction::make()->label('Registrar'),
-        ];
+        $actions = [];
 
-        // Adicionar ações de exportação apenas para admin/HR
-        if (auth()->user()?->role !== 'employee') {
+        // Adicionar ações de exportação apenas para admin
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+        if ($user?->role === 'admin') {
             $actions[] = Action::make('export-csv')
                 ->label('📊 Exportar CSV')
                 ->color('info')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->url(route('export.csv', 'Worklog'));
+                ->url(route('export.csv', 'ActivityLog'));
 
             $actions[] = Action::make('export-excel')
                 ->label('📈 Exportar Excel')
                 ->color('success')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->url(route('export.excel', 'Worklog'));
+                ->url(route('export.excel', 'ActivityLog'));
 
             $actions[] = Action::make('export-json')
                 ->label('📄 Exportar JSON')
                 ->color('warning')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->url(route('export.json', 'Worklog'));
+                ->url(route('export.json', 'ActivityLog'));
         }
 
         return $actions;
+    }
+
+    public function getTitle(): string
+    {
+        return 'Registos de Auditoria';
     }
 }

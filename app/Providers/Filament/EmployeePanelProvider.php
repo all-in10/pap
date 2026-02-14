@@ -33,6 +33,7 @@ class EmployeePanelProvider extends PanelProvider
         return $panel
             ->id('employee')
             ->path('employee')
+            ->unsavedChangesAlerts()
             ->login()
             ->brandLogo(asset('images/Teamcorelogo.svg'))
             ->colors([
