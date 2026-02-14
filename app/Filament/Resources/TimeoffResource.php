@@ -41,8 +41,14 @@ class TimeoffResource extends Resource
                 ->hidden($isEmployee)  // Esconder para Employee
                 ->default($isEmployee ? $user->employee_id : null)  // Pré-preencher para Employee
                 ->disabled($isEmployee),  // Desabilitar para Employee
-            DatePicker::make('start_date')->label('Data de Início')->required(),
-            DatePicker::make('end_date')->label('Data de Término')->required(),
+            DatePicker::make('start_date')
+            ->label('Data de Início')
+            ->native(false)
+            ->required(),
+            DatePicker::make('end_date')
+            ->label('Data de Término')
+            ->native(false)
+            ->required(),
             Select::make('category_id')
                 ->label('Categoria')
                 ->relationship('category', 'label')
@@ -74,7 +80,7 @@ class TimeoffResource extends Resource
             TextColumn::make('employee.first_name')->label('Funcionário'),
             TextColumn::make('category.label')->label('Categoria')->sortable(),
             TextColumn::make('type')->label('Tipo de Licença')->sortable()
-            ->formatStateUsing(fn($state) => \App\Models\Timeoff::TYPES[$state]['label'] ?? $state),
+                ->formatStateUsing(fn($state) => \App\Models\Timeoff::TYPES[$state]['label'] ?? $state),
             TextColumn::make('start_date')->date()->label('Data de Início')->sortable(),
             TextColumn::make('end_date')->date()->label('Data de Término')->sortable(),
             TextColumn::make('status')->label('Status')->sortable(),

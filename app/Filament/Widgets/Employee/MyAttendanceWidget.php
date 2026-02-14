@@ -9,6 +9,11 @@ use Carbon\Carbon;
 
 class MyAttendanceWidget extends BaseWidget
 {
+    public function getColumnSpan(): int | string | array
+    {
+        return 1;
+    }
+
     protected function getStats(): array
     {
         $user = Auth::user();
@@ -46,7 +51,7 @@ class MyAttendanceWidget extends BaseWidget
                 ->color('success'),
             
             Stat::make('Faltas', $absences)
-                ->icon('heroicon-o-calendar-x-mark')
+                ->icon('heroicon-o-calendar')
                 ->color('danger'),
             
             Stat::make('Atrasos', $lates)

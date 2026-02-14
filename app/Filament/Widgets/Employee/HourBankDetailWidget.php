@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class HourBankDetailWidget extends BaseWidget
 {
+    public function getColumnSpan(): int | string | array
+    {
+        return 1;
+    }
+
     protected function getStats(): array
     {
         $user = Auth::user();

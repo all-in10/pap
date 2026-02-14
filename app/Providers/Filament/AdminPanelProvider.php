@@ -25,6 +25,7 @@ use App\Filament\Widgets\Admin\ContractStatusChartWidget;
 use App\Filament\Widgets\Admin\AttendanceChartWidget;
 use App\Filament\Widgets\Admin\ContractTypeDistributionWidget;
 use App\Filament\Widgets\GeneralStats;
+use Filament\Support\Facades\FilamentAsset;
 
 class AdminPanelProvider extends PanelProvider
 {

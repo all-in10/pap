@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class EmployeeInfoWidget extends Widget
 {
     protected static string $view = 'filament.widgets.employee-info-widget';
+    
+    public function getColumnSpan(): int | string | array
+    {
+        return 1;
+    }
 
     public ?Employee $employee = null;
     public ?string $hourBankBalance = null;

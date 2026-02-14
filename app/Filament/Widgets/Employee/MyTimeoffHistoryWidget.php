@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Auth;
 
 class MyTimeoffHistoryWidget extends BaseWidget
 {
+    public function getColumnSpan(): int | string | array
+    {
+        return 1;
+    }
+
     protected function getStats(): array
     {
         $user = Auth::user();

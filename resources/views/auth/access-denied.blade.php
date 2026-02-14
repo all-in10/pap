@@ -14,15 +14,15 @@
 </head>
 <body>
 <div class="card">
-    <h1 style="margin-bottom:8px;color:#c0392b">Acesso Negado</h1>
-    <p style="margin-bottom:16px">Não tem permissão para aceder ao painel <strong>{{ strtoupper($panel ?? request()->segment(1) ?? '') }}</strong>.</p>
+    <h1 style="margin-bottom:8px;color:#c0392b">Caminho Errado</h1>
+    <p style="margin-bottom:16px">O seu painel não é <strong>{{ strtoupper($panel ?? request()->segment(1) ?? '') }}</strong>.</p>
 
     @if(empty($role))
         <p style="margin-bottom:16px">Por favor faça login na página correta para continuar.</p>
         <a href="/login" class="btn btn-default">Ir para Login</a>
     @else
-        <p style="margin-bottom:16px">O seu perfil tem role <strong>{{ $role }}</strong>. Use o botão abaixo para aceder à página de login apropriada.</p>
-        <a href="{{ $loginPath }}" class="btn btn-primary">Ir para {{ $loginPath }}</a>
+        <p style="margin-bottom:16px">O seu painel é o <strong>{{ $role }}</strong>. Use o botão abaixo para aceder à página de login apropriada.</p>
+        <a href="{{ $loginPath }}" class="btn btn-primary">Ir para o painel  correto</a>
     @endif
 
     <div style="margin-top:18px;color:#666;font-size:13px">Se acha que isto é um erro, contacte o administrador do sistema.</div>

@@ -46,16 +46,26 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
-        // Atribui usuários a alguns Employees (relação 1:1)
-        $employees = \App\Models\Employee::take(5)->get();
-        foreach ($employees as $index => $employee) {
-            // Só cria user se não existir para o employee
-            if (!\App\Models\User::where('employee_id', $employee->id)->exists()) {
-                $user = \App\Models\User::factory()->create([
-                    'name' => $employee->first_name . ' ' . $employee->last_name,
-                    'employee_id' => $employee->id,
-                    'role' => $index % 2 === 0 ? 'admin' : 'hr',
-                ]);
+        // Cria 3 usuários específicos (admin, hr, employee)
+        $employees = \App\Models\Employee::whereDoesntHave('user')->take(3)->get();
+        
+        $usersData = [
+            ['name' => 'Admin User', 'email' => 'admin@test.test', 'role' => 'admin'],
+            ['name' => 'HR User', 'email' => 'hr@test.test', 'role' => 'hr'],
+            ['name' => 'Employee User', 'email' => 'employee@test.test', 'role' => 'employee'],
+        ];
+        
+        foreach ($usersData as $index => $userData) {
+            if (isset($employees[$index])) {
+                \App\Models\User::firstOrCreate(
+                    ['email' => $userData['email']],
+                    [
+                        'name' => $userData['name'],
+                        'password' => bcrypt('1'),
+                        'employee_id' => $employees[$index]->id,
+                        'role' => $userData['role'],
+                    ]
+                );
             }
         }
 
