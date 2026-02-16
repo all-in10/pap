@@ -6,6 +6,8 @@ use App\Filament\Resources\ContractResource\Pages;
 use App\Models\Contract;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -23,87 +25,92 @@ class ContractResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            // Relação com Funcionário
-            Forms\Components\Select::make('employee_id')
-                ->label('Funcionário')
-                ->relationship('employee', 'first_name')
-                ->searchable()
-                ->preload()
-                ->nullable()
-                ->helperText('Será criado automaticamente se vazio.'),
+            Tabs::make('Dados do Contrato')
+                ->tabs([
+                    Tab::make('Informações Básicas')
+                        ->schema([
+                            Forms\Components\Select::make('employee_id')
+                                ->label('Funcionário')
+                                ->relationship('employee', 'first_name')
+                                ->searchable()
+                                ->preload()
+                                ->nullable()
+                                ->helperText('Será criado automaticamente se vazio.'),
 
-            // Tipo de Contrato (relacionado ao ContractType)
-            Forms\Components\Select::make('contract_type_id')
-                ->label('Tipo de Contrato')
-                ->options(fn () => \App\Models\ContractType::pluck('label', 'id')->toArray())
-                ->default(fn () => \App\Models\ContractType::firstWhere('name', 'sem_termo')->id ?? null)
-                ->required()
-                ->reactive()
-                ->live()
-                ->searchable()
-                ->preload(),
+                            Forms\Components\Select::make('contract_type_id')
+                                ->label('Tipo de Contrato')
+                                ->options(fn () => \App\Models\ContractType::pluck('label', 'id')->toArray())
+                                ->default(fn () => \App\Models\ContractType::firstWhere('name', 'sem_termo')->id ?? null)
+                                ->required()
+                                ->reactive()
+                                ->live()
+                                ->searchable()
+                                ->preload(),
+                        ])
+                        ->columns(2),
 
-            // Salário
-            Forms\Components\TextInput::make('salary')
-                ->label('Salário')
-                ->numeric()
-                ->required(),
+                    Tab::make('Termos')
+                        ->schema([
+                            Forms\Components\TextInput::make('salary')
+                                ->label('Salário')
+                                ->numeric()
+                                ->required(),
 
-            // Data de Início (sempre visível)
-            Forms\Components\DatePicker::make('start_date')
-                ->label('Data de Início')
-                ->native(false)
-                ->required()
-                ->helperText('Data em que o contrato começa'),
+                            Forms\Components\DatePicker::make('start_date')
+                                ->label('Data de Início')
+                                ->native(false)
+                                ->required()
+                                ->helperText('Data em que o contrato começa'),
 
-            // Data de Fim (apenas para contratos temporários, a termo, etc)
-            Forms\Components\DatePicker::make('end_date')
-                ->label('Data de Fim')
-                ->native(false)
-                ->visible(
-                    fn(callable $get) => 
-                    in_array(
-                        $get('contract_type_id'),
-                        \App\Models\ContractType::requiresEndDateIds()
-                    )
-                )
-                ->required(
-                    fn(callable $get) => 
-                    in_array(
-                        $get('contract_type_id'),
-                        \App\Models\ContractType::requiresEndDateIds()
-                    )
-                )
-                ->rules([
-                    'nullable',
-                    function (callable $get) {
-                        return function ($attribute, $value, $fail) use ($get) {
-                            $startDate = $get('start_date');
-                            if ($startDate && $value && $value <= $startDate) {
-                                $fail('A data de fim deve ser posterior à data de início.');
-                            }
-                        };
-                    },
+                            Forms\Components\DatePicker::make('end_date')
+                                ->label('Data de Fim')
+                                ->native(false)
+                                ->visible(
+                                    fn(callable $get) => 
+                                    in_array(
+                                        $get('contract_type_id'),
+                                        \App\Models\ContractType::requiresEndDateIds()
+                                    )
+                                )
+                                ->required(
+                                    fn(callable $get) => 
+                                    in_array(
+                                        $get('contract_type_id'),
+                                        \App\Models\ContractType::requiresEndDateIds()
+                                    )
+                                )
+                                ->rules([
+                                    'nullable',
+                                    function (callable $get) {
+                                        return function ($attribute, $value, $fail) use ($get) {
+                                            $startDate = $get('start_date');
+                                            if ($startDate && $value && $value <= $startDate) {
+                                                $fail('A data de fim deve ser posterior à data de início.');
+                                            }
+                                        };
+                                    },
+                                ])
+                                ->helperText('Obrigatório para contratos temporários, tempo parcial e estágios.')
+                                ->nullable(),
+
+                            Forms\Components\Select::make('status')
+                                ->label('Status')
+                                ->options([
+                                    'active'     => 'Ativo',
+                                    'terminated' => 'Encerrado',
+                                    'suspended'  => 'Suspenso',
+                                ])
+                                ->default('active')
+                                ->required(),
+
+                            Forms\Components\DatePicker::make('date_hired')
+                                ->label('Data de Contratação')
+                                ->required()
+                                ->default(fn($get) => $get('employee.date_hired') ?? now()),
+                        ])
+                        ->columns(2),
                 ])
-                ->helperText('Obrigatório para contratos temporários, tempo parcial e estágios.')
-                ->nullable(),
-
-            // Status
-            Forms\Components\Select::make('status')
-                ->label('Status')
-                ->options([
-                    'active'     => 'Ativo',
-                    'terminated' => 'Encerrado',
-                    'suspended'  => 'Suspenso',
-                ])
-                ->default('active')
-                ->required(),
-
-            // Data de Contratação
-            Forms\Components\DatePicker::make('date_hired')
-                ->label('Data de Contratação')
-                ->required()
-                ->default(fn($get) => $get('employee.date_hired') ?? now()),
+                ->columnSpan('full'),
         ]);
     }
 

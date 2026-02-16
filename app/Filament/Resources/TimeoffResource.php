@@ -6,6 +6,8 @@ use App\Filament\Resources\TimeoffResource\Pages;
 use App\Models\Timeoff;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -32,44 +34,68 @@ class TimeoffResource extends Resource
         $isEmployee = $user && strtoupper($user->role) === 'EMPLOYEE';
 
         return $form->schema([
-            Select::make('employee_id')
-                ->relationship('employee', 'first_name')
-                ->label('Funcionário')
-                ->searchable()
-                ->preload()
-                ->required()
-                ->hidden($isEmployee)  // Esconder para Employee
-                ->default($isEmployee ? $user->employee_id : null)  // Pré-preencher para Employee
-                ->disabled($isEmployee),  // Desabilitar para Employee
-            DatePicker::make('start_date')
-            ->label('Data de Início')
-            ->native(false)
-            ->required(),
-            DatePicker::make('end_date')
-            ->label('Data de Término')
-            ->native(false)
-            ->required(),
-            Select::make('category_id')
-                ->label('Categoria')
-                ->relationship('category', 'label')
-                ->searchable()
-                ->preload()
-                ->required(),
-            Select::make('type')
-                ->label('Tipo de Licença')
-                ->options(collect(\App\Models\Timeoff::TYPES)->mapWithKeys(fn($v, $k) => [$k => $v['label']])->toArray())
-                ->required(),
-            Select::make('status')
-                ->label('Status')
-                ->options([
-                    'pending' => 'Pendente',
-                    'approved' => 'Aprovado',
-                    'rejected' => 'Rejeitado',
+            Tabs::make('Dados da Licença')
+                ->tabs([
+                    Tab::make('Informações Básicas')
+                        ->schema([
+                            Select::make('employee_id')
+                                ->relationship('employee', 'first_name')
+                                ->label('Funcionário')
+                                ->searchable()
+                                ->preload()
+                                ->required()
+                                ->hidden($isEmployee)
+                                ->default($isEmployee ? $user->employee_id : null)
+                                ->disabled($isEmployee),
+
+                            Select::make('category_id')
+                                ->label('Categoria')
+                                ->relationship('category', 'label')
+                                ->searchable()
+                                ->preload()
+                                ->required(),
+
+                            Select::make('type')
+                                ->label('Tipo de Licença')
+                                ->options(collect(\App\Models\Timeoff::TYPES)->mapWithKeys(fn($v, $k) => [$k => $v['label']])->toArray())
+                                ->required(),
+                        ])
+                        ->columns(2),
+
+                    Tab::make('Datas')
+                        ->schema([
+                            DatePicker::make('start_date')
+                                ->label('Data de Início')
+                                ->native(false)
+                                ->required(),
+
+                            DatePicker::make('end_date')
+                                ->label('Data de Término')
+                                ->native(false)
+                                ->required(),
+                        ])
+                        ->columns(2),
+
+                    Tab::make('Detalhe')
+                        ->schema([
+                            Select::make('status')
+                                ->label('Status')
+                                ->options([
+                                    'pending' => 'Pendente',
+                                    'approved' => 'Aprovado',
+                                    'rejected' => 'Rejeitado',
+                                ])
+                                ->required()
+                                ->hidden($isEmployee)
+                                ->default($isEmployee ? 'pending' : null),
+
+                            Textarea::make('reason')
+                                ->label('Motivo')
+                                ->columnSpan(2),
+                        ])
+                        ->columns(2),
                 ])
-                ->required()
-                ->hidden($isEmployee)  // Employee não vê status
-                ->default($isEmployee ? 'pending' : null),  // Pré-preencher com 'pending' para Employee
-            Textarea::make('reason')->label('Motivo'),
+                ->columnSpan('full'),
         ]);
     }
 

@@ -12,6 +12,8 @@ use Filament\Tables\Table;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 
 class EmployeeResource extends Resource
 {
@@ -27,108 +29,140 @@ class EmployeeResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Section::make('Localização')
-                ->description('Selecione país, estado e cidade')
-                ->schema([
-                    Forms\Components\Select::make('country_id')
-                        ->relationship('country', 'name')
-                        ->searchable()
-                        ->required()
-                        ->preload()
-                        ->label('País'),
-
-                    Forms\Components\Select::make('state_id')
-                        ->options(
-                            fn($get) =>
-                            $get('country_id')
-                                ? \App\Models\State::where('country_id', $get('country_id'))->pluck('name', 'id')
-                                : []
-                        )
-                        ->searchable()
-                        ->required()
-                        ->preload()
-                        ->label('Estado'),
-
-                    Forms\Components\Select::make('city_id')
-                        ->options(
-                            fn($get) =>
-                            $get('state_id')
-                                ? \App\Models\City::where('state_id', $get('state_id'))->pluck('name', 'id')
-                                : []
-                        )
-                        ->searchable()
-                        ->required()
-                        ->preload()
-                        ->label('Cidade'),
-
-                    Forms\Components\Select::make('department_id')
-                        ->relationship('department', 'name')
-                        ->searchable()
-                        ->required(),
-
-                    Forms\Components\Select::make('designation_id')
-                        ->relationship('designation', 'name')
-                        ->searchable()
-                        ->nullable()
-                        ->preload()
-                        ->label('Cargo / Designação'),
-                ])
-                ->columns(2),
-
-            Forms\Components\Section::make('Dados Pessoais')
-                ->schema([
-                    Forms\Components\TextInput::make('first_name')->label('Primeiro Nome')->required()->maxLength(40),
-                    Forms\Components\TextInput::make('middle_name')->label('Nome do Meio')->maxLength(40),
-                    Forms\Components\TextInput::make('last_name')->label('Último Nome')->required()->maxLength(40),
-                    Forms\Components\Select::make('gender')
-                        ->options([
-                            'male' => 'Masculino',
-                            'female' => 'Feminino',
-                            'n/a' => 'N/A',
+            Tabs::make('Dados do Funcionário')
+                ->tabs([
+                    Tab::make('Informações Básicas')
+                        ->schema([
+                            Forms\Components\TextInput::make('first_name')
+                                ->label('Primeiro Nome')
+                                ->required()
+                                ->maxLength(40),
+                            Forms\Components\TextInput::make('middle_name')
+                                ->label('Nome do Meio')
+                                ->maxLength(40),
+                            Forms\Components\TextInput::make('last_name')
+                                ->label('Último Nome')
+                                ->required()
+                                ->maxLength(40),
+                            Forms\Components\Select::make('gender')
+                                ->options([
+                                    'male' => 'Masculino',
+                                    'female' => 'Feminino',
+                                    'n/a' => 'N/A',
+                                ])
+                                ->required()
+                                ->label('Gênero')
+                                ->native(false),
+                            Forms\Components\TextInput::make('email')
+                                ->label('E-mail')
+                                ->email('rfc')
+                                ->required()
+                                ->unique(ignoreRecord: true)
+                                ->rules([new \App\Rules\ValidEmailDomain()]),
+                            Forms\Components\TextInput::make('phone_number')
+                                ->label('Telefone')
+                                ->maxLength(13)
+                                ->required(),
                         ])
-                        ->required()
-                        ->label('Gênero')
-                        ->native(false),
-                    Forms\Components\TextInput::make('email')
-                        ->label('E-mail')
-                        ->email('rfc')
-                        ->required()
-                        ->unique(ignoreRecord: true)
-                        ->rules([new \App\Rules\ValidEmailDomain()]),
-                    Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(9),
-                    Forms\Components\TextInput::make('nif')->label('NIF')->required()->maxLength(9),
-                    Forms\Components\TextInput::make('phone_number')->label('Telefone')->maxLength(13)->required(),
-                    Forms\Components\Textarea::make('observations')->label('Observações')->rows(3),
-                ])
-                ->columns(2),
+                        ->columns(2),
 
-            Forms\Components\Section::make('Endereço')
-                ->schema([
-                    Forms\Components\TextInput::make('address')->label('Endereço')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('zip_code')->label('Código Postal')->required()->maxLength(10),
-                ])
-                ->columns(2),
+                    Tab::make('Identificação')
+                        ->schema([
+                            Forms\Components\TextInput::make('nss')
+                                ->label('NSS')
+                                ->required()
+                                ->maxLength(9),
+                            Forms\Components\TextInput::make('nif')
+                                ->label('NIF')
+                                ->required()
+                                ->maxLength(9),
+                            Forms\Components\DatePicker::make('date_of_birth')
+                                ->label('Data de Nascimento')
+                                ->required()
+                                ->maxDate(now()->subYears(18))
+                                ->native(false),
+                            Forms\Components\Textarea::make('observations')
+                                ->label('Observações')
+                                ->rows(3)
+                                ->columnSpan(2),
+                        ])
+                        ->columns(2),
 
-            Forms\Components\Section::make('Datas')
-                ->schema([
-                    Forms\Components\DatePicker::make('date_of_birth')
-                        ->label('Data de Nascimento')
-                        ->required()
-                        ->maxDate(now()->subYears(18))
-                        ->native(false),
-                    Forms\Components\DatePicker::make('date_hired')
-                        ->label('Data de Contratação')
-                        ->required()
-                        ->maxDate(now()->subYear(18))
-                        ->native(false),
-                ])
-                ->columns(2),
+                    Tab::make('Localização')
+                        ->schema([
+                            Forms\Components\Select::make('country_id')
+                                ->relationship('country', 'name')
+                                ->searchable()
+                                ->required()
+                                ->preload()
+                                ->label('País'),
 
-            Forms\Components\Section::make('Status')
-                ->schema([
-                    Forms\Components\Toggle::make('is_active')->label('Ativo')->default(true),
+                            Forms\Components\Select::make('state_id')
+                                ->options(
+                                    fn($get) =>
+                                    $get('country_id')
+                                        ? \App\Models\State::where('country_id', $get('country_id'))->pluck('name', 'id')
+                                        : []
+                                )
+                                ->searchable()
+                                ->required()
+                                ->preload()
+                                ->label('Estado'),
+
+                            Forms\Components\Select::make('city_id')
+                                ->options(
+                                    fn($get) =>
+                                    $get('state_id')
+                                        ? \App\Models\City::where('state_id', $get('state_id'))->pluck('name', 'id')
+                                        : []
+                                )
+                                ->searchable()
+                                ->required()
+                                ->preload()
+                                ->label('Cidade'),
+
+                            Forms\Components\Select::make('department_id')
+                                ->relationship('department', 'name')
+                                ->searchable()
+                                ->required()
+                                ->label('Departamento'),
+
+                            Forms\Components\Select::make('designation_id')
+                                ->relationship('designation', 'name')
+                                ->searchable()
+                                ->nullable()
+                                ->preload()
+                                ->label('Cargo / Designação'),
+                        ])
+                        ->columns(2),
+
+                    Tab::make('Endereço')
+                        ->schema([
+                            Forms\Components\TextInput::make('address')
+                                ->label('Endereço')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\TextInput::make('zip_code')
+                                ->label('Código Postal')
+                                ->required()
+                                ->maxLength(10),
+                        ])
+                        ->columns(2),
+
+                    Tab::make('Contratação')
+                        ->schema([
+                            Forms\Components\DatePicker::make('date_hired')
+                                ->label('Data de Contratação')
+                                ->required()
+                                ->maxDate(now()->subYear(18))
+                                ->native(false),
+                            Forms\Components\Toggle::make('is_active')
+                                ->label('Ativo')
+                                ->default(true),
+                        ])
+                        ->columns(2),
                 ])
-                ->columns(1),
+                ->columnSpan('full'),
         ]);
     }
 

@@ -210,13 +210,6 @@
             @endif
         </div>
     @else
-        <div class="rounded-lg border border-gray-300 dark:border-gray-600 p-6 text-center">
-            <p class="text-sm text-gray-600 dark:text-gray-400">
-                Não foi encontrado nenhum registo de funcionário associado à sua conta.
-            </p>
-            <p class="text-xs text-gray-500 dark:text-gray-500 mt-2">
-                Contacte o departamento de RH para mais informações.
-            </p>
-        </div>
+
     @endif
 </x-filament::widget>

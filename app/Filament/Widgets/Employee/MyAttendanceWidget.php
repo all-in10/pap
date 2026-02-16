@@ -6,9 +6,11 @@ use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Traits\EnforceEmployeeRole;
 
 class MyAttendanceWidget extends BaseWidget
 {
+    use EnforceEmployeeRole;
     public function getColumnSpan(): int | string | array
     {
         return 1;
@@ -16,6 +18,11 @@ class MyAttendanceWidget extends BaseWidget
 
     protected function getStats(): array
     {
+        // Verificar se o usuário é employee
+        if (!$this->isAuthenticatedAsEmployee()) {
+            return [];
+        }
+
         $user = Auth::user();
         
         if (!$user || !$user->employee_id) {

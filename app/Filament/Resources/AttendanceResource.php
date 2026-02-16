@@ -7,6 +7,8 @@ use App\Models\Attendance;
 use App\Models\Employee;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -33,141 +35,158 @@ class AttendanceResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Select::make('employee_id')
-                ->label('Funcionário')
-                ->relationship('employee', 'first_name')
-                ->preload()
-                ->searchable()
-                ->required()
-                ->default(function () {
-                    $u = Auth::user();
-                    return $u?->employee?->id ?? null;
-                })
-                ->rule(function ($get, $record) {
-                    return function ($attribute, $value, $fail) use ($get, $record) {
-                        $exists = Attendance::where('employee_id', $value)
-                            ->where('work_date', $get('work_date'))
-                            ->when($record?->id, fn($query) => $query->where('id', '!=', $record->id))
-                            ->exists();
-                        if ($exists) {
-                            $fail('Já existe um registo de horas para este funcionário nesta data.');
-                        }
-                    };
-                }),
+            Tabs::make('Dados de Frequência')
+                ->tabs([
+                    Tab::make('Informações Básicas')
+                        ->schema([
+                            Select::make('employee_id')
+                                ->label('Funcionário')
+                                ->relationship('employee', 'first_name')
+                                ->preload()
+                                ->searchable()
+                                ->required()
+                                ->default(function () {
+                                    $u = Auth::user();
+                                    return $u?->employee?->id ?? null;
+                                })
+                                ->rule(function ($get, $record) {
+                                    return function ($attribute, $value, $fail) use ($get, $record) {
+                                        $exists = Attendance::where('employee_id', $value)
+                                            ->where('work_date', $get('work_date'))
+                                            ->when($record?->id, fn($query) => $query->where('id', '!=', $record->id))
+                                            ->exists();
+                                        if ($exists) {
+                                            $fail('Já existe um registo de horas para este funcionário nesta data.');
+                                        }
+                                    };
+                                }),
 
-            DatePicker::make('work_date')
-                ->label('Data')
-                ->default(now())
-                ->required(),
+                            DatePicker::make('work_date')
+                                ->label('Data')
+                                ->default(now())
+                                ->required(),
+                        ])
+                        ->columns(2),
 
-            TimePicker::make('start_time')
-                ->label('Início')
-                ->reactive()
-                ->displayFormat('h:i A')
-                ->required()
-                ->afterStateUpdated(function ($state, callable $set, $get) {
-                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                }),
+                    Tab::make('Horários')
+                        ->schema([
+                            TimePicker::make('start_time')
+                                ->label('Início')
+                                ->reactive()
+                                ->displayFormat('h:i A')
+                                ->required()
+                                ->afterStateUpdated(function ($state, callable $set, $get) {
+                                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                }),
 
-            TimePicker::make('end_time')
-                ->label('Fim')
-                ->reactive()
-                ->displayFormat('h:i A')
-                ->required()
-                ->afterStateUpdated(function ($state, callable $set, $get) {
-                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                }),
+                            TimePicker::make('end_time')
+                                ->label('Fim')
+                                ->reactive()
+                                ->displayFormat('h:i A')
+                                ->required()
+                                ->afterStateUpdated(function ($state, callable $set, $get) {
+                                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                }),
 
-            TimePicker::make('break_start')
-                ->label('Início do Intervalo')
-                ->reactive()
-                ->displayFormat('h:i A')
-                ->nullable()
-                ->rule(function ($get, $record) {
-                    return function ($attribute, $value, $fail) use ($get) {
-                        if ($value) {
-                            $start = $get('start_time');
-                            $end = $get('end_time');
-                            if (!$start || !$end) {
-                                $fail('Por favor, defina os horários de Início e Fim antes de especificar os horários do intervalo.');
-                                return;
-                            }
-                            $bStart = Attendance::parseTimeFlexible($value);
-                            $s = Attendance::parseTimeFlexible($start);
-                            $e = Attendance::parseTimeFlexible($end);
-                            if (!$bStart || !$s || !$e) {
-                                $fail('Formato de hora inválido para início do intervalo.');
-                                return;
-                            }
-                            if ($bStart->lessThan($s) || $bStart->greaterThan($e)) {
-                                $fail('O início do intervalo deve estar entre o início e o fim do turno.');
-                            }
-                        }
-                    };
-                })
-                ->afterStateUpdated(function ($state, callable $set, $get) {
-                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                }),
+                            TimePicker::make('break_start')
+                                ->label('Início do Intervalo')
+                                ->reactive()
+                                ->displayFormat('h:i A')
+                                ->nullable()
+                                ->rule(function ($get, $record) {
+                                    return function ($attribute, $value, $fail) use ($get) {
+                                        if ($value) {
+                                            $start = $get('start_time');
+                                            $end = $get('end_time');
+                                            if (!$start || !$end) {
+                                                $fail('Por favor, defina os horários de Início e Fim antes de especificar os horários do intervalo.');
+                                                return;
+                                            }
+                                            $bStart = Attendance::parseTimeFlexible($value);
+                                            $s = Attendance::parseTimeFlexible($start);
+                                            $e = Attendance::parseTimeFlexible($end);
+                                            if (!$bStart || !$s || !$e) {
+                                                $fail('Formato de hora inválido para início do intervalo.');
+                                                return;
+                                            }
+                                            if ($bStart->lessThan($s) || $bStart->greaterThan($e)) {
+                                                $fail('O início do intervalo deve estar entre o início e o fim do turno.');
+                                            }
+                                        }
+                                    };
+                                })
+                                ->afterStateUpdated(function ($state, callable $set, $get) {
+                                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                }),
 
-            TimePicker::make('break_end')
-                ->label('Fim do Intervalo')
-                ->reactive()
-                ->displayFormat('h:i A')
-                ->nullable()
-                ->rule(function ($get, $record) {
-                    return function ($attribute, $value, $fail) use ($get) {
-                        if ($value) {
-                            $bStart = $get('break_start');
-                            $end = $get('end_time');
-                            if (!$bStart) {
-                                $fail('Por favor, defina Início do Intervalo antes do Fim do Intervalo.');
-                                return;
-                            }
-                            if (!$end) {
-                                $fail('Por favor, defina o horário de Fim antes de especificar o fim do intervalo.');
-                                return;
-                            }
-                            $bS = Attendance::parseTimeFlexible($bStart);
-                            $bE = Attendance::parseTimeFlexible($value);
-                            $e = Attendance::parseTimeFlexible($end);
-                            if (!$bS || !$bE || !$e) {
-                                $fail('Formato de hora inválido para fim do intervalo.');
-                                return;
-                            }
-                            if ($bE->lessThan($bS) || $bE->greaterThan($e)) {
-                                $fail('O fim do intervalo deve ser depois do início do intervalo e antes do horário de término.');
-                                return;
-                            }
-                            $breakMinutes = $bS->diffInMinutes($bE);
-                            if ($breakMinutes > 120) {
-                                $fail('A duração do intervalo não pode exceder 2 horas.');
-                            }
-                        }
-                    };
-                })
-                ->afterStateUpdated(function ($state, callable $set, $get) {
-                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
-                }),
+                            TimePicker::make('break_end')
+                                ->label('Fim do Intervalo')
+                                ->reactive()
+                                ->displayFormat('h:i A')
+                                ->nullable()
+                                ->rule(function ($get, $record) {
+                                    return function ($attribute, $value, $fail) use ($get) {
+                                        if ($value) {
+                                            $bStart = $get('break_start');
+                                            $end = $get('end_time');
+                                            if (!$bStart) {
+                                                $fail('Por favor, defina Início do Intervalo antes do Fim do Intervalo.');
+                                                return;
+                                            }
+                                            if (!$end) {
+                                                $fail('Por favor, defina o horário de Fim antes de especificar o fim do intervalo.');
+                                                return;
+                                            }
+                                            $bS = Attendance::parseTimeFlexible($bStart);
+                                            $bE = Attendance::parseTimeFlexible($value);
+                                            $e = Attendance::parseTimeFlexible($end);
+                                            if (!$bS || !$bE || !$e) {
+                                                $fail('Formato de hora inválido para fim do intervalo.');
+                                                return;
+                                            }
+                                            if ($bE->lessThan($bS) || $bE->greaterThan($e)) {
+                                                $fail('O fim do intervalo deve ser depois do início do intervalo e antes do horário de término.');
+                                                return;
+                                            }
+                                            $breakMinutes = $bS->diffInMinutes($bE);
+                                            if ($breakMinutes > 120) {
+                                                $fail('A duração do intervalo não pode exceder 2 horas.');
+                                            }
+                                        }
+                                    };
+                                })
+                                ->afterStateUpdated(function ($state, callable $set, $get) {
+                                    $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                    $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
+                                }),
+                        ])
+                        ->columns(2),
 
-            TextInput::make('hours_worked')
-                ->label('Horas Trabalhadas')
-                ->numeric()
-                ->required()
-                ->disabled(),
+                    Tab::make('Horas')
+                        ->schema([
+                            TextInput::make('hours_worked')
+                                ->label('Horas Trabalhadas')
+                                ->numeric()
+                                ->required()
+                                ->disabled(),
 
-            TextInput::make('extra_hours')
-                ->label('Horas Extras')
-                ->numeric()
-                ->required()
-                ->disabled(),
+                            TextInput::make('extra_hours')
+                                ->label('Horas Extras')
+                                ->numeric()
+                                ->required()
+                                ->disabled(),
 
-            Textarea::make('notes')
-                ->label('Observações')
-                ->rows(3),
+                            Textarea::make('notes')
+                                ->label('Observações')
+                                ->rows(3)
+                                ->columnSpan(2),
+                        ])
+                        ->columns(2),
+                ])
+                ->columnSpan('full'),
         ]);
     }
 

@@ -5,9 +5,11 @@ namespace App\Filament\Widgets;
 use Filament\Widgets\Widget;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\EnforceEmployeeRole;
 
 class EmployeeInfoWidget extends Widget
 {
+    use EnforceEmployeeRole;
     protected static string $view = 'filament.widgets.employee-info-widget';
     
     public function getColumnSpan(): int | string | array
@@ -21,6 +23,11 @@ class EmployeeInfoWidget extends Widget
 
     public function mount(): void
     {
+        // Verificar se o usuário é employee
+        if (!$this->isAuthenticatedAsEmployee()) {
+            return;
+        }
+
         $user = Auth::user();
         
         if ($user && $user->employee_id) {

@@ -5,9 +5,11 @@ namespace App\Filament\Widgets\Employee;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\EnforceEmployeeRole;
 
 class MyTimeoffHistoryWidget extends BaseWidget
 {
+    use EnforceEmployeeRole;
     public function getColumnSpan(): int | string | array
     {
         return 1;
@@ -15,6 +17,11 @@ class MyTimeoffHistoryWidget extends BaseWidget
 
     protected function getStats(): array
     {
+        // Verificar se o usuário é employee
+        if (!$this->isAuthenticatedAsEmployee()) {
+            return [];
+        }
+
         $user = Auth::user();
         
         if (!$user || !$user->employee_id) {

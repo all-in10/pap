@@ -9,9 +9,14 @@ use Carbon\Carbon;
 
 class AttendanceChartWidget extends ChartWidget
 {
-    protected static ?string $heading = 'Presença no Mês Atual';
     protected static ?int $sort = 1;
     protected static ?string $maxContentWidth = 'full';
+
+    public function getHeading(): string
+    {
+        $monthName = Carbon::now()->translatedFormat('F', null, 'pt_PT');
+        return "Presença em {$monthName}";
+    }
 
     protected function getData(): array
     {

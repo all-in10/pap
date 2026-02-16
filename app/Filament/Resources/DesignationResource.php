@@ -6,6 +6,8 @@ use App\Filament\Resources\DesignationResource\Pages;
 use App\Models\Designation;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -22,33 +24,44 @@ class DesignationResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Nome')
-                    ->required()
-                    ->maxLength(255),
+        return $form->schema([
+            Tabs::make('Dados do Cargo')
+                ->tabs([
+                    Tab::make('Informações Básicas')
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->label('Nome')
+                                ->required()
+                                ->maxLength(255),
 
-                Forms\Components\Textarea::make('description')
-                    ->label('Descrição')
-                    ->rows(3),
+                            Forms\Components\Select::make('level')
+                                ->label('Nível')
+                                ->options([
+                                    'junior' => 'Júnior',
+                                    'pleno' => 'Pleno',
+                                    'senior' => 'Sênior',
+                                ])
+                                ->required()
+                                ->native(false),
+                        ])
+                        ->columns(2),
 
-                Forms\Components\Select::make('level')
-                    ->label('Nível')
-                    ->options([
-                        'junior' => 'Júnior',
-                        'pleno' => 'Pleno',
-                        'senior' => 'Sênior',
-                    ])
-                    ->required()
-                    ->native(false),
+                    Tab::make('Detalhes')
+                        ->schema([
+                            Forms\Components\Textarea::make('description')
+                                ->label('Descrição')
+                                ->rows(3),
 
-                Forms\Components\TextInput::make('base_salary')
-                    ->label('Salário Base')
-                    ->numeric()
-                    ->prefix('€')
-                    ->required(),
-            ]);
+                            Forms\Components\TextInput::make('base_salary')
+                                ->label('Salário Base')
+                                ->numeric()
+                                ->prefix('€')
+                                ->required(),
+                        ])
+                        ->columns(2),
+                ])
+                ->columnSpan('full'),
+        ]);
     }
 
     public static function table(Table $table): Table

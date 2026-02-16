@@ -6,6 +6,8 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -23,30 +25,42 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('name')
-                ->label('Nome')
-                ->required()
-                ->maxLength(255),
+            Tabs::make('Dados do Utilizador')
+                ->tabs([
+                    Tab::make('Informações Básicas')
+                        ->schema([
+                            Forms\Components\TextInput::make('name')
+                                ->label('Nome')
+                                ->required()
+                                ->maxLength(255),
 
-            Forms\Components\TextInput::make('email')
-                ->label('E-mail')
-                ->email('rfc')
-                ->required()
-                ->maxLength(255)
-                ->rules([new \App\Rules\ValidEmailDomain()]),
+                            Forms\Components\TextInput::make('email')
+                                ->label('E-mail')
+                                ->email('rfc')
+                                ->required()
+                                ->maxLength(255)
+                                ->rules([new \App\Rules\ValidEmailDomain()]),
+                        ])
+                        ->columns(2),
 
-            Forms\Components\TextInput::make('password')
-                ->label('Senha')
-                ->password()
-                ->maxLength(255)
-                ->helperText('Se vazio, será atribuída a senha padrão e o utilizador será forçado a alterá-la no primeiro acesso.')
-                ->dehydrateStateUsing(function ($state) {
-                    return $state ?: null;
-                }),
+                    Tab::make('Segurança')
+                        ->schema([
+                            Forms\Components\TextInput::make('password')
+                                ->label('Senha')
+                                ->password()
+                                ->maxLength(255)
+                                ->helperText('Se vazio, será atribuída a senha padrão e o utilizador será forçado a alterá-la no primeiro acesso.')
+                                ->dehydrateStateUsing(function ($state) {
+                                    return $state ?: null;
+                                }),
 
-            Forms\Components\Toggle::make('must_change_password')
-                ->label('Forçar troca de senha no próximo acesso')
-                ->helperText('Quando ativado, o utilizador será obrigado a alterar a senha no próximo login.'),
+                            Forms\Components\Toggle::make('must_change_password')
+                                ->label('Forçar troca de senha no próximo acesso')
+                                ->helperText('Quando ativado, o utilizador será obrigado a alterar a senha no próximo login.'),
+                        ])
+                        ->columns(2),
+                ])
+                ->columnSpan('full'),
         ]);
     }
 
