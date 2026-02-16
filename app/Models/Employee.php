@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\RecordsActivity;
+use App\Observers\EmployeeObserver;
 
 class Employee extends Model
 {
@@ -40,34 +41,8 @@ class Employee extends Model
 
     protected static function booted()
     {
-        // Automação: cria User, Hourbank e Contrato ao criar Employee
-        static::created(function ($employee) {
-            // Cria contrato
-            $baseSalary = $employee->designation ? $employee->designation->base_salary : 0;
-            $employee->contracts()->create([
-                'contract_type_id' => \App\Models\ContractType::firstWhere('name', 'sem_termo')->id ?? null, // padrão
-                'salary' => $baseSalary,
-                'start_date' => $employee->date_hired,
-                'date_hired' => $employee->date_hired,
-                'status' => 'active',
-            ]);
-
-            // Cria hourbank
-            $employee->hourbanks()->create([
-                'balance_hours' => 0,
-                'last_accrual_date' => $employee->date_hired ?? now(),
-            ]);
-
-            // Cria user
-            if ($employee->email) {
-                \App\Models\User::create([
-                    'name' => $employee->first_name . ' ' . $employee->last_name,
-                    'email' => $employee->email,
-                    'password' => bcrypt('12345678'), // senha padrão, altere conforme necessário
-                    'employee_id' => $employee->id,
-                ]);
-            }
-        });
+        // Registar o Observer para gerir criação de User, Contract e Hourbank
+        static::observe(EmployeeObserver::class);
     }
 
     // RELACIONAMENTOS

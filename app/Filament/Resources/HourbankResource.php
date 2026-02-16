@@ -36,9 +36,9 @@ class HourbankResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('id')->label('ID'),
-            TextColumn::make('employee.first_name')->label('Funcionário'),
-            TextColumn::make('balance_hours')->label('Saldo de Horas'),
+            TextColumn::make('id')->label('ID')->hidden(true),
+            TextColumn::make('employee.first_name')->label('Funcionário')->searchable()->sortable(),
+            TextColumn::make('balance_hours')->label('Saldo de Horas')->searchable()->sortable(),
             TextColumn::make('last_accrual_date')->date()->label('Último Acúmulo'),
             TextColumn::make('created_at')->dateTime()->label('Criado em'),
         ])

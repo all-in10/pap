@@ -10,7 +10,7 @@ use Carbon\Carbon;
 class AttendanceChartWidget extends ChartWidget
 {
     protected static ?string $heading = 'Presença no Mês Atual';
-    protected static ?int $sort = 7;
+    protected static ?int $sort = 1;
     protected static ?string $maxContentWidth = 'full';
 
     protected function getData(): array

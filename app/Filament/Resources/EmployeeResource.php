@@ -77,9 +77,9 @@ class EmployeeResource extends Resource
 
             Forms\Components\Section::make('Dados Pessoais')
                 ->schema([
-                    Forms\Components\TextInput::make('first_name')->label('Primeiro Nome')->required()->maxLength(255),
-                    Forms\Components\TextInput::make('middle_name')->label('Nome do Meio')->maxLength(255),
-                    Forms\Components\TextInput::make('last_name')->label('Último Nome')->required()->maxLength(255),
+                    Forms\Components\TextInput::make('first_name')->label('Primeiro Nome')->required()->maxLength(40),
+                    Forms\Components\TextInput::make('middle_name')->label('Nome do Meio')->maxLength(40),
+                    Forms\Components\TextInput::make('last_name')->label('Último Nome')->required()->maxLength(40),
                     Forms\Components\Select::make('gender')
                         ->options([
                             'male' => 'Masculino',
@@ -89,10 +89,15 @@ class EmployeeResource extends Resource
                         ->required()
                         ->label('Gênero')
                         ->native(false),
-                    Forms\Components\TextInput::make('email')->label('E-mail')->email()->required()->unique(ignoreRecord: true),
-                    Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(20),
-                    Forms\Components\TextInput::make('nif')->label('NIF')->maxLength(20),
-                    Forms\Components\TextInput::make('phone_number')->label('Telefone')->maxLength(20),
+                    Forms\Components\TextInput::make('email')
+                        ->label('E-mail')
+                        ->email('rfc')
+                        ->required()
+                        ->unique(ignoreRecord: true)
+                        ->rules([new \App\Rules\ValidEmailDomain()]),
+                    Forms\Components\TextInput::make('nss')->label('NSS')->required()->maxLength(9),
+                    Forms\Components\TextInput::make('nif')->label('NIF')->required()->maxLength(9),
+                    Forms\Components\TextInput::make('phone_number')->label('Telefone')->maxLength(13)->required(),
                     Forms\Components\Textarea::make('observations')->label('Observações')->rows(3),
                 ])
                 ->columns(2),
@@ -114,7 +119,7 @@ class EmployeeResource extends Resource
                     Forms\Components\DatePicker::make('date_hired')
                         ->label('Data de Contratação')
                         ->required()
-                        ->maxDate(now())
+                        ->maxDate(now()->subYear(18))
                         ->native(false),
                 ])
                 ->columns(2),

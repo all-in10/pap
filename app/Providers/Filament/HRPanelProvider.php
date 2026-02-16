@@ -26,7 +26,7 @@ use App\Filament\Resources\DepartmentResource;
 use App\Filament\Resources\DesignationResource;
 use App\Filament\Resources\TimeoffResource;
 use App\Filament\Resources\TimeoffCategoryResource;
-use App\Filament\Resources\BenefitResource;
+//use App\Filament\Resources\BenefitResource;
 use App\Filament\Resources\WorklogResource;
 use App\Filament\Resources\HourbankResource;
 use App\Filament\Resources\AttendanceResource;
@@ -66,7 +66,7 @@ class HRPanelProvider extends PanelProvider
                 DesignationResource::class,
                 TimeoffResource::class,
                 TimeoffCategoryResource::class,
-                BenefitResource::class,
+                //BenefitResource::class,
                 WorklogResource::class,
                 HourbankResource::class,
                 AttendanceResource::class,

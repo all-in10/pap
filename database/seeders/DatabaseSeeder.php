@@ -57,13 +57,15 @@ class DatabaseSeeder extends Seeder
         
         foreach ($usersData as $index => $userData) {
             if (isset($employees[$index])) {
+                $default = env('DEFAULT_USER_PASSWORD', 'ChangeMe123!');
                 \App\Models\User::firstOrCreate(
                     ['email' => $userData['email']],
                     [
                         'name' => $userData['name'],
-                        'password' => bcrypt('1'),
+                        'password' => \Illuminate\Support\Facades\Hash::make($default),
                         'employee_id' => $employees[$index]->id,
                         'role' => $userData['role'],
+                        'must_change_password' => false,
                     ]
                 );
             }

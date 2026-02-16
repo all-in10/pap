@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 class DepartmentChartWidget extends ChartWidget
 {
     protected static ?string $heading = 'Colaboradores por Departamento';
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 1;
     protected static ?string $maxContentWidth = 'full';
 
     protected function getData(): array

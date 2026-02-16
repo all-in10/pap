@@ -50,6 +50,8 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 - **2026-02-14 — Refactoring da política de força de troca de senha:** Migrei o controlo de força de troca de senha do nível de ações (actions e bulk actions) para o form do utilizador. Adicionei um toggle `must_change_password` no formulário de criação/edição, permitindo gerenciar a política de forma mais intuitiva e centralizada. Adicionei uma coluna IconColumn na tabela de utilizadores que exibe o status booleano (✓/✗) do campo `must_change_password`. Removidas as actions individuais e bulk actions que realizavam a força de troca, simplificando a interface e centralizando a lógica de negócio no formulário.
 
+- **2026-02-16 — Validação de e-mail e automação de criação de entidades:** Implementei Custom Rule `ValidEmailDomain` que rejeita e-mails sem extensão de domínio válida (ex: `teste@teste`). Criei `EmployeeObserver` que ao criar um Employee automaticamente cria um User (com role employee, senha padrão, must_change_password true), Contract (indefinido, com salário da designação) e Hourbank (saldo 0h). Adicionei notificações customizadas no Filament CreateEmployee com 4 Toasts mostrando os itens criados. Removi `email_verified_at` do formulário UserResource para ser auto-preenchido. Procurei e validei que campos metadata (`created_at`, `updated_at`) não aparecem em formulários (apenas em tabelas com toggleable). Implementei 18 testes automatizados validando todas as funcionalidades (EmployeeAutomaticCreationTest, ValidEmailDomainTest, MetadataTimestampsTest).
+
 ---
 
 ## 1. Fundação do Projeto
@@ -193,4 +195,4 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 ---
 
-_Última atualização: 14 de Fevereiro de 2026_
+_Última atualização: 16 de Fevereiro de 2026_

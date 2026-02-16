@@ -16,6 +16,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Utilizadores';
+    protected static ?string $pluralModelLabel = 'Utilizadores';
     protected static ?string $modelLabel = 'Utilizador';
     protected static ?string $navigationGroup = 'Gerenciamento do Sistema';
 
@@ -29,20 +30,19 @@ class UserResource extends Resource
 
             Forms\Components\TextInput::make('email')
                 ->label('E-mail')
-                ->email()
+                ->email('rfc')
                 ->required()
-                ->maxLength(255),
-
-            
-
-            Forms\Components\DateTimePicker::make('email_verified_at')->label('E-mail Verificado Em'),
+                ->maxLength(255)
+                ->rules([new \App\Rules\ValidEmailDomain()]),
 
             Forms\Components\TextInput::make('password')
                 ->label('Senha')
                 ->password()
                 ->maxLength(255)
                 ->helperText('Se vazio, será atribuída a senha padrão e o utilizador será forçado a alterá-la no primeiro acesso.')
-                ->dehydrateStateUsing(fn($state) => $state ? \Illuminate\Support\Facades\Hash::make($state) : null),
+                ->dehydrateStateUsing(function ($state) {
+                    return $state ?: null;
+                }),
 
             Forms\Components\Toggle::make('must_change_password')
                 ->label('Forçar troca de senha no próximo acesso')

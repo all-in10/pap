@@ -223,10 +223,6 @@ O projeto implementa uma arquitetura multi-painel com isolamento de dados por fu
   - Solicitações de licença/ausência
   - Visualização de banco de horas
 
-- **Painel Global (/app)**: Dashboard comum
-  - Acesso inicial para todos os utilizadores
-  - Informações gerais personalizadas por perfil
-
 **Características de cada painel**:
 - Páginas dedicadas com middleware específico para controlo de acesso
 - Isolamento de dados ao nível do modelo através de políticas Eloquent
@@ -338,11 +334,6 @@ O projeto implementa uma arquitetura multi-painel com isolamento de dados por fu
 - Reforço de políticas de segurança com interface de utilizador clara e acessível
 - Middleware `EnforcePasswordChange` que redireciona utilizadores com força de troca ativa para fluxo seguro de alteração
 
-**Isolamento de Dados de Funcionário**:
-- Proteção de privacidade e conformidade LGPD
-- Dados pessoais acessíveis apenas aos autorizados
-- Logs de acesso a dados sensíveis
-
 **Actions Condicionadas**:
 - Botões e ações visíveis apenas para perfis autorizados
 - Desabilitamento contextual de funcionalidades
@@ -355,7 +346,37 @@ O projeto implementa uma arquitetura multi-painel com isolamento de dados por fu
 - Naming conventions claras e significativas
 - Separação de responsabilidades clara
 
-#### 7. Recursos Filament Implementados
+#### 7. Validação de E-mail e Automação de Criação (Novo - 16/02/2026)
+
+**Validação Rigorosa de E-mail**:
+- Custom Rule `ValidEmailDomain` que rejeita e-mails sem extensão de domínio válida (ex: rejeita `teste@teste`, aceita `usuario@empresa.com`)
+- Regex validação: `/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/` garante TLD mínimo de 2 caracteres
+- Aplicado em Employee e User Resources em formulários de criação/edição
+- Protecção contra e-mails inválidos em toda a aplicação
+
+**Sistema Automático de Gatilhos (Observer Pattern)**:
+- `EmployeeObserver` que intercepta criação de Employee e automaticamente:
+  - **Cria User** com email/nome do Employee (role: `employee`, senha default do .env, must_change_password: true)
+  - **Cria Contract** (tipo indefinido, salário da designação, status ativo)
+  - **Cria Hourbank** (saldo inicial 0 horas, accrual_date = data contratação)
+  - **Armazena em cache** dados para notificações Filament
+  - **Tratamento de erros** com logging automático
+
+**Notificações Customizadas (Filament Toast)**:
+- 4 notificações ao criar Employee:
+  1. Utilizador criado (email, role, status força troca)
+  2. Contrato criado (tipo, salário, data início)
+  3. Banco de horas criado (saldo inicial, accrual_date)
+  4. Consolidada final (checkmarks de sucesso)
+- Cada notificação com ícone e cor personalizada para feedback visual claro
+
+**Proteção contra Metadata Manual**:
+- Remoção de `email_verified_at` do formulário UserResource para ser auto-preenchido
+- `created_at` e `updated_at` nunca editáveis em formulários
+- Campos metadata visíveis apenas em tabelas como `.toggleable(isToggledHiddenByDefault: true)`
+- ActivityLogResource mostra `created_at` desabilitado (read-only)
+
+#### 8. Recursos Filament Implementados
 
 O projeto implementa 15 Resources Filament para gestão:
 
@@ -394,12 +415,15 @@ O desenvolvimento do TeamCore representou uma aplicação prática e abrangente 
 - Isolamento completo de dados por função de utilizador (RBAC) com políticas de autorização granulares
 - Interface intuitiva e responsiva com tradução completa para PT-PT, alinhada com padrões UX modernos
 - Suite abrangente de testes automatizados (Pest/PHPUnit) garantindo qualidade técnica e validação contínua
-- 13 widgets de visualização de dados (estatísticas e gráficos avançados) suportando decisões estratégicas
+- 17 widgets de visualização de dados (estatísticas e gráficos avançados) suportando decisões estratégicas
 - Sistema robusto de gestão de senhas com políticas de segurança e força de troca obrigatória
 - Exportação de documentos em PDF para contratos com suporte a localização
+- Sistema automático de criação de User, Contract e Hourbank ao criar Employee com notificações contextuais
+- Validação rigorosa de e-mail com Custom Rule (rejeita domínios inválidos)
+- Proteção de campos metadata contra edição manual (auto-preenchidos pelo sistema)
 - Documentação técnica detalhada e código bem estruturado facilitando manutenção futura
 
-**Estado Atual (14 de Fevereiro de 2026):**
+**Estado Atual (16 de Fevereiro de 2026):**
 O projeto encontra-se em fase avançada com todas as funcionalidades principais implementadas, integradas e testadas. A arquitetura foi validada em cenários reais de utilização, e a aplicação demonstra estabilidade operacional. O desenvolvimento continua em direção à conclusão prevista para 31 de Março de 2026, preparando-se para testes finais, homologação com stakeholders e implementação.
 
 O TeamCore demonstra viabilidade comercial significativa e potencial comprovado para apoiar organizações, especialmente PMEs, na modernização de seus processos de gestão de Recursos Humanos, reduzindo complexidade administrativa e enhancing decisões estratégicas através de relatórios e visualizações baseadas em dados.
