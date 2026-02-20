@@ -150,6 +150,9 @@ class ContractResource extends Resource
                         default      => 'gray',
                     }),
             ])
+            ->filters([
+                Tables\Filters\TrashedFilter::make(),
+            ])
             ->actions([
                 Tables\Actions\Action::make('download')
                     ->label('Download')
@@ -158,10 +161,25 @@ class ContractResource extends Resource
                     ->openUrlInNewTab(),
 
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin')
+                    ->requiresConfirmation(),
+                Tables\Actions\ForceDeleteAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin')
+                    ->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\RestoreBulkAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin'),
+                Tables\Actions\ForceDeleteBulkAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin'),
             ]);
     }
 

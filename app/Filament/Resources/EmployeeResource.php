@@ -181,13 +181,31 @@ class EmployeeResource extends Resource
                     ->sortable()
                     ->searchable(),
             ])
+            ->filters([
+                Tables\Filters\TrashedFilter::make(),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation(),
+                Tables\Actions\RestoreAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin')
+                    ->requiresConfirmation(),
+                Tables\Actions\ForceDeleteAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin')
+                    ->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\RestoreBulkAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin'),
+                Tables\Actions\ForceDeleteBulkAction::make()
+                    ->visible(fn() => auth()->user()?->role === 'admin')
+                    ->authorize(fn() => auth()->user()?->role === 'admin'),
             ]);
     }
 
