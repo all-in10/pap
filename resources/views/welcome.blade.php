@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,26 +10,103 @@
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
         <style>
-            :root {
-                --primary:   #582f0e;
-                --secondary: #7f4f24;
-                --info:      #936639;
-                --danger:    #a68a64;
-                --warning:   #b6ad90;
-                --success:   #c2c5aa;
-                --gray:      #acb79b;
-                --muted:     #656d4a;
-                --accent:    #414833;
-                --neutral:   #333d29;
-                --bg:        #f5f0e8;
-                --bg-dark:   #1e1a14;
-                --surface:   #ede5d8;
-                --text:      #1e1a14;
-                --text-soft: #5a5040;
+            /* ─────────────────────────────────────────
+               LIGHT MODE (default)
+            ───────────────────────────────────────── */
+            :root,
+            [data-theme="light"] {
+                --primary:        #582f0e;
+                --secondary:      #7f4f24;
+                --info:           #936639;
+                --danger:         #a68a64;
+                --warning:        #b6ad90;
+                --success:        #c2c5aa;
+                --gray:           #acb79b;
+                --muted:          #656d4a;
+                --accent:         #414833;
+                --neutral:        #333d29;
+                --bg:             #f5f0e8;
+                --bg-dark:        #1e1a14;
+                --surface:        #ede5d8;
+                --text:           #1e1a14;
+                --text-soft:      #5a5040;
+
+                /* component tokens */
+                --nav-bg:         rgba(245, 240, 232, 0.88);
+                --nav-border:     rgba(88, 47, 14, 0.12);
+                --card-bg:        #ede5d8;
+                --card-border:    rgba(88, 47, 14, 0.12);
+                --card-hover-border: rgba(88, 47, 14, 0.28);
+                --card-hover-shadow: rgba(88, 47, 14, 0.12);
+                --icon-bg:        rgba(88, 47, 14, 0.10);
+                --icon-bg-hover:  rgba(88, 47, 14, 0.16);
+                --pill-bg:        rgba(88, 47, 14, 0.10);
+                --pill-color:     #7f4f24;
+                --pill-border:    rgba(88, 47, 14, 0.15);
+                --stack-bg:       rgba(88, 47, 14, 0.07);
+                --stack-color:    #656d4a;
+                --detail-border:  rgba(88,47,14,0.15);
+                --detail-stack-border: rgba(88,47,14,0.1);
+                --step-bg:        rgba(245, 240, 232, 0.04);
+                --step-border:    rgba(198, 197, 170, 0.15);
+                --step-hover-bg:  rgba(245, 240, 232, 0.07);
+                --step-hover-border: rgba(198, 197, 170, 0.3);
+                --toggle-bg:      rgba(88, 47, 14, 0.08);
+                --toggle-border:  rgba(88, 47, 14, 0.18);
+                --toggle-icon:    #582f0e;
+
+                /* noise overlay opacity */
+                --noise-opacity: 0.4;
+            }
+
+            /* ─────────────────────────────────────────
+               DARK MODE
+            ───────────────────────────────────────── */
+            [data-theme="dark"] {
+                --primary:        #c2a47a;
+                --secondary:      #a68a64;
+                --info:           #8a7355;
+                --danger:         #6b5740;
+                --warning:        #7a7660;
+                --success:        #8a8d78;
+                --gray:           #6b7560;
+                --muted:          #9aa088;
+                --accent:         #b0b898;
+                --neutral:        #e8e2d8;
+                --bg:             #141210;
+                --bg-dark:        #0c0a08;
+                --surface:        #1e1a14;
+                --text:           #e8e2d8;
+                --text-soft:      #a09880;
+
+                /* component tokens */
+                --nav-bg:         rgba(20, 18, 16, 0.92);
+                --nav-border:     rgba(194, 164, 122, 0.12);
+                --card-bg:        #1e1a14;
+                --card-border:    rgba(194, 164, 122, 0.10);
+                --card-hover-border: rgba(194, 164, 122, 0.30);
+                --card-hover-shadow: rgba(0, 0, 0, 0.35);
+                --icon-bg:        rgba(194, 164, 122, 0.10);
+                --icon-bg-hover:  rgba(194, 164, 122, 0.18);
+                --pill-bg:        rgba(194, 164, 122, 0.10);
+                --pill-color:     #c2a47a;
+                --pill-border:    rgba(194, 164, 122, 0.18);
+                --stack-bg:       rgba(194, 164, 122, 0.07);
+                --stack-color:    #9aa088;
+                --detail-border:  rgba(194, 164, 122, 0.15);
+                --detail-stack-border: rgba(194, 164, 122, 0.10);
+                --step-bg:        rgba(194, 164, 122, 0.03);
+                --step-border:    rgba(194, 164, 122, 0.12);
+                --step-hover-bg:  rgba(194, 164, 122, 0.07);
+                --step-hover-border: rgba(194, 164, 122, 0.25);
+                --toggle-bg:      rgba(194, 164, 122, 0.08);
+                --toggle-border:  rgba(194, 164, 122, 0.18);
+                --toggle-icon:    #c2a47a;
+
+                --noise-opacity: 0.25;
             }
 
             *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
             html { scroll-behavior: smooth; }
 
             body {
@@ -39,6 +116,7 @@
                 font-weight: 400;
                 line-height: 1.6;
                 overflow-x: hidden;
+                transition: background-color 0.4s ease, color 0.4s ease;
             }
 
             /* ── NOISE TEXTURE OVERLAY ── */
@@ -51,7 +129,8 @@
                 background-size: 200px;
                 pointer-events: none;
                 z-index: 1000;
-                opacity: 0.4;
+                opacity: var(--noise-opacity);
+                transition: opacity 0.4s ease;
             }
 
             /* ── NAV ── */
@@ -63,9 +142,10 @@
                 align-items: center;
                 justify-content: space-between;
                 padding: 1.25rem 4rem;
-                background: rgba(245, 240, 232, 0.88);
+                background: var(--nav-bg);
                 backdrop-filter: blur(14px);
-                border-bottom: 1px solid rgba(88, 47, 14, 0.12);
+                border-bottom: 1px solid var(--nav-border);
+                transition: background 0.4s ease, border-color 0.4s ease;
             }
 
             .nav-logo {
@@ -76,7 +156,8 @@
                 color: var(--text);
             }
 
-            .logo-mark {
+            /* ── NAVBAR LOGO MARK ── */
+            .nav-logo-mark {
                 width: 36px;
                 height: 36px;
                 background: var(--primary);
@@ -85,19 +166,25 @@
                 grid-template-columns: 1fr 1fr;
                 gap: 3px;
                 padding: 7px;
+                transition: background 0.4s ease;
             }
 
-            .logo-mark span {
+            .nav-logo-mark span {
                 border-radius: 2px;
                 display: block;
             }
 
-            .logo-mark span:nth-child(1) { background: #c2c5aa; }
-            .logo-mark span:nth-child(2) { background: #a68a64; }
-            .logo-mark span:nth-child(3) { background: #b6ad90; }
-            .logo-mark span:nth-child(4) { background: #936639; }
+            [data-theme="light"] .nav-logo-mark span:nth-child(1) { background: #c2c5aa; }
+            [data-theme="light"] .nav-logo-mark span:nth-child(2) { background: #a68a64; }
+            [data-theme="light"] .nav-logo-mark span:nth-child(3) { background: #b6ad90; }
+            [data-theme="light"] .nav-logo-mark span:nth-child(4) { background: #936639; }
 
-            .logo-name {
+            [data-theme="dark"] .nav-logo-mark span:nth-child(1) { background: rgba(255,255,255,0.85); }
+            [data-theme="dark"] .nav-logo-mark span:nth-child(2) { background: rgba(255,255,255,0.55); }
+            [data-theme="dark"] .nav-logo-mark span:nth-child(3) { background: rgba(255,255,255,0.70); }
+            [data-theme="dark"] .nav-logo-mark span:nth-child(4) { background: rgba(255,255,255,0.40); }
+
+            .nav-logo-name {
                 font-family: 'Playfair Display', serif;
                 font-weight: 700;
                 font-size: 1.25rem;
@@ -106,14 +193,28 @@
                 display: flex;
                 align-items: center;
                 height: 36px;
+                transition: color 0.4s ease;
             }
 
-            .logo-name img {
+            .nav-logo-name img {
                 height: 36px;
                 width: auto;
                 max-width: 140px;
                 object-fit: contain;
                 display: block;
+                filter: brightness(1);
+                transition: filter 0.4s ease;
+            }
+
+            [data-theme="dark"] .nav-logo-name img {
+                filter: brightness(0) invert(1) opacity(0.9);
+            }
+
+            /* ── NAV RIGHT SIDE ── */
+            .nav-right {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
             }
 
             .nav-links {
@@ -135,7 +236,7 @@
 
             .nav-link:hover {
                 color: var(--primary);
-                background: rgba(88, 47, 14, 0.06);
+                background: var(--icon-bg);
             }
 
             .nav-cta {
@@ -157,6 +258,38 @@
                 box-shadow: 0 4px 16px rgba(88, 47, 14, 0.35) !important;
             }
 
+            /* ── DARK MODE TOGGLE ── */
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                border-radius: 8px;
+                border: 1px solid var(--toggle-border);
+                background: var(--toggle-bg);
+                color: var(--toggle-icon);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background 0.2s, border-color 0.2s, transform 0.15s, color 0.4s;
+                flex-shrink: 0;
+            }
+
+            .theme-toggle:hover {
+                transform: scale(1.08);
+                background: var(--icon-bg-hover);
+            }
+
+            .theme-toggle svg {
+                transition: transform 0.4s ease, opacity 0.3s ease;
+            }
+
+            /* show moon in light, sun in dark */
+            .icon-moon { display: block; }
+            .icon-sun  { display: none; }
+
+            [data-theme="dark"] .icon-moon { display: none; }
+            [data-theme="dark"] .icon-sun  { display: block; }
+
             /* ── HERO ── */
             .hero {
                 min-height: 100vh;
@@ -169,7 +302,6 @@
                 overflow: hidden;
             }
 
-            /* decorative circles */
             .hero::after {
                 content: '';
                 position: absolute;
@@ -181,6 +313,11 @@
                 right: -150px;
                 pointer-events: none;
                 animation: breathe 6s ease-in-out infinite;
+                transition: opacity 0.4s ease;
+            }
+
+            [data-theme="dark"] .hero::after {
+                background: radial-gradient(circle, rgba(194,164,122,0.06) 0%, transparent 70%);
             }
 
             @keyframes breathe {
@@ -203,6 +340,12 @@
                 text-transform: uppercase;
                 margin-bottom: 2rem;
                 animation: fadeUp 0.8s ease forwards;
+                transition: background 0.4s, border-color 0.4s, color 0.4s;
+            }
+
+            [data-theme="dark"] .hero-badge {
+                background: rgba(194, 164, 122, 0.08);
+                border-color: rgba(194, 164, 122, 0.2);
             }
 
             .badge-dot {
@@ -251,9 +394,7 @@
                 animation: underlineIn 0.6s 0.9s ease forwards;
             }
 
-            @keyframes underlineIn {
-                to { transform: scaleX(1); }
-            }
+            @keyframes underlineIn { to { transform: scaleX(1); } }
 
             .hero-sub {
                 font-size: 1.15rem;
@@ -276,7 +417,7 @@
 
             @keyframes fadeUp {
                 from { opacity: 0; transform: translateY(24px); }
-                to { opacity: 1; transform: translateY(0); }
+                to   { opacity: 1; transform: translateY(0); }
             }
 
             .btn-primary {
@@ -312,11 +453,11 @@
                 font-weight: 600;
                 font-size: 1rem;
                 text-decoration: none;
-                transition: background 0.2s, transform 0.15s, color 0.2s;
+                transition: background 0.2s, transform 0.15s, color 0.2s, border-color 0.4s;
             }
 
             .btn-outline:hover {
-                background: rgba(88, 47, 14, 0.07);
+                background: var(--icon-bg);
                 transform: translateY(-2px);
                 color: var(--primary);
             }
@@ -331,11 +472,14 @@
                 justify-content: center;
                 gap: 4rem;
                 flex-wrap: wrap;
+                transition: background 0.4s ease;
             }
 
-            .stat-item {
-                text-align: center;
+            [data-theme="dark"] .stats-strip {
+                background: #0e0c09;
             }
+
+            .stat-item { text-align: center; }
 
             .stat-num {
                 font-family: 'Playfair Display', serif;
@@ -377,6 +521,7 @@
                 text-transform: uppercase;
                 color: var(--info);
                 margin-bottom: 1rem;
+                transition: color 0.4s;
             }
 
             .section-label::before {
@@ -386,6 +531,7 @@
                 height: 2px;
                 background: var(--info);
                 border-radius: 2px;
+                transition: background 0.4s;
             }
 
             .section-title {
@@ -413,11 +559,11 @@
             }
 
             .feature-card {
-                background: var(--surface);
-                border: 1px solid rgba(88, 47, 14, 0.12);
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
                 border-radius: 16px;
                 padding: 2.25rem;
-                transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+                transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s, background 0.4s ease;
                 position: relative;
                 overflow: hidden;
                 cursor: pointer;
@@ -433,10 +579,14 @@
                 pointer-events: none;
             }
 
+            [data-theme="dark"] .feature-card::before {
+                background: linear-gradient(135deg, rgba(194,164,122,0.04) 0%, transparent 60%);
+            }
+
             .feature-card:hover {
                 transform: translateY(-4px);
-                box-shadow: 0 20px 40px rgba(88, 47, 14, 0.12);
-                border-color: rgba(88, 47, 14, 0.28);
+                box-shadow: 0 20px 40px var(--card-hover-shadow);
+                border-color: var(--card-hover-border);
             }
 
             .feature-card:hover::before { opacity: 1; }
@@ -451,6 +601,11 @@
                 flex-direction: column;
             }
 
+            [data-theme="dark"] .feature-card.large {
+                background: #2a1f12;
+                border: 1px solid rgba(194, 164, 122, 0.2);
+            }
+
             .feature-card.large .feature-title  { color: #f5f0e8; }
             .feature-card.large .feature-desc   { color: rgba(245,240,232,0.72); }
             .feature-card.large .feature-number { color: rgba(245,240,232,0.38); }
@@ -462,25 +617,32 @@
 
             .feature-card.large:hover {
                 background: var(--secondary);
-                box-shadow: 0 24px 48px rgba(88, 47, 14, 0.3);
+                box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3);
             }
+
+            [data-theme="dark"] .feature-card.large:hover {
+                background: #341f0e;
+            }
+
+            /* ── FULL WIDTH CARD ── */
+            .feature-card.full-width { grid-column: span 2; }
 
             /* ── ICON ── */
             .feature-icon-wrap {
                 width: 52px;
                 height: 52px;
                 border-radius: 12px;
-                background: rgba(88, 47, 14, 0.1);
+                background: var(--icon-bg);
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: var(--primary);
                 margin-bottom: 1.5rem;
                 flex-shrink: 0;
-                transition: background 0.2s;
+                transition: background 0.2s, color 0.4s;
             }
 
-            .feature-card:hover .feature-icon-wrap { background: rgba(88,47,14,0.16); }
+            .feature-card:hover .feature-icon-wrap { background: var(--icon-bg-hover); }
 
             .feature-number {
                 font-size: 0.7rem;
@@ -489,6 +651,7 @@
                 color: var(--muted);
                 margin-bottom: 0.5rem;
                 display: block;
+                transition: color 0.4s;
             }
 
             .feature-title {
@@ -498,12 +661,14 @@
                 color: var(--neutral);
                 margin-bottom: 0.75rem;
                 line-height: 1.25;
+                transition: color 0.4s;
             }
 
             .feature-desc {
                 font-size: 0.9rem;
                 color: var(--text-soft);
                 line-height: 1.65;
+                transition: color 0.4s;
             }
 
             /* ── SAIBA MAIS BUTTON ── */
@@ -519,7 +684,7 @@
                 border: none;
                 padding: 0;
                 cursor: pointer;
-                transition: gap 0.2s, color 0.2s;
+                transition: gap 0.2s, color 0.4s;
                 font-family: 'DM Sans', sans-serif;
             }
 
@@ -549,7 +714,7 @@
             }
 
             .feature-detail-inner {
-                border-top: 1px solid rgba(88,47,14,0.15);
+                border-top: 1px solid var(--detail-border);
                 padding-top: 1.4rem;
             }
 
@@ -571,9 +736,10 @@
                 letter-spacing: 0.05em;
                 padding: 0.3rem 0.75rem;
                 border-radius: 999px;
-                background: rgba(88,47,14,0.1);
-                color: var(--secondary);
-                border: 1px solid rgba(88,47,14,0.15);
+                background: var(--pill-bg);
+                color: var(--pill-color);
+                border: 1px solid var(--pill-border);
+                transition: background 0.4s, color 0.4s, border-color 0.4s;
             }
 
             .feature-card.large .detail-pill {
@@ -597,6 +763,7 @@
                 font-size: 0.88rem;
                 color: var(--text-soft);
                 line-height: 1.55;
+                transition: color 0.4s;
             }
 
             .feature-card.large .detail-items li { color: rgba(245,240,232,0.75); }
@@ -610,18 +777,19 @@
                 background: var(--info);
                 margin-top: 0.45rem;
                 flex-shrink: 0;
+                transition: background 0.4s;
             }
 
             .feature-card.large .detail-items li::before { background: var(--success); }
 
-            /* tech stack strip inside detail */
+            /* tech stack strip */
             .detail-stack {
                 display: flex;
                 flex-wrap: wrap;
                 gap: 0.45rem;
                 margin-top: 1rem;
                 padding-top: 1rem;
-                border-top: 1px solid rgba(88,47,14,0.1);
+                border-top: 1px solid var(--detail-stack-border);
             }
 
             .feature-card.large .detail-stack { border-top-color: rgba(245,240,232,0.12); }
@@ -633,8 +801,9 @@
                 text-transform: uppercase;
                 padding: 0.25rem 0.6rem;
                 border-radius: 4px;
-                background: rgba(88,47,14,0.07);
-                color: var(--muted);
+                background: var(--stack-bg);
+                color: var(--stack-color);
+                transition: background 0.4s, color 0.4s;
             }
 
             .feature-card.large .stack-tag {
@@ -648,6 +817,11 @@
                 padding: 8rem 4rem;
                 position: relative;
                 overflow: hidden;
+                transition: background 0.4s ease;
+            }
+
+            [data-theme="dark"] .how {
+                background: #0e0c09;
             }
 
             .how::before {
@@ -662,15 +836,12 @@
                 pointer-events: none;
             }
 
-            .how-inner {
-                max-width: 1100px;
-                margin: 0 auto;
-            }
+            .how-inner { max-width: 1100px; margin: 0 auto; }
 
             .how .section-label { color: var(--success); }
             .how .section-label::before { background: var(--success); }
             .how .section-title { color: var(--success); }
-            .how .section-sub { color: var(--warning); }
+            .how .section-sub   { color: var(--warning); }
 
             .steps {
                 display: grid;
@@ -682,15 +853,15 @@
             .step {
                 position: relative;
                 padding: 2rem;
-                border: 1px solid rgba(198, 197, 170, 0.15);
+                border: 1px solid var(--step-border);
                 border-radius: 14px;
-                background: rgba(245, 240, 232, 0.04);
+                background: var(--step-bg);
                 transition: background 0.25s, border-color 0.25s, transform 0.25s;
             }
 
             .step:hover {
-                background: rgba(245, 240, 232, 0.07);
-                border-color: rgba(198, 197, 170, 0.3);
+                background: var(--step-hover-bg);
+                border-color: var(--step-hover-border);
                 transform: translateY(-3px);
             }
 
@@ -740,6 +911,11 @@
                 top: 50%; left: 50%;
                 transform: translate(-50%, -50%);
                 pointer-events: none;
+                transition: background 0.4s;
+            }
+
+            [data-theme="dark"] .cta-section::before {
+                background: radial-gradient(circle, rgba(194,164,122,0.06) 0%, transparent 65%);
             }
 
             .cta-section .section-label { align-self: center; }
@@ -779,6 +955,11 @@
                 justify-content: space-between;
                 flex-wrap: wrap;
                 gap: 1.5rem;
+                transition: background 0.4s ease;
+            }
+
+            [data-theme="dark"] footer {
+                background: #0e0c09;
             }
 
             .footer-brand {
@@ -788,10 +969,11 @@
                 text-decoration: none;
             }
 
+            /* ── FOOTER LOGO MARK — sempre dark, independente do tema ── */
             .footer-logo-mark {
                 width: 28px;
                 height: 28px;
-                background: var(--secondary);
+                background: #7f4f24;
                 border-radius: 5px;
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -804,21 +986,43 @@
                 display: block;
             }
 
-            .footer-logo-mark span:nth-child(1) { background: #c2c5aa; }
-            .footer-logo-mark span:nth-child(2) { background: #a68a64; }
-            .footer-logo-mark span:nth-child(3) { background: #b6ad90; }
-            .footer-logo-mark span:nth-child(4) { background: #936639; }
+            .footer-logo-mark span:nth-child(1) { background: rgba(255,255,255,0.75); }
+            .footer-logo-mark span:nth-child(2) { background: rgba(255,255,255,0.45); }
+            .footer-logo-mark span:nth-child(3) { background: rgba(255,255,255,0.60); }
+            .footer-logo-mark span:nth-child(4) { background: rgba(255,255,255,0.35); }
+
+            /* ── FOOTER LOGO NAME — SVG sempre em dark, independente do tema ── */
+            .footer-logo-name {
+                font-family: 'Playfair Display', serif;
+                font-weight: 700;
+                font-size: 1.05rem;
+                display: flex;
+                align-items: center;
+                height: 28px;
+            }
+
+            .footer-logo-name img {
+                height: 28px;
+                width: auto;
+                max-width: 120px;
+                object-fit: contain;
+                display: block;
+                /* sempre dark: inverte para branco independente do tema */
+                filter: brightness(0) invert(1) opacity(0.85);
+            }
 
             .footer-name {
                 font-family: 'Playfair Display', serif;
                 font-weight: 700;
                 color: var(--success);
                 font-size: 1.05rem;
+                transition: color 0.4s;
             }
 
             .footer-copy {
                 font-size: 0.8rem;
                 color: var(--muted);
+                transition: color 0.4s;
             }
 
             /* ── SCROLL ANIMATIONS ── */
@@ -858,22 +1062,45 @@
         <!-- ── NAV ── -->
         <nav>
             <a href="/" class="nav-logo">
-                <div class="logo-mark">
+                <div class="nav-logo-mark">
                     <span></span><span></span><span></span><span></span>
                 </div>
-                <span class="logo-name"><img src="{{ asset('images/Teamcorelogo.svg') }}" alt="TeamCore Logo"></span>
+                <span class="nav-logo-name"><img src="{{ asset('images/Teamcorelogo.svg') }}" alt="TeamCore Logo"></span>
             </a>
-            <div class="nav-links">
-                @if (Route::has('login'))
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="nav-link">Entrar</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="nav-cta">Começar Agora</a>
-                        @endif
-                    @endauth
-                @endif
+
+            <div class="nav-right">
+                <div class="nav-links">
+                    @if (Route::has('login'))
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}" class="nav-link">Entrar</a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="nav-cta">Começar Agora</a>
+                            @endif
+                        @endauth
+                    @endif
+                </div>
+
+                <!-- Dark Mode Toggle -->
+                <button class="theme-toggle" id="themeToggle" aria-label="Alternar modo escuro">
+                    <!-- Moon (shown in light mode) -->
+                    <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <!-- Sun (shown in dark mode) -->
+                    <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
             </div>
         </nav>
 
@@ -1051,7 +1278,7 @@
                 </div>
 
                 <!-- ── CARD 04: Timeoff & Férias ── -->
-                <div class="feature-card reveal reveal-delay-1">
+                <div class="feature-card full-width reveal reveal-delay-1">
                     <div class="feature-icon-wrap">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     </div>
@@ -1136,12 +1363,39 @@
         <!-- ── FOOTER ── -->
         <footer>
             <a href="/" class="footer-brand">
+                <div class="footer-logo-mark">
+                    <span></span><span></span><span></span><span></span>
+                </div>
+                <span class="footer-logo-name"><img src="{{ asset('images/Teamcorelogo.svg') }}" alt="TeamCore Logo"></span>
             </a>
             <p class="footer-copy">© {{ date('Y') }} TeamCore. Todos os direitos reservados.</p>
         </footer>
 
         <script>
-            // Scroll reveal
+            /* ── DARK MODE TOGGLE ── */
+            const html        = document.documentElement;
+            const toggleBtn   = document.getElementById('themeToggle');
+            const STORAGE_KEY = 'teamcore-theme';
+
+            // On load: restore saved preference, else detect system preference
+            (function () {
+                const saved  = localStorage.getItem(STORAGE_KEY);
+                const prefer = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                html.setAttribute('data-theme', saved || prefer);
+            })();
+
+            toggleBtn.addEventListener('click', () => {
+                const current = html.getAttribute('data-theme');
+                const next    = current === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', next);
+                localStorage.setItem(STORAGE_KEY, next);
+
+                // Subtle spin animation on click
+                toggleBtn.style.transform = 'scale(0.85) rotate(20deg)';
+                setTimeout(() => { toggleBtn.style.transform = ''; }, 200);
+            });
+
+            /* ── SCROLL REVEAL ── */
             const reveals = document.querySelectorAll('.reveal');
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(e => {
@@ -1153,18 +1407,17 @@
             }, { threshold: 0.12 });
             reveals.forEach(el => obs.observe(el));
 
-            // Feature detail toggle
+            /* ── FEATURE DETAIL TOGGLE ── */
             function toggleDetail(btn) {
-                const card   = btn.closest('.feature-card');
                 const detail = btn.nextElementSibling;
                 const isOpen = detail.classList.contains('open');
 
                 // Close all other open drawers
                 document.querySelectorAll('.feature-detail.open').forEach(d => {
                     d.classList.remove('open');
-                    d.previousElementSibling.classList.remove('open');
-                    d.previousElementSibling.textContent = '';
-                    d.previousElementSibling.innerHTML = 'Saiba mais <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+                    const b = d.previousElementSibling;
+                    b.classList.remove('open');
+                    b.innerHTML = 'Saiba mais <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
                 });
 
                 if (!isOpen) {
