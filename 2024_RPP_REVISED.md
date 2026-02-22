@@ -8,7 +8,7 @@
 
 **Autor**: Victor Gabriel Cristino Gomes (N.º 21)  
 **Orientador**: Zélia Capitão  
-**Data de Relatório**: 14/02/2026 (em desenvolvimento)
+**Data de Relatório**: 20/02/2026 (em desenvolvimento - última revisão)
 
 **Agradecimentos especiais a**:
 - Zélia Capitão
@@ -137,7 +137,7 @@ Este projeto PAP visa desenvolver um sistema de gestão que:
 
 O desenvolvimento foi realizado em ciclos iterativos, adotando:
 
-- **Tecnologias modernas**: Laravel 12, Filament 3.3, PHP 8.2+, MySQL 8.0
+- **Tecnologias modernas**: Laravel 12, Filament 3.3, PHP 8.2+, MySQL 8.0, Vite 6.2.4, Tailwind CSS 4.0.0
 - **Testes automatizados**: Desenvolvimento orientado a testes usando Pest para validação contínua
 - **Validação com profissionais**: Consulta com especialistas de RH para validar requisitos essenciais
 - **Boas práticas de engenharia**: Isolamento de dados, arquitetura em camadas clara, padrões consistentes
@@ -155,8 +155,8 @@ O projeto TeamCore foi desenvolvido com as seguintes tecnologias:
 - **Linguagem**: PHP 8.2+
 - **Base de Dados**: MySQL 8.0
 - **Framework de Testes**: Pest 3.8
-- **Bundler Frontend**: Vite 7.0
-- **CSS Framework**: Tailwind CSS 3.x
+- **Bundler Frontend**: Vite 6.2.4
+- **CSS Framework**: Tailwind CSS 4.0.0
 - **Geração PDF**: DomPDF 3.1
 
 #### Arquitetura de Dados Relacional
@@ -195,9 +195,9 @@ O processo de desenvolvimento adotou uma metodologia iterativa com:
 | PHP | 8.2+ | Linguagem de desenvolvimento |
 | MySQL | 8.0 | Base de dados relacional |
 | Pest | 3.8 | Framework de testes automatizados |
-| Vite | 7.0 | Bundler para assets frontend |
+| Vite | 6.2.4 | Bundler para assets frontend |
 | DomPDF | 3.1 | Geração de relatórios em PDF |
-| Tailwind CSS | 3.x | Framework CSS para estilização |
+| Tailwind CSS | 4.0.0 | Framework CSS para estilização |
 
 ### Principais Implementações
 
@@ -378,7 +378,7 @@ O projeto implementa uma arquitetura multi-painel com isolamento de dados por fu
 
 #### 8. Recursos Filament Implementados
 
-O projeto implementa 15 Resources Filament para gestão:
+O projeto implementa 17 Resources Filament para gestão:
 
 | Resource | Modelo | Funcionalidades |
 |----------|--------|-----------------|
@@ -394,6 +394,7 @@ O projeto implementa 15 Resources Filament para gestão:
 | TimeoffCategoryResource | TimeoffCategory | Tipos de licenças |
 | HourbankResource | Hourbank | Gestão de banco de horas |
 | ContractTypeResource | ContractType | Definições de tipos contratuais |
+| ActivityLogResource | Activity (Spatie) | Logs de auditoria do sistema |
 | StateResource | State | Estados/províncias |
 | CityResource | City | Cidades |
 | CountryResource | Country | Países |
@@ -423,7 +424,7 @@ O desenvolvimento do TeamCore representou uma aplicação prática e abrangente 
 - Proteção de campos metadata contra edição manual (auto-preenchidos pelo sistema)
 - Documentação técnica detalhada e código bem estruturado facilitando manutenção futura
 
-**Estado Atual (16 de Fevereiro de 2026):**
+**Estado Atual (20 de Fevereiro de 2026):**
 O projeto encontra-se em fase avançada com todas as funcionalidades principais implementadas, integradas e testadas. A arquitetura foi validada em cenários reais de utilização, e a aplicação demonstra estabilidade operacional. O desenvolvimento continua em direção à conclusão prevista para 31 de Março de 2026, preparando-se para testes finais, homologação com stakeholders e implementação.
 
 O TeamCore demonstra viabilidade comercial significativa e potencial comprovado para apoiar organizações, especialmente PMEs, na modernização de seus processos de gestão de Recursos Humanos, reduzindo complexidade administrativa e enhancing decisões estratégicas através de relatórios e visualizações baseadas em dados.
