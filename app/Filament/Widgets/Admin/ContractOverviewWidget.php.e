@@ -10,6 +10,7 @@ use Carbon\Carbon;
 class ContractOverviewWidget extends BaseWidget
 {
     protected static ?int $sort = 3;
+    protected ?string $heading = 'Visão Geral dos Contratos';
 
     protected function getStats(): array
     {
@@ -32,10 +33,10 @@ class ContractOverviewWidget extends BaseWidget
                 ->icon('heroicon-o-x-circle')
                 ->color('danger'),
             
-            Stat::make('Vencendo em 30 dias', $expiringIn30Days)
+            /*Stat::make('Vencendo em 30 dias', $expiringIn30Days)
                 ->description('Ação necessária')
                 ->icon('heroicon-o-exclamation-triangle')
-                ->color('warning'),
+                ->color('warning'),*/
         ];
     }
 }

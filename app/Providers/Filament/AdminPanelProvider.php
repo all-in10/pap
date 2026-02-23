@@ -63,7 +63,7 @@ class AdminPanelProvider extends PanelProvider
                 //Widgets\FilamentInfoWidget::class,
                 GeneralStats::class,
                 DepartmentStatsWidget::class,
-                ContractOverviewWidget::class,
+                //ContractOverviewWidget::class,
                 AttendanceOverviewWidget::class,
                 DepartmentChartWidget::class,
                 ContractStatusChartWidget::class,

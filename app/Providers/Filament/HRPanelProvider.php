@@ -33,6 +33,8 @@ use App\Filament\Resources\AttendanceResource;
 use App\Filament\Widgets\HR\EmployeeDirectoryWidget;
 use App\Filament\Widgets\HR\PendingTimeoffsWidget;
 use App\Filament\Widgets\HR\ContractExpirationAlertWidget;
+use App\Filament\Widgets\Admin\AttendanceOverviewWidget;
+use App\Filament\Widgets\Admin\AttendanceChartWidget;
 
 class HRPanelProvider extends PanelProvider
 {
@@ -75,12 +77,15 @@ class HRPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->discoverWidgets(in: app_path('Filament/HR/Widgets'), for: 'App\\Filament\\HR\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                //Widgets\AccountWidget::class,
+                //Widgets\FilamentInfoWidget::class,
                 \App\Filament\Widgets\GeneralStats::class,
                 EmployeeDirectoryWidget::class,
+                AttendanceOverviewWidget::class,
+                AttendanceChartWidget::class,
                 PendingTimeoffsWidget::class,
                 ContractExpirationAlertWidget::class,
             ])

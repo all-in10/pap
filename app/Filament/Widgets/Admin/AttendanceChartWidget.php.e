@@ -11,6 +11,7 @@ class AttendanceChartWidget extends ChartWidget
 {
     protected static ?int $sort = 1;
     protected static ?string $maxContentWidth = 'full';
+    //protected ?string $heading = 'Visão Geral dos Contratos';
 
     public function getHeading(): string
     {

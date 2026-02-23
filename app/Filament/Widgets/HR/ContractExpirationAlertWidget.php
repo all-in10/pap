@@ -9,8 +9,12 @@ use Carbon\Carbon;
 
 class ContractExpirationAlertWidget extends BaseWidget
 {
+    protected static ?int $sort = 5;
+    protected ?string $heading = 'Alertas de Vencimento de Contratos';
     protected function getStats(): array
     {
+        $activeContracts = Contract::where('status', 'active')->count();
+        $inactiveContracts = Contract::where('status', 'inactive')->count();
         $activeContracts = Contract::where('status', 'active')->count();
         
         // Contratos vencendo nos próximos 30 dias
@@ -27,6 +31,10 @@ class ContractExpirationAlertWidget extends BaseWidget
             Stat::make('Contratos Ativos', $activeContracts)
                 ->icon('heroicon-o-check-circle')
                 ->color('success'),
+            
+            Stat::make('Contratos Inativos', $inactiveContracts)
+                ->icon('heroicon-o-x-circle')
+                ->color('danger'),
             
             Stat::make('Vencendo em 7 dias', $urgentContracts)
                 ->icon('heroicon-o-exclamation-triangle')

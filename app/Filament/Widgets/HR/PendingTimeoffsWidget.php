@@ -9,6 +9,8 @@ use Carbon\Carbon;
 
 class PendingTimeoffsWidget extends BaseWidget
 {
+    protected static ?int $sort = 3;
+    protected ?string $heading = 'Licenças Pendentes';
     protected function getStats(): array
     {
         $pendingCount = Timeoff::where('status', 'pending')->count();
