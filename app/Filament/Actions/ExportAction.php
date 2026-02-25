@@ -27,7 +27,7 @@ class ExportAction extends Action
     public static function exportCSV(): self
     {
         return (new self('csv'))
-            ->label('📊 Exportar CSV')
+            ->label('Exportar CSV')
             ->icon('heroicon-o-arrow-down-tray')
             ->color('info');
     }
@@ -35,7 +35,7 @@ class ExportAction extends Action
     public static function exportExcel(): self
     {
         return (new self('excel'))
-            ->label('📈 Exportar Excel')
+            ->label('Exportar Excel')
             ->icon('heroicon-o-arrow-down-tray')
             ->color('success');
     }
@@ -43,7 +43,7 @@ class ExportAction extends Action
     public static function exportJSON(): self
     {
         return (new self('json'))
-            ->label('📄 Exportar JSON')
+            ->label('Exportar JSON')
             ->icon('heroicon-o-arrow-down-tray')
             ->color('warning');
     }
@@ -65,7 +65,7 @@ class ExportBulkAction extends BulkAction
     public static function exportCSV(): self
     {
         $action = new self('csv');
-        $action->label = '📊 Exportar CSV';
+        $action->label = 'Exportar CSV';
         $action->icon = 'heroicon-o-arrow-down-tray';
         $action->color = 'info';
         return $action;
@@ -74,7 +74,7 @@ class ExportBulkAction extends BulkAction
     public static function exportExcel(): self
     {
         $action = new self('excel');
-        $action->label = '📈 Exportar Excel';
+        $action->label = 'Exportar Excel';
         $action->icon = 'heroicon-o-arrow-down-tray';
         $action->color = 'success';
         return $action;
@@ -83,7 +83,7 @@ class ExportBulkAction extends BulkAction
     public static function exportJSON(): self
     {
         $action = new self('json');
-        $action->label = '📄 Exportar JSON';
+        $action->label = 'Exportar JSON';
         $action->icon = 'heroicon-o-arrow-down-tray';
         $action->color = 'warning';
         return $action;

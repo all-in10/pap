@@ -49,6 +49,7 @@ class UserResource extends Resource
                                 ->label('Senha')
                                 ->password()
                                 ->maxLength(255)
+                                ->minLength(8)
                                 ->helperText('Se vazio, será atribuída a senha padrão e o utilizador será forçado a alterá-la no primeiro acesso.')
                                 ->dehydrateStateUsing(function ($state) {
                                     return $state ?: null;
@@ -124,7 +125,7 @@ class UserResource extends Resource
         return [
             'index'  => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'view'   => Pages\ViewUser::route('/{record}'),
+            //'view'   => Pages\ViewUser::route('/{record}'),
             'edit'   => Pages\EditUser::route('/{record}/edit'),
         ];
     }

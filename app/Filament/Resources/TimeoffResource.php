@@ -113,6 +113,7 @@ class TimeoffResource extends Resource
             TextColumn::make('created_at')->dateTime()->label('Criado em'),
         ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

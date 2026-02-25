@@ -64,7 +64,8 @@ class AttendanceResource extends Resource
                             DatePicker::make('work_date')
                                 ->label('Data')
                                 ->default(now())
-                                ->required(),
+                                ->required()
+                                ->native(false),
                         ])
                         ->columns(2),
 
@@ -162,11 +163,7 @@ class AttendanceResource extends Resource
                                     $set('hours_worked', Attendance::calculateHoursWorked($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
                                     $set('extra_hours', Attendance::calculateExtraHours($get('start_time'), $get('end_time'), $get('break_start'), $get('break_end')));
                                 }),
-                        ])
-                        ->columns(2),
 
-                    Tab::make('Horas')
-                        ->schema([
                             TextInput::make('hours_worked')
                                 ->label('Horas Trabalhadas')
                                 ->numeric()
@@ -246,7 +243,7 @@ class AttendanceResource extends Resource
     }
 
     /* === Funções auxiliares === */
-    private static function parseTimeFlexible($time)
+    public static function parseTimeFlexible($time)
     {
         if (!$time) {
             return null;
@@ -272,7 +269,7 @@ class AttendanceResource extends Resource
         return null;
     }
 
-    private static function calculateHoursWorked(?string $startTime, ?string $endTime, ?string $breakStart = null, ?string $breakEnd = null): float
+    public static function calculateHoursWorked(?string $startTime, ?string $endTime, ?string $breakStart = null, ?string $breakEnd = null): float
     {
         $start = self::parseTimeFlexible($startTime);
         $end = self::parseTimeFlexible($endTime);
@@ -289,7 +286,7 @@ class AttendanceResource extends Resource
         return 0;
     }
 
-    private static function calculateExtraHours(?string $startTime, ?string $endTime, ?string $breakStart = null, ?string $breakEnd = null): float
+    public static function calculateExtraHours(?string $startTime, ?string $endTime, ?string $breakStart = null, ?string $breakEnd = null): float
     {
         $total = self::calculateHoursWorked($startTime, $endTime, $breakStart, $breakEnd);
         return max(0, $total - 8);

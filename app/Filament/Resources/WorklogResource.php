@@ -33,7 +33,7 @@ class WorklogResource extends Resource
         return $form
             ->schema([
                 Select::make('employee_id')->relationship('employee', 'first_name')->label('Funcionário')->searchable()->preload()->required(),
-                DatePicker::make('date')->label('Data')->required(),
+                DatePicker::make('date')->label('Data')->required()->default(now()->toDateString())->native(false),
                 Textarea::make('description')->label('Descrição'),
             ]);
     }
@@ -48,6 +48,7 @@ class WorklogResource extends Resource
                 TextColumn::make('created_at')->dateTime()->label('Criado em'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
