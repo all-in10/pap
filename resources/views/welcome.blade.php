@@ -652,6 +652,9 @@
 
             .feature-card.full-width { grid-column: span 2; }
 
+            /* card-header — agrupa ícone e número; display:contents em desktop não altera o layout */
+            .card-header { display: contents; }
+
             .feature-icon-wrap {
                 width: 52px; height: 52px;
                 border-radius: 12px;
@@ -904,14 +907,44 @@
                 .stat-num { font-size: 1.75rem; }
 
                 /* ── Features ── */
-                .features     { padding: 4rem 1.25rem; }
-                .section-sub  { margin-bottom: 2.5rem; }
+                .features      { padding: 4rem 1.25rem; }
+                .section-sub   { margin-bottom: 2.5rem; }
                 .features-grid { grid-template-columns: 1fr; gap: 1rem; }
-                .feature-card.large     { grid-row: span 1; }
+                .feature-card.large      { grid-row: span 1; }
                 .feature-card.full-width { grid-column: span 1; }
-                .feature-card { padding: 1.5rem; border-radius: 12px; }
-                .feature-icon-wrap { width: 44px; height: 44px; margin-bottom: 1.1rem; }
-                .feature-title { font-size: 1.15rem; }
+
+                /* card base */
+                .feature-card {
+                    padding: 1.35rem;
+                    border-radius: 14px;
+                }
+
+                /* header row: ícone + número lado a lado */
+                .feature-card .card-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    margin-bottom: 0.85rem;
+                }
+                .feature-icon-wrap {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 10px;
+                    margin-bottom: 0;
+                    flex-shrink: 0;
+                }
+                .feature-number { margin-bottom: 0; font-size: 0.68rem; }
+
+                /* text */
+                .feature-title   { font-size: 1.1rem;   margin-bottom: 0.5rem; }
+                .feature-desc    { font-size: 0.875rem; }
+                .feature-toggle  { font-size: 0.82rem;  margin-top: 1.1rem; }
+
+                /* drawer */
+                .feature-detail.open { max-height: 700px; }
+                .detail-pill  { font-size: 0.68rem; padding: 0.25rem 0.6rem; }
+                .detail-items li { font-size: 0.84rem; }
+                .stack-tag    { font-size: 0.65rem; }
 
                 /* ── How it works ── */
                 .how   { padding: 4rem 1.25rem; }
@@ -1068,10 +1101,12 @@
 
                 <!-- CARD 01 -->
                 <div class="feature-card large reveal">
-                    <div class="feature-icon-wrap">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <div class="card-header">
+                        <div class="feature-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
+                        <span class="feature-number">01</span>
                     </div>
-                    <span class="feature-number">01</span>
                     <h3 class="feature-title">Gestão de Funcionários</h3>
                     <p class="feature-desc">Centralize dados pessoais, contactos, cargos e departamentos de todos os colaboradores em um único sistema integrado. Histórico completo, sempre acessível.</p>
                     <button class="feature-toggle" onclick="toggleDetail(this)">Saiba mais <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
@@ -1091,10 +1126,12 @@
 
                 <!-- CARD 02 -->
                 <div class="feature-card reveal reveal-delay-1">
-                    <div class="feature-icon-wrap">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    <div class="card-header">
+                        <div class="feature-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        </div>
+                        <span class="feature-number">02</span>
                     </div>
-                    <span class="feature-number">02</span>
                     <h3 class="feature-title">Contratos & Remuneração</h3>
                     <p class="feature-desc">Gerencie tipos de contrato, salários por designação e acompanhe o status de todos os acordos laborais em tempo real.</p>
                     <button class="feature-toggle" onclick="toggleDetail(this)">Saiba mais <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
@@ -1113,10 +1150,12 @@
 
                 <!-- CARD 03 -->
                 <div class="feature-card reveal reveal-delay-2">
-                    <div class="feature-icon-wrap">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <div class="card-header">
+                        <div class="feature-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <span class="feature-number">03</span>
                     </div>
-                    <span class="feature-number">03</span>
                     <h3 class="feature-title">Time Tracking & Banco de Horas</h3>
                     <p class="feature-desc">Registre horas trabalhadas, calcule automaticamente extras e mantenha o banco de horas atualizado para cada colaborador.</p>
                     <button class="feature-toggle" onclick="toggleDetail(this)">Saiba mais <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
@@ -1136,10 +1175,12 @@
 
                 <!-- CARD 04 -->
                 <div class="feature-card full-width reveal reveal-delay-1">
-                    <div class="feature-icon-wrap">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <div class="card-header">
+                        <div class="feature-icon-wrap">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <span class="feature-number">04</span>
                     </div>
-                    <span class="feature-number">04</span>
                     <h3 class="feature-title">Timeoff & Férias</h3>
                     <p class="feature-desc">Solicitação e aprovação de licenças, férias e ausências com categorias customizáveis e visualização integrada no painel.</p>
                     <button class="feature-toggle" onclick="toggleDetail(this)">Saiba mais <svg class="toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
