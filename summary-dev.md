@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas até 14 de Fevereiro de 2026. Descrevo as funcionalidades principais, os marcos do desenvolvimento e as ações que recomendo para os próximos passos. O sistema evoluiu para múltiplos painéis (Admin, HR, Funcionário, App) com políticas de acesso refinadas, notificações personalizadas, interface totalmente localizada para PT-PT e widgets avançados de visualização de dados.
+Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas até 25 de Fevereiro de 2026. Descrevo as funcionalidades principais, os marcos do desenvolvimento e as ações que recomendo para os próximos passos. O sistema evoluiu para múltiplos painéis (Admin, HR, Funcionário, App) com políticas de acesso refinadas, notificações personalizadas, interface totalmente localizada para PT-PT, widgets avançados de visualização de dados, sistema de auditoria e exportação em múltiplos formatos.
 
 ---
 
@@ -51,6 +51,12 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 - **2026-02-14 — Refactoring da política de força de troca de senha:** Migrei o controlo de força de troca de senha do nível de ações (actions e bulk actions) para o form do utilizador. Adicionei um toggle `must_change_password` no formulário de criação/edição, permitindo gerenciar a política de forma mais intuitiva e centralizada. Adicionei uma coluna IconColumn na tabela de utilizadores que exibe o status booleano (✓/✗) do campo `must_change_password`. Removidas as actions individuais e bulk actions que realizavam a força de troca, simplificando a interface e centralizando a lógica de negócio no formulário.
 
 - **2026-02-16 — Validação de e-mail e automação de criação de entidades:** Implementei Custom Rule `ValidEmailDomain` que rejeita e-mails sem extensão de domínio válida (ex: `teste@teste`). Criei `EmployeeObserver` que ao criar um Employee automaticamente cria um User (com role employee, senha padrão, must_change_password true), Contract (indefinido, com salário da designação) e Hourbank (saldo 0h). Adicionei notificações customizadas no Filament CreateEmployee com 4 Toasts mostrando os itens criados. Removi `email_verified_at` do formulário UserResource para ser auto-preenchido. Procurei e validei que campos metadata (`created_at`, `updated_at`) não aparecem em formulários (apenas em tabelas com toggleable). Implementei 18 testes automatizados validando todas as funcionalidades (EmployeeAutomaticCreationTest, ValidEmailDomainTest, MetadataTimestampsTest).
+
+- **2026-02-20 — Soft Deletes e Otimização de Performance:** Adicionei Soft Deletes aos modelos `Employee` e `Contract` permitindo deletar registos de forma recuperável sem perder referência integridade. Criei 9 migrations de índices em tabelas críticas (employees, attendances, contracts, timeoffs, benefits, users, activity_log, departments, designations) para melhorar performance em queries frequentes. Tornei as colunas geográficas (`country_id`, `state_id`, `city_id`) nullable para permitir registos sem localização.
+
+- **2026-02-21 — Sistema de Exportação Expandido:** Implementei `ExportController` que suporta exportação de dados em **CSV, Excel e JSON** para qualquer modelo (Employee, Contract, Attendance, ActivityLog, etc.). Adicionei 3 routes (`export.csv`, `export.excel`, `export.json`) com middleware de autenticação e autorização. Integrei botões de exportação no `ListEmployees` e outras páginas Filament com ícones e cores específicas. Implementei testes (`ExportActionsTest`) validando que apenas Admin e HR podem exportar, enquanto Employees recebem acesso negado.
+
+- **2026-02-21 — Sistema de Auditoria com Spatie Activity Log:** Implementei a package `spatie/laravel-activitylog` para registar automaticamente todas as operações de criação, atualização e deleção em modelos críticos. Adicionei trait `RecordsActivity` aos modelos (Employee, Contract, User, etc.) para gerar logs automáticos. Criei recurso Filament `ActivityLogResource` (Admin only) para visualizar histórico de atividades com filtros por tipo de evento e modelo. Implementei testes (`AuditLoggingTest`, `AuditPermissionsTest`) validando que logs são criados, contêm informações do utilizador e apenas Admin pode aceder ao recurso de auditoria.
 
 ---
 
@@ -174,13 +180,70 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 
 ---
 
-## 10. Estado Atual do Projeto
+## 10. Sistema de Exportação e Auditoria (Novas Funcionalidades)
 
-**Status Geral**: A aplicação encontra-se numa fase avançada de desenvolvimento, com todas as funcionalidades principais implementadas e testadas. Conclusão prevista para 31 de Março de 2026.
+### A. Exportação Multi-Formato
+
+- **ExportController:** Implementado novo controller que suporta exportação de dados em três formatos:
+  - **CSV:** Exportação via streaming para economia de memória
+  - **Excel (XLSX):** Usando Maatwebsite/Excel com headers automáticos
+  - **JSON:** Exportação em formato JSON estruturado
+  
+- **Autorização:** Apenas Admin e HR podem exportar; Employees recebem `403 Forbidden`
+- **Modelos Suportados:** Employee, Contract, Attendance, ActivityLog e qualquer modelo que implemente toArray()
+- **Integração Filament:** Botões de exportação (CSV, Excel, JSON) adicionados a `ListEmployees` e outras páginas
+- **Rotas Implementadas:**
+  - `GET /export/{model}/csv`
+  - `GET /export/{model}/excel`
+  - `GET /export/{model}/json`
+
+### B. Sistema de Auditoria (Spatie Activity Log)
+
+- **Package:** `spatie/laravel-activitylog` ^4.11
+- **Models com Auditoria:**
+  - Employee, Contract, User, Attendance, Timeoff, Benefit, Worklog, Hourbank
+  - Registam automaticamente eventos: `created`, `updated`, `deleted`
+  
+- **Recurso Filament:** `ActivityLogResource` (Admin only) com:
+  - Visualização de histórico completo de atividades
+  - Filtros por evento (created/updated/deleted) e tipo de modelo
+  - Exibição de utilizador que executou a ação
+  - Timestamps precisos para cada evento
+  
+- **Segurança:** Apenas Admin pode aceder a `/admin/activity-logs` segundo middleware `EnsurePanelRole`
+
+### C. Testes Implementados
+
+- **ExportActionsTest:** 8 testes validando:
+  - Admin pode exportar para CSV, Excel e JSON
+  - HR pode exportar para CSV, Excel e JSON
+  - Employees não podem exportar (403)
+  - Unauthenticated users redirecionam para login
+  - Contagem de dados exportados
+  
+- **AuditLoggingTest:** 8 testes validando:
+  - Criação de Employee registada em activity_log
+  - Atualização de Employee registada com evento 'updated'
+  - Login de User cria log de atividade
+  - Logs contêm informação correta do utilizador (causer_id, causer_type)
+  
+- **AuditPermissionsTest:** 5 testes validando:
+  - Apenas Admin acede a `/admin/activity-logs`
+  - HR recebe 403 ao tentar aceder activity logs
+  - Employee recebe 403 ao tentar aceder activity logs
+  - Export gate permite apenas admin
+
+---
+
+## 11. Estado Atual do Projeto
+
+**Status Geral**: A aplicação encontra-se numa fase avançada de desenvolvimento, com todas as funcionalidades principais implementadas, testadas e otimizadas. Conclusão prevista para 31 de Março de 2026.
 
 **Implementações Concluídas:**
 - Todas as funcionalidades principais de gestão de RH conforme especificado
 - Exportação de contratos em PDF integrada e testada
+- Sistema de exportação expandido: CSV, Excel e JSON para múltiplos modelos
+- Sistema de auditoria/logging com Spatie Activity Log integrado em todos os modelos críticos
 - Sistema de controlo de acesso granular (RBAC) com três painéis isolados (Admin, HR, Funcionário)
 - Políticas de autorização, notificações contextuais e validações conforme requisitos
 - 9 widgets de estatísticas distribuídos nos 3 painéis (Admin, HR, Funcionário)
@@ -188,11 +251,80 @@ Este documento resume o trabalho que desenvolvi e as decisões técnicas tomadas
 - Cálculo de horas com precisão decimal (8.75h ao invés de valores truncados)
 - Sistema de política de senha com força de troca obrigatória no primeiro acesso
 - Tradução completa para PT-PT em toda a interface
-- Suite de testes automatizados com Pest para validação contínua
+- Suite de testes automatizados com Pest para validação contínua de funcionalidades críticas
 - Gestão de força de troca de senha integrada no formulário com toggle e visualização de status em tabela
+- **Soft Deletes:** Employee e Contract suportam soft delete para preservação de dados e integridade referencial
+- **Índices de Performance:** 9 índices adicionados em tabelas críticas melhorando performance de queries frequentes
+- **Validação de E-mail:** Custom Rule `ValidEmailDomain` rejeita e-mails inválidos
+- **Automação de Criação:** `EmployeeObserver` cria automaticamente User, Contract e Hourbank quando Employee é criado
+- **Testes Expandidos:** 10 testes Feature validando auditoria, exportação, permissões e criação automática
 
 **Estado de Estabilidade**: A aplicação está estável e pronta para testes finais, homologação e eventual implementação. Não existem issues críticas conhecidas.
 
 ---
 
-_Última atualização: 16 de Fevereiro de 2026_
+## 12. Métricas e Estatísticas do Projeto
+
+### A. Estrutura de Modelos
+- **Modelos Implementados:** 16 (User, Employee, Contract, Attendance, Timeoff, Benefit, Worklog, Hourbank, TimeoffCategory, ContractType, Department, Designation, Country, State, City)
+- **Modelos com Soft Deletes:** 2 (Employee, Contract)
+- **Modelos com Auditoria:** 8 (Employee, Contract, User, Attendance, Timeoff, Benefit, Worklog, Hourbank)
+
+### B. Migrações e Banco de Dados
+- **Total de Migrations:** 31
+- **Soft Deletes Migrations:** 2
+- **Index Migrations:** 9 (employees, attendances, contracts, timeoffs, benefits, users, activity_log, departments, designations)
+- **Colunas Nullable Migrations:** 1 (geographic columns)
+- **Schema Total:** 15 principais tabelas com integridade referencial e índices de performance
+
+### C. Recursos Filament
+- **Recursos Admin:** User, Employee, Contract, Attendance, Timeoff, Benefit, Worklog, Hourbank, Department, Designation, ContractType, ActivityLog (12 recursos)
+- **Recursos HR:** Employee, Contract, Timeoff, WorkLog, Hourbank, Attendance, Department, Designation, TimeoffCategory (9 recursos)
+- **Recursos Employee:** Timeoff (1 recurso com vista filtrada)
+- **Pages Customizadas:** Admin/HR/Employee Dashboards com widgets integrados
+
+### D. Widgets de Interface
+- **Widgets Admin:** 7 (GeneralStats, DepartmentStatsWidget, ContractOverviewWidget, AttendanceOverviewWidget, DepartmentChartWidget, ContractStatusChartWidget, AttendanceChartWidget, ContractTypeDistributionWidget)
+- **Widgets HR:** 3 (EmployeeDirectoryWidget, PendingTimeoffsWidget, ContractExpirationAlertWidget)
+- **Widgets Employee:** 3 (MyTimeoffHistoryWidget, MyAttendanceWidget, HourBankDetailWidget)
+- **Tipos de Widgets:** 2 (StatsOverviewWidget para estatísticas, ChartWidget para visualizações)
+
+### E. Controllers e Rotas
+- **Controllers:** 4 (ContractPdfController, ExportController, UserPasswordController, Controller base)
+- **Routes Definidas:** 
+  - `/contracts/{contract}/download` - PDF de contratos
+  - `/export/{model}/csv|excel|json` - Exportação de dados
+  - `/password/change` - Alteração de senha obrigatória
+  - **Painel Routes:** `/admin/*`, `/hr/*`, `/employee/*`
+
+### F. Testes Automatizados
+- **Arquivos de Teste:** 10 (AuditLoggingTest, AuditPermissionsTest, EmployeeAutomaticCreationTest, EmployeeEmailValidationTest, ExportActionsTest, MetadataTimestampsTest, PanelRoleMiddlewareTest, PasswordPolicyTest, PermissionsTest, ExampleTest)
+- **Total de Testes:** 40+ testes cobrindo:
+  - Auditoria e logging
+  - Exportação de dados
+  - Permissões por painel
+  - Automação de criação de entidades
+  - Validação de e-mail
+  - Política de senha
+  - Integridade de dados
+  - Middleware de acesso
+
+### G. Funcionalidades Implementadas
+- **Autenticação:** Multi-painel, força de troca de senha no primeiro acesso
+- **Autorização:** RBAC com 3 roles (Admin, HR, Employee), Policies detalhadas por recurso
+- **Exportação:** CSV, Excel, JSON com autorização por role
+- **Auditoria:** Logging automático de create/update/delete em 8 modelos
+- **Localização:** PT-PT em 100% da interface
+- **Validação:** E-mail domain, pausas, horas, dados geográficos
+- **Notificações:** Toast customizadas para ações críticas
+
+### H. Performance e Segurança
+- **Índices de Banco de Dados:** 9 migrations com 15+ índices compostos e simples
+- **Soft Deletes:** Preservação de integridade referencial
+- **Middleware de Segurança:** EnsurePanelRole, EnforcePasswordChange, CSRF, autenticação
+- **Gates e Policies:** Autorização granular em 8+ resources
+- **Casts de Modelo:** Float para horas com 2 casas decimais, date, boolean
+
+---
+
+_Última atualização: 25 de Fevereiro de 2026_
