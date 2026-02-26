@@ -154,7 +154,7 @@ class EmployeeResource extends Resource
                             Forms\Components\DatePicker::make('date_hired')
                                 ->label('Data de Contratação')
                                 ->required()
-                                ->maxDate(now()->subYear(18))
+                                ->maxDate(now())
                                 ->native(false),
                             Forms\Components\Toggle::make('is_active')
                                 ->label('Ativo')
