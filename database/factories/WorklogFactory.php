@@ -12,8 +12,8 @@ class WorklogFactory extends Factory
 
     public function definition()
     {
-        $start = fake()->dateTimeBetween('-1 months', 'now');
-        $duration = fake()->randomFloat(2, 1, 8);
+        $start = $this->faker->dateTimeBetween('-1 months', 'now');
+        $duration = $this->faker->randomFloat(2, 1, 8);
         $end = (clone $start)->modify('+' . floor($duration) . ' hours');
 
         return [
@@ -22,9 +22,9 @@ class WorklogFactory extends Factory
             'start_time' => $start->format('H:i:s'),
             'end_time' => $end->format('H:i:s'),
             'duration' => $duration,
-            'description' => fake()->sentence(),
-            'type' => fake()->randomElement(['regular', 'overtime']),
-            'approved' => fake()->boolean(75),
+            'description' => $this->faker->sentence(),
+            'type' => $this->faker->randomElement(['regular', 'overtime']),
+            'approved' => $this->faker->boolean(75),
         ];
     }
 }

@@ -12,17 +12,17 @@ class BenefitFactory extends Factory
 
     public function definition()
     {
-        $start = fake()->dateTimeBetween('-2 years', 'now');
-        $end = (clone $start)->modify('+' . fake()->numberBetween(30, 365) . ' days');
+        $start = $this->faker->dateTimeBetween('-2 years', 'now');
+        $end = (clone $start)->modify('+' . $this->faker->numberBetween(30, 365) . ' days');
 
         return [
             'employee_id' => Employee::factory(),
-            'type' => fake()->randomElement(['health', 'transport', 'meal', 'other']),
-            'provider' => fake()->company(),
-            'details' => fake()->optional()->sentence(),
+            'type' => $this->faker->randomElement(['health', 'transport', 'meal', 'other']),
+            'provider' => $this->faker->company(),
+            'details' => $this->faker->optional()->sentence(),
             'start_date' => $start->format('Y-m-d'),
             'end_date' => $end->format('Y-m-d'),
-            'active' => fake()->boolean(90),
+            'active' => $this->faker->boolean(90),
         ];
     }
 }

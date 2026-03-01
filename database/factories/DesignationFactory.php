@@ -13,10 +13,10 @@ class DesignationFactory extends Factory
         $levels = ['junior', 'pleno', 'senior'];
 
         return [
-            'name' => fake()->unique()->jobTitle(),
-            'description' => fake()->optional()->paragraph(),
-            'level' => fake()->optional()->randomElement($levels),
-            'base_salary' => fake()->optional()->randomFloat(2, 2000, 15000),
+            'name' => $this->faker->unique()->jobTitle(),
+            'description' => $this->faker->optional()->paragraph(),
+            'level' => $this->faker->optional()->randomElement($levels),
+            'base_salary' => $this->faker->optional()->randomFloat(2, 2000, 15000),
             'created_at' => now(),
             'updated_at' => now(),
         ];

@@ -20,8 +20,8 @@ class ContractFactory extends Factory
     {
         $statuses = ['active', 'terminated', 'suspended'];
 
-        $startDate = fake()->dateTimeBetween('-2 years', 'now');
-        $endDate = fake()->optional()->dateTimeBetween($startDate, '+2 years');
+        $startDate = $this->faker->dateTimeBetween('-2 years', 'now');
+        $endDate = $this->faker->optional()->dateTimeBetween($startDate, '+2 years');
 
         // Escolhe um ContractType existente ou cria um por padrão
         $contractType = ContractType::inRandomOrder()->first();
@@ -35,10 +35,10 @@ class ContractFactory extends Factory
         return [
             'employee_id' => Employee::factory(),
             'contract_type_id' => $contractType->id,
-            'salary' => fake()->randomFloat(2, 1000, 10000),
+            'salary' => $this->faker->randomFloat(2, 1000, 10000),
             'start_date' => $startDate->format('Y-m-d'),
             'end_date' => $endDate ? $endDate->format('Y-m-d') : null,
-            'status' => fake()->randomElement($statuses),
+            'status' => $this->faker->randomElement($statuses),
             'date_hired' => $startDate->format('Y-m-d'),
             'created_at' => now(),
             'updated_at' => now(),
