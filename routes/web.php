@@ -6,13 +6,15 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ServiceWorkerController;
 
 Route::get('/', function () {
-    // Se autenticado, redirecionar para dashboard apropriado
+    return view('welcome');
+});
+
+// Rota para seletor de login
+Route::get('/login-selector', function () {
     if (auth()->check()) {
         $role = strtolower(auth()->user()->role);
         return redirect("/$role");
     }
-    
-    // Mostrar seletor de login
     return view('login-selector');
 });
 
