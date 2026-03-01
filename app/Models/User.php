@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Traits\RecordsActivity;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\UserPushSubscription> $pushSubscriptions
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -69,5 +72,13 @@ class User extends Authenticatable
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    /**
+     * User push subscriptions for PWA notifications
+     */
+    public function pushSubscriptions()
+    {
+        return $this->hasMany(UserPushSubscription::class);
     }
 }

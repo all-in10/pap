@@ -7,6 +7,15 @@
         <title>TeamCore - Uma nova gestão de Recursos Humanos</title>
         <meta name="description" content="TeamCore: solução intuitiva de RH para gerenciar funcionários, contratos, time tracking e férias">
 
+        <!-- PWA Meta Tags -->
+        <meta name="theme-color" content="#3b82f6">
+        <meta name="application-name" content="TeamCore">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="TeamCore">
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <link rel="apple-touch-icon" href="{{ asset('pwa-icons/icon-192x192.png') }}">
+
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -1319,6 +1328,62 @@
                     btn.innerHTML = 'Fechar ' + svgArrow;
                 }
             }
+        </script>
+
+        <!-- PWA Service Worker Registration -->
+        <script>
+            // Register Service Worker for PWA
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker
+                        .register('/js/sw.js', { scope: '/' })
+                        .then((registration) => {
+                            console.log('[PWA] Service Worker registered successfully:', registration);
+                            
+                            // Check for updates periodically
+                            setInterval(() => {
+                                registration.update().catch(error => {
+                                    console.warn('[PWA] Failed to update Service Worker:', error);
+                                });
+                            }, 60000); // Check every 60 seconds
+                        })
+                        .catch((error) => {
+                            console.warn('[PWA] Service Worker registration failed:', error);
+                        });
+
+                    // Listen for SW controller change (update available)
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        console.log('[PWA] Service Worker controller changed (new version active)');
+                        // Optionally notify user about update
+                        if (window.PWA && window.PWA.onUpdateAvailable) {
+                            window.PWA.onUpdateAvailable();
+                        }
+                    });
+                });
+
+                // Handle messages from Service Worker
+                navigator.serviceWorker.addEventListener('message', (event) => {
+                    const { type, data } = event.data;
+                    console.log('[PWA] Message from SW:', type);
+
+                    if (type === 'SYNC_SUCCESS') {
+                        console.log('[PWA] Offline request synced:', data);
+                    }
+                });
+            }
+
+            // Global PWA namespace
+            window.PWA = {
+                updateAvailable: false,
+                onUpdateAvailable: null,
+            };
+
+            // Listen for install prompt (will be triggered on most mobile browsers)
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                window.PWA.installPrompt = e;
+                console.log('[PWA] Install prompt available');
+            });
         </script>
     </body>
 </html>

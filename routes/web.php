@@ -8,6 +8,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// PWA Offline page
+Route::get('/offline', function () {
+    return view('offline');
+})->name('offline');
+
 // Download de contratos em PDF
 Route::get('/contracts/{contract}/download', [ContractPdfController::class, 'download'])->name('contracts.download');
 
