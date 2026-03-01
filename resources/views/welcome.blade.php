@@ -1332,24 +1332,24 @@
 
         <!-- PWA Service Worker Registration -->
         <script>
-            // Register Service Worker for PWA
             if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker
-                        .register('/js/sw.js', { scope: '/' })
-                        .then((registration) => {
-                            console.log('[PWA] Service Worker registered successfully:', registration);
-                            
-                            // Check for updates periodically
-                            setInterval(() => {
-                                registration.update().catch(error => {
-                                    console.warn('[PWA] Failed to update Service Worker:', error);
-                                });
-                            }, 60000); // Check every 60 seconds
-                        })
-                        .catch((error) => {
-                            console.warn('[PWA] Service Worker registration failed:', error);
-                        });
+                navigator.serviceWorker.register('/js/sw.js', { scope: '/' })
+                    .then(function(registration) {
+                        console.log('[PWA] Service Worker registered successfully', registration);
+                        
+                        // Check for updates periodically
+                        setInterval(function() {
+                            registration.update().catch(function(error) {
+                                console.warn('[PWA] Failed to update Service Worker:', error);
+                            });
+                        }, 60000);
+                    })
+                    .catch(function(error) {
+                        console.error('[PWA] Service Worker registration failed:', error);
+                        if (error.message) {
+                            console.error('[PWA] Error details:', error.message);
+                        }
+                    });
 
                     // Listen for SW controller change (update available)
                     navigator.serviceWorker.addEventListener('controllerchange', () => {
