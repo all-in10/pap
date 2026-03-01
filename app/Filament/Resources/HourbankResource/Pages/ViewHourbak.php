@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\WorklogResource\Pages;
-use App\Filament\Resources\WorklogResource;
+namespace App\Filament\Resources\HourbankResource\Pages;
+use App\Filament\Resources\HourbankResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;   
 
-class ViewWorklog extends ViewRecord
+class ViewHourbak extends ViewRecord
 {
-    protected static string $resource = WorklogResource::class;
+    protected static string $resource = HourbankResource::class;
 
     protected function getHeaderActions(): array
     {
