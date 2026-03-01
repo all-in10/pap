@@ -6,7 +6,7 @@ use App\Filament\Resources\TimeoffResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewTimeoff extends ViewRecord
+class ViewTimeoffs extends ViewRecord
 {
     protected static string $resource = TimeoffResource::class;
 
