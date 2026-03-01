@@ -2,7 +2,7 @@
   "name": "TeamCore - RH Management",
   "short_name": "TeamCore",
   "description": "Solução intuitiva de gestão de RH com offline support, dashboards em tempo real e notificações push",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",

@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Designation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DesignationFactory extends Factory
 {
-    protected $model = \App\Models\Designation::class;
+    protected $model = Designation::class;
 
     public function definition(): array
     {
