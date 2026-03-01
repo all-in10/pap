@@ -24,7 +24,7 @@ class PWAHeadersMiddleware
         $response = $next($request);
 
         // Service Worker: nunca cachear, validar sempre
-        if ($request->path() === 'js/sw.js') {
+        if ($request->path() === 'js/sw.js' || preg_match('/build\/js\/sw\.js$/i', $request->path())) {
             $response->headers->set('Cache-Control', 'public, no-cache, no-store, must-revalidate');
             $response->headers->set('Pragma', 'no-cache');
             $response->headers->set('Expires', '0');
