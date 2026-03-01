@@ -1350,40 +1350,7 @@
                             console.error('[PWA] Error details:', error.message);
                         }
                     });
-
-                    // Listen for SW controller change (update available)
-                    navigator.serviceWorker.addEventListener('controllerchange', () => {
-                        console.log('[PWA] Service Worker controller changed (new version active)');
-                        // Optionally notify user about update
-                        if (window.PWA && window.PWA.onUpdateAvailable) {
-                            window.PWA.onUpdateAvailable();
-                        }
-                    });
-                });
-
-                // Handle messages from Service Worker
-                navigator.serviceWorker.addEventListener('message', (event) => {
-                    const { type, data } = event.data;
-                    console.log('[PWA] Message from SW:', type);
-
-                    if (type === 'SYNC_SUCCESS') {
-                        console.log('[PWA] Offline request synced:', data);
-                    }
-                });
             }
-
-            // Global PWA namespace
-            window.PWA = {
-                updateAvailable: false,
-                onUpdateAvailable: null,
-            };
-
-            // Listen for install prompt (will be triggered on most mobile browsers)
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                window.PWA.installPrompt = e;
-                console.log('[PWA] Install prompt available');
-            });
         </script>
     </body>
 </html>
