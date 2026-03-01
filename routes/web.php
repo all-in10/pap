@@ -6,7 +6,14 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ServiceWorkerController;
 
 Route::get('/', function () {
-    return view('welcome');
+    // Se autenticado, redirecionar para dashboard apropriado
+    if (auth()->check()) {
+        $role = strtolower(auth()->user()->role);
+        return redirect("/$role");
+    }
+    
+    // Mostrar seletor de login
+    return view('login-selector');
 });
 
 // PWA Service Worker - served with correct headers for HTTPS
