@@ -3,31 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContractPdfController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ServiceWorkerController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 // PWA Service Worker - served with correct headers for HTTPS
-Route::get('/js/sw.js', function () {
-    $swPath = public_path('build/js/sw.js');
-    if (!file_exists($swPath)) {
-        // Fallback for development
-        $swPath = public_path('js/sw.js');
-    }
-    
-    if (!file_exists($swPath)) {
-        abort(404, 'Service Worker not found');
-    }
-    
-    return response()->file($swPath, [
-        'Cache-Control' => 'public, no-cache, no-store, must-revalidate',
-        'Pragma' => 'no-cache',
-        'Expires' => '0',
-        'Service-Worker-Allowed' => '/',
-        'Content-Type' => 'application/javascript; charset=utf-8',
-    ]);
-});
+Route::get('/js/sw.js', [ServiceWorkerController::class, 'serve'])->name('sw');
 
 // PWA Offline page
 Route::get('/offline', function () {
