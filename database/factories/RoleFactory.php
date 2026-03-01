@@ -9,8 +9,8 @@ class RoleFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->unique()->randomElement(['admin', 'hr', 'employee']),
-            'label' => ucfirst($this->faker->word()),
+            'name' => fake()->unique()->randomElement(['admin', 'hr', 'employee']),
+            'label' => ucfirst(fake()->word()),
         ];
     }
 }

@@ -12,9 +12,9 @@ class CountryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->country(),
-            'code' => $this->faker->countryCode(),
-            'phonecode' => $this->faker->numberBetween(1, 999),
+            'name' => fake()->country(),
+            'code' => fake()->countryCode(),
+            'phonecode' => fake()->numberBetween(1, 999),
         ];
     }
 }

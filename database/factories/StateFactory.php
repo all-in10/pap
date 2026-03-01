@@ -12,7 +12,7 @@ class StateFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->word(),
+            'name' => fake()->unique()->word(),
             'country_id' => Country::factory(),
             'created_at' => now(),
             'updated_at' => now(),

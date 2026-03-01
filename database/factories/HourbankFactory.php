@@ -14,8 +14,8 @@ class HourbankFactory extends Factory
     {
         return [
             'employee_id' => Employee::factory(),
-            'balance_hours' => $this->faker->randomFloat(2, -40, 200),
-            'last_accrual_date' => $this->faker->optional()->date(),
+            'balance_hours' => fake()->randomFloat(2, -40, 200),
+            'last_accrual_date' => fake()->optional()->date(),
         ];
     }
 }

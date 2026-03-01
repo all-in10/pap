@@ -12,7 +12,7 @@ class CityFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->city(),
+            'name' => fake()->city(),
             'state_id' => State::factory(),
             'created_at' => now(),
             'updated_at' => now(),

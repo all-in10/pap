@@ -12,7 +12,7 @@ class AttendanceFactory extends Factory
 
     public function definition()
     {
-        $date = $this->faker->dateTimeBetween('-1 month', 'now');
+        $date = fake()->dateTimeBetween('-1 month', 'now');
         $enter = (clone $date)->setTime(8, 0);
         $exit = (clone $enter)->modify('+9 hours'); // 1h extra (inclui almoço de 1h)
 
@@ -22,7 +22,7 @@ class AttendanceFactory extends Factory
             'enter_time' => $enter->format('H:i:s'),
             'exit_time' => $exit->format('H:i:s'),
             'break_minutes' => 60,
-            'notes' => $this->faker->optional()->sentence(),
+            'notes' => fake()->optional()->sentence(),
         ];
     }
 }
