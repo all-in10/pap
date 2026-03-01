@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" href="{{ asset('images/Teamcore.svg') }}" type="image/x-icon">
+        <link rel="icon" href="{{ asset('images/Teamcorelogo.svg') }}" type="image/x-icon">
         <title>TeamCore - Uma nova gestão de Recursos Humanos</title>
         <meta name="description" content="TeamCore: solução intuitiva de RH para gerenciar funcionários, contratos, time tracking e férias">
 
