@@ -20,28 +20,55 @@
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
         <style>
-            :root {
+            :root,
+            [data-theme="light"] {
                 --primary:        #582f0e;
                 --secondary:      #7f4f24;
-                --info:           #3b82f6;
-                --danger:         #ef4444;
-                --warning:        #f59e0b;
-                --success:        #10b981;
-                --gray:           #6b7280;
-                --muted:          #9ca3af;
-                --accent:         #1f2937;
-                --neutral:        #111827;
+                --info:           #936639;
+                --danger:         #a68a64;
+                --warning:        #b6ad90;
+                --success:        #c2c5aa;
+                --gray:           #acb79b;
+                --muted:          #656d4a;
+                --accent:         #414833;
+                --neutral:        #333d29;
                 --bg:             #f5f0e8;
+                --bg-dark:        #1e1a14;
                 --surface:        #ede5d8;
                 --text:           #1e1a14;
                 --text-soft:      #5a5040;
+                --card-border:    rgba(88, 47, 14, 0.12);
+                --card-hover-border: rgba(88, 47, 14, 0.28);
+                --card-hover-shadow: rgba(88, 47, 14, 0.12);
+                --icon-bg:        rgba(88, 47, 14, 0.10);
+                --toggle-bg:      rgba(88, 47, 14, 0.08);
+                --toggle-border:  rgba(88, 47, 14, 0.18);
+                --toggle-icon:    #582f0e;
             }
 
             [data-theme="dark"] {
-                --bg:             #0f172a;
-                --surface:        #1e293b;
-                --text:           #f1f5f9;
-                --text-soft:      #cbd5e1;
+                --primary:        #c2a47a;
+                --secondary:      #a68a64;
+                --info:           #8a7355;
+                --danger:         #6b5740;
+                --warning:        #7a7660;
+                --success:        #8a8d78;
+                --gray:           #6b7560;
+                --muted:          #9aa088;
+                --accent:         #b0b898;
+                --neutral:        #e8e2d8;
+                --bg:             #141210;
+                --bg-dark:        #0c0a08;
+                --surface:        #1e1a14;
+                --text:           #e8e2d8;
+                --text-soft:      #a09880;
+                --card-border:    rgba(194, 164, 122, 0.10);
+                --card-hover-border: rgba(194, 164, 122, 0.30);
+                --card-hover-shadow: rgba(0, 0, 0, 0.35);
+                --icon-bg:        rgba(194, 164, 122, 0.10);
+                --toggle-bg:      rgba(194, 164, 122, 0.08);
+                --toggle-border:  rgba(194, 164, 122, 0.18);
+                --toggle-icon:    #c2a47a;
             }
 
             * {
@@ -69,7 +96,7 @@
                 justify-content: space-between;
                 padding: 1.5rem 2rem;
                 background: var(--surface);
-                border-bottom: 1px solid rgba(88, 47, 14, 0.1);
+                border-bottom: 1px solid var(--card-border);
                 transition: background 0.4s ease;
             }
 
@@ -119,9 +146,9 @@
                 width: 40px;
                 height: 40px;
                 border-radius: 8px;
-                border: 1px solid rgba(88, 47, 14, 0.15);
-                background: var(--bg);
-                color: var(--primary);
+                border: 1px solid var(--toggle-border);
+                background: var(--toggle-bg);
+                color: var(--toggle-icon);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -210,17 +237,17 @@
             }
 
             .card-icon.admin {
-                background: rgba(59, 130, 246, 0.1);
-                color: var(--info);
+                background: rgba(88, 47, 14, 0.1);
+                color: var(--primary);
             }
 
             .card-icon.hr {
-                background: rgba(16, 185, 129, 0.1);
-                color: var(--success);
+                background: rgba(147, 102, 57, 0.1);
+                color: var(--info);
             }
 
             .card-icon.employee {
-                background: rgba(245, 158, 11, 0.1);
+                background: rgba(182, 173, 144, 0.1);
                 color: var(--warning);
             }
 
@@ -254,32 +281,32 @@
             }
 
             .card-btn.admin {
-                background: var(--info);
-                color: white;
+                background: var(--primary);
+                color: #f5f0e8;
             }
 
             .card-btn.admin:hover {
-                background: #3661d5;
+                background: var(--secondary);
                 transform: translateY(-2px);
             }
 
             .card-btn.hr {
-                background: var(--success);
-                color: white;
+                background: var(--info);
+                color: #f5f0e8;
             }
 
             .card-btn.hr:hover {
-                background: #0D9B6E;
+                background: var(--secondary);
                 transform: translateY(-2px);
             }
 
             .card-btn.employee {
                 background: var(--warning);
-                color: white;
+                color: var(--neutral);
             }
 
             .card-btn.employee:hover {
-                background: #E89C0B;
+                background: var(--info);
                 transform: translateY(-2px);
             }
 
@@ -287,7 +314,7 @@
             footer {
                 padding: 2rem;
                 text-align: center;
-                border-top: 1px solid rgba(88, 47, 14, 0.1);
+                border-top: 1px solid var(--card-border);
                 background: var(--surface);
             }
 
