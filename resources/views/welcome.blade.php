@@ -1002,13 +1002,11 @@
 
             <div class="nav-right">
                 <div class="nav-links">
-                    @if (Route::has('login'))
-                        @auth
-                            <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
-                        @else
-                            <a href="/login-selector" class="nav-cta">Entrar</a>
-                        @endauth
-                    @endif
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
+                    @else
+                        <a href="/login-selector" class="nav-cta">Entrar</a>
+                    @endauth
                 </div>
 
                 <!-- Dark Mode Toggle (desktop/tablet) -->
@@ -1032,16 +1030,14 @@
 
         <!-- ── MOBILE MENU OVERLAY ── -->
         <div class="mobile-menu" id="mobileMenu">
-            @if (Route::has('login'))
-                @auth
-                    <a href="{{ url('/dashboard') }}" class="mobile-link">Dashboard</a>
-                @else
-                    <a href="/login-selector" class="mobile-cta">
-                        Entrar com sua Conta
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </a>
-                @endauth
-            @endif
+            @auth
+                <a href="{{ url('/dashboard') }}" class="mobile-link">Dashboard</a>
+            @else
+                <a href="/login-selector" class="mobile-cta">
+                    Entrar com sua Conta
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            @endauth
             <div class="mobile-theme-row">
                 <span>Modo escuro</span>
                 <button class="theme-toggle" id="themeToggleMobile" aria-label="Alternar modo escuro">
