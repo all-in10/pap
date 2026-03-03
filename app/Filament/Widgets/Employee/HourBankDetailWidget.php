@@ -10,9 +10,10 @@ use App\Traits\EnforceEmployeeRole;
 class HourBankDetailWidget extends BaseWidget
 {
     use EnforceEmployeeRole;
+    protected static ?string $heading = 'Detalhes do Banco de Horas';
     public function getColumnSpan(): int | string | array
     {
-        return 1;
+        return 2;
     }
 
     protected function getStats(): array

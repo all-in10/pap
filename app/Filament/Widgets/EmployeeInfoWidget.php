@@ -11,10 +11,11 @@ class EmployeeInfoWidget extends Widget
 {
     use EnforceEmployeeRole;
     protected static string $view = 'filament.widgets.employee-info-widget';
+    protected static ?string $heading = 'Informações do Funcionário';
     
     public function getColumnSpan(): int | string | array
     {
-        return 1;
+        return 2;
     }
 
     public ?Employee $employee = null;

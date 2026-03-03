@@ -62,39 +62,6 @@
                 </div>
             </div>
 
-            <!-- Métricas Importantes -->
-            <div class="grid grid-cols-2 gap-3">
-                <!-- Banco de Horas -->
-                <div class="bg-gradient-to-br from-blue-500/10 to-blue-600/10 rounded-lg p-3 border border-blue-500/20">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Banco de Horas</p>
-                            <p class="text-lg font-bold text-blue-600 dark:text-blue-400">
-                                {{ $hourBankBalance }}
-                            </p>
-                        </div>
-                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Férias Totais -->
-                <div class="bg-gradient-to-br from-purple-500/10 to-purple-600/10 rounded-lg p-3 border border-purple-500/20">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Pedidos Totais</p>
-                            <p class="text-lg font-bold text-purple-600 dark:text-purple-400">
-                                {{ count($timeoffs) }}
-                            </p>
-                        </div>
-                        <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
             <!-- Listagem de Pedidos de Férias/Licenças -->
             @if (count($timeoffs) > 0)
                 <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm">

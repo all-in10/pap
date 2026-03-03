@@ -11,9 +11,11 @@ use App\Traits\EnforceEmployeeRole;
 class MyAttendanceWidget extends BaseWidget
 {
     use EnforceEmployeeRole;
+    protected static ?string $heading = 'Minha Presença';
     public function getColumnSpan(): int | string | array
+
     {
-        return 1;
+        return 2;
     }
 
     protected function getStats(): array
