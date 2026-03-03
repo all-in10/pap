@@ -40,9 +40,18 @@ class UserResource extends Resource
                                 ->required()
                                 ->maxLength(255)
                                 ->rules([new \App\Rules\ValidEmailDomain()]),
-                        ])
-                        ->columns(2),
-
+                            
+                            Forms\Components\Select::make('role')
+                                ->label('Função')
+                                ->options([
+                                    'admin' => 'Administrador',
+                                    'hr' => 'Recursos Humanos',
+                                    'employee' => 'Funcionário',
+                                ])
+                                ->required()
+                                ->columns(2),
+                        ]),
+                        
                     Tab::make('Segurança')
                         ->schema([
                             Forms\Components\TextInput::make('password')
