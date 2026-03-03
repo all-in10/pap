@@ -13,7 +13,6 @@ class MyAttendanceWidget extends BaseWidget
     use EnforceEmployeeRole;
     protected ?string $heading = 'Minha Presença';
     public function getColumnSpan(): int | string | array
-
     {
         return 2;
     }
