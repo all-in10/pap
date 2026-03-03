@@ -1003,7 +1003,15 @@
             <div class="nav-right">
                 <div class="nav-links">
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="nav-link">Dashboard</a>
+                        @php
+                            $dashboardPath = match(strtoupper(auth()->user()->role ?? '')) {
+                                'ADMIN' => '/admin',
+                                'HR' => '/hr',
+                                'EMPLOYEE' => '/employee',
+                                default => '/dashboard'
+                            };
+                        @endphp
+                        <a href="{{ url($dashboardPath) }}" class="nav-link">Dashboard</a>
                     @else
                         <a href="/login-selector" class="nav-cta">Entrar</a>
                     @endauth
@@ -1031,7 +1039,15 @@
         <!-- ── MOBILE MENU OVERLAY ── -->
         <div class="mobile-menu" id="mobileMenu">
             @auth
-                <a href="{{ url('/dashboard') }}" class="mobile-link">Dashboard</a>
+                @php
+                    $dashboardPath = match(strtoupper(auth()->user()->role ?? '')) {
+                        'ADMIN' => '/admin',
+                        'HR' => '/hr',
+                        'EMPLOYEE' => '/employee',
+                        default => '/dashboard'
+                    };
+                @endphp
+                <a href="{{ url($dashboardPath) }}" class="mobile-link">Dashboard</a>
             @else
                 <a href="/login-selector" class="mobile-cta">
                     Entrar com sua Conta
