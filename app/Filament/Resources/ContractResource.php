@@ -148,7 +148,12 @@ class ContractResource extends Resource
                         'terminated' => 'danger',
                         'suspended'  => 'warning',
                         default      => 'gray',
-                    }),
+                    })
+                    ->options([
+                        'active'     => 'Ativo',
+                        'terminated' => 'Encerrado',
+                        'suspended'  => 'Suspenso',
+                    ]),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
