@@ -94,6 +94,21 @@ class TimeoffResource extends Resource
                                 ->columnSpan(2),
                         ])
                         ->columns(2),
+
+                    Tab::make('Aprovação')
+                        ->schema([
+                            Forms\Components\Select::make('approved_by')
+                                ->relationship('approvedBy', 'name')
+                                ->label('Aprovado por')
+                                ->searchable()
+                                ->preload()
+                                ->hidden($isEmployee),
+
+                            Forms\Components\DateTimePicker::make('approved_at')
+                                ->label('Data de Aprovação')
+                                ->hidden($isEmployee),
+                        ])
+                        ->columns(2),
                 ])
                 ->columnSpan('full'),
         ]);
@@ -110,11 +125,51 @@ class TimeoffResource extends Resource
             TextColumn::make('start_date')->date()->label('Data de Início')->sortable(),
             TextColumn::make('end_date')->date()->label('Data de Término')->sortable(),
             TextColumn::make('status')->label('Status')->sortable(),
+            TextColumn::make('approvedBy.name')
+                ->label('Aprovado por')
+                ->sortable()
+                ->visible(fn () => !Auth::user() || strtoupper(Auth::user()->role) !== 'EMPLOYEE')
+                ->default('—'),
+            TextColumn::make('approved_at')
+                ->label('Data de Aprovação')
+                ->dateTime()
+                ->sortable()
+                ->visible(fn () => !Auth::user() || strtoupper(Auth::user()->role) !== 'EMPLOYEE')
+                ->default('—'),
             TextColumn::make('created_at')->dateTime()->label('Criado em'),
         ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('Aprovar')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->action(function (Timeoff $record) {
+                        $user = Auth::user();
+                        
+                        // Re-check status to prevent race condition
+                        $record->refresh();
+                        if (!$record->isPending()) {
+                            throw new \Exception('Este pedido já foi processado e não pode ser aprovado.');
+                        }
+
+                        // Check if user can approve (using the policy)
+                        if (!Auth::user()->can('approve', $record)) {
+                            throw new \Exception('Você não pode aprovar este pedido. Usuários não podem aprovar seus próprios pedidos.');
+                        }
+
+                        // Approve the request
+                        $record->update([
+                            'status' => 'approved',
+                            'approved_by' => $user->id,
+                            'approved_at' => now(),
+                        ]);
+
+                        // Log in activity
+                        \Illuminate\Support\Facades\Log::info("Pedido de licença #{$record->id} aprovado por {$user->name}");
+                    })
+                    ->requiresConfirmation()
+                    ->visible(fn(Timeoff $record) => $record->isPending()),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

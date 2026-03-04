@@ -18,6 +18,8 @@ class Timeoff extends Model
         'category_id',
         'status',
         'reason',
+        'approved_by',
+        'approved_at',
     ];
 
     protected $casts = [
@@ -61,5 +63,26 @@ class Timeoff extends Model
     public function employee()
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * Verifica se o pedido foi aprovado
+     */
+    public function isApproved(): bool
+    {
+        return $this->approved_by !== null && $this->approved_at !== null;
+    }
+
+    /**
+     * Verifica se o pedido está pendente de aprovação
+     */
+    public function isPending(): bool
+    {
+        return $this->status === 'pending' && !$this->isApproved();
     }
 }
