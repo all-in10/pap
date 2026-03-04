@@ -10,10 +10,15 @@ use App\Traits\EnforceEmployeeRole;
 class HourBankDetailWidget extends BaseWidget
 {
     use EnforceEmployeeRole;
-    protected ?string $heading = 'Detalhes do Banco de Horas';
+    
     public function getColumnSpan(): int | string | array
     {
         return 2;
+    }
+
+    public function getHeading(): ?string
+    {
+        return $this->isAuthenticatedAsEmployee() ? 'Detalhes do Banco de Horas' : null;
     }
 
     protected function getStats(): array
