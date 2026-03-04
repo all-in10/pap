@@ -8,6 +8,10 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -74,6 +78,70 @@ class UserResource extends Resource
         ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist->schema([
+            Section::make('Informações Básicas')
+                ->schema([
+                    TextEntry::make('name')
+                        ->label('Nome'),
+
+                    TextEntry::make('email')
+                        ->label('E-mail'),
+
+                    TextEntry::make('role')
+                        ->label('Função')
+                        ->badge()
+                        ->formatStateUsing(fn (string $state): string => match ($state) {
+                            'admin'    => 'Administrador',
+                            'hr'       => 'Recursos Humanos',
+                            'employee' => 'Funcionário',
+                            default    => $state,
+                        })
+                        ->color(fn (string $state): string => match ($state) {
+                            'admin'    => 'danger',
+                            'hr'       => 'warning',
+                            'employee' => 'success',
+                            default    => 'gray',
+                        }),
+
+                    TextEntry::make('email_verified_at')
+                        ->label('E-mail Verificado Em')
+                        ->badge()
+                        ->formatStateUsing(fn ($state): string => $state
+                            ? \Carbon\Carbon::parse($state)->format('d/m/Y H:i')
+                            : 'Não verificado'
+                        )
+                        ->color(fn ($state): string => $state ? 'success' : 'danger'),
+                ])
+                ->columns(2),
+
+            Section::make('Segurança')
+                ->schema([
+                    IconEntry::make('must_change_password')
+                        ->label('Forçar troca de senha')
+                        ->boolean()
+                        ->trueIcon('heroicon-o-check-circle')
+                        ->falseIcon('heroicon-o-x-circle')
+                        ->trueColor('warning')
+                        ->falseColor('success'),
+                ])
+                ->columns(2),
+
+            Section::make('Datas')
+                ->schema([
+                    TextEntry::make('created_at')
+                        ->label('Criado em')
+                        ->dateTime('d/m/Y H:i'),
+
+                    TextEntry::make('updated_at')
+                        ->label('Atualizado em')
+                        ->dateTime('d/m/Y H:i'),
+                ])
+                ->columns(2),
+        ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -134,7 +202,7 @@ class UserResource extends Resource
         return [
             'index'  => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            //'view'   => Pages\ViewUser::route('/{record}'),
+            'view'   => Pages\ViewUser::route('/{record}'),
             'edit'   => Pages\EditUser::route('/{record}/edit'),
         ];
     }
