@@ -46,17 +46,18 @@ Processo de Desenvolvimento	12
 Principais Implementações	13
 Painel Admin (/admin) – Gestão completa do sistema	15
 Painel RH (/hr) – Gestão de Recursos Humanos	15
-Painel Funcionário (/employee) – Acesso pessoal	15
+Painel Funcionário (/employee) – Acesso pessoal	16
 Características de cada painel	16
 Controlo de Acesso e Segurança	16
 Gestão de Horas e Banco de Horas	17
-Experiência do Utilizador (UX)	18
-Melhorias e Otimizações	21
-Validação de E-mail e Automação de Criação	21
-Recursos Filament Implementados	24
-Conclusão	28
-Bibliografia	30
-Anexos	31
+Separação de Férias e Licenças	18
+Experiência do Utilizador (UX)	20
+Melhorias e Otimizações	23
+Validação de E-mail e Automação de Criação	23
+Recursos Filament Implementados	26
+Conclusão	30
+Bibliografia	32
+Anexos	33
 
 
 
@@ -65,7 +66,7 @@ Anexos	31
 Figura 1: Diagrama de Entidades e Relações (ER) - Estrutura da base de dados relacional	12
 Figura 2: Dashboard Admin com Widgets de Estatísticas (contratos, funcionários, presença)	13
 Figura 3: Painel HR - Gestão de Funcionários com tabela de dados	14
-Figura 4: Painel Funcionário - Visualização de Dados Pessoais e Banco de Horas	15
+Figura 4: Painel Funcionário - Dashboard com múltiplos widgets de férias, licenças, banco de horas e presença	15
 Figura 5: Diagrama RBAC - Hierarquia de Papeis (Admin, HR, Employee) e Permissões por Funcionalidade	16
 Figura 6: Registo de Presença (Attendance) com Campos de Entrada/Saída e Pausas	17
 Figura 7: Visualização do Banco de Horas (Hourbank) com Saldo Acumulado e Histórico	18
@@ -75,7 +76,8 @@ Figura 10: Badges Visuais - Indicadores de Funções (Admin/HR/Employee) e Estad
 Figura 11: Formulário de Criação de Funcionário (EmployeeResource) com Validação de E-mail	22
 Figura 12: Resource EmployeeResource - Lista com Tabela, Filtros e Ações	24
 Figura 13: Resource ContractResource com Ação de Download PDF de Contrato	25
-Figura 14: Resource ActivityLogResource - Visualização de Histórico de Auditoria com Filtros	2
+Figura 14: Resource ActivityLogResource - Visualização de Histórico de Auditoria com Filtros	26
+Figura 15: Resource VacationResource - Gestão de Férias com Workflows de Aprovação	27
 
 
 
@@ -126,7 +128,7 @@ O TeamCore foi desenvolvido com o objetivo de alcançar uma gestão abrangente d
 
 A metodologia de trabalho incluiu o levantamento detalhado de requisitos, a modelação da base de dados relacional, e o desenvolvimento técnico utilizando a framework Laravel com a extensão Filament para o backend e frontend. O processo foi complementado por entrevistas com profissionais da área para validação das funcionalidades essenciais (MVP) e testes rigorosos de funcionalidade.
 
-Nota sobre o Estado do Projeto: No momento da redação deste relatório, o projeto TeamCore encontra-se em fase de desenvolvimento e testes finais, com conclusão prevista para 31 de Março. Os resultados preliminares e o progresso alcançado até o momento indicam que a aplicação finalizada terá o potencial de aumentar significativamente a eficiência operacional e fornecer dados cruciais para a tomada de decisões estratégicas no ambiente empresarial.
+Nota sobre o Estado do Projeto: No momento da redação deste relatório (19 de Março de 2026), o projeto TeamCore encontra-se em fase de desenvolvimento avançado com múltiplas funcionalidades implementadas e testadas. A aplicação é totalmente funcional para gestão de RH, com separação clara entre férias e licenças, dashboard interativo para funcionários, widgets otimizados e sistema de aprovações workflows. Os resultados alcançados até ao momento indicam que a aplicação está pronta para utilização num ambiente de produção reduzido, com potencial de aumentar significativamente a eficiência operacional e fornecer dados cruciais para a tomada de decisões estratégicas no ambiente empresarial.
 
 
 Introdução
@@ -213,7 +215,8 @@ Benefícios (Benefit): Subsídios e benefícios associados a funcionários.
 Banco de Horas (Hourbank): Controlo de horas acumuladas/deficitárias por funcionário.
 Registos de Presença (Attendance): Registos diários de entrada/saída e pausas.
 Registos de Trabalho (Worklog): Logs detalhados de atividades executadas.
-Licenças e Faltas (Timeoff): Gestão de períodos de férias, licenças e justificações.
+Férias (Vacation): Gestão de férias anuais com saldo renovável e workflows de aprovação.
+Licenças e Faltas (Timeoff): Gestão de períodos de licenças específicas (parental, saúde, família) e justificações.
 Categorias de Licença (TimeoffCategory): Tipos de ausências permitidas.
 Tipos de Contrato (ContractType): Definições de tipos contratuais.
 Localização: País, Estado e Cidade para preenchimento de dados de funcionários.
@@ -249,10 +252,12 @@ Processamento de licenças e faltas.
 Relatórios estratégicos e análise.
 
 Painel Funcionário (/employee) – Acesso pessoal
-Visualização de dados pessoais.
-Registos de trabalho próprio.
-Solicitações de licença/ausência.
-Visualização de banco de horas.
+Visualização de dados pessoais e informações profissionais.
+Visualização e gestão de férias (criação de pedidos, acompanhamento de aprovações).
+Visualização e gestão de licenças/ausências.
+Solicitações de licença/ausência com workflows de aprovação.
+Visualização de banco de horas individual com histórico.
+Dashboard interativo com widgets resumidos de férias, licenças, presença e banco de horas.
 
 Características de cada painel
 Páginas dedicadas com um middleware específico para o controlo de acesso.
@@ -442,6 +447,8 @@ TimeoffResource
 Timeoff
 TimeoffCategoryResource
 Timeoffcategory
+VacationResource
+Vacation
 HourbankResource
 Hourbank
 ContractTypeResource
@@ -461,6 +468,63 @@ Formulários com validação apropriada.
 Tabelas com ordenação e pesquisa.
 Ações customizadas por função.
 Isolamento de dados por RBAC.
+
+## Separação de Férias e Licenças
+
+Uma das principais melhorias implementadas no projeto foi a separação clara entre **Férias (Vacations)** e **Licenças (Timeoffs)** ao nível arquitectónico.
+
+### Vacuum (Férias)
+O modelo Vacation foi criado especificamente para gestão de férias remuneradas anuais. As suas características incluem:
+
+- **Saldo Anual Renovável**: 22 dias úteis por funcionário, renovados automaticamente a 1º de janeiro.
+- **Cálculo Proporcional**: Para funcionários contratados durante o ano, o saldo é calculado proporcionalmente aos meses restantes (dias × meses_restantes / 12).
+- **Sem Acumulação**: Dias não usados no ano expira no final do ano civil (sem carry-over).
+- **Saldo Negativo Controlado**: Apenas utilizadores HR ou Admin podem criar férias com saldo negativo; funcionários recebem ValidationException.
+- **Renovação Automática**: Console command RenewVacationBalances executa yearly no 1º de janeiro.
+- **Histórico de Saldo**: Campo balance_at_creation registra o saldo disponível no momento da criação, permitindo auditoria futura.
+
+### Timeoff (Licenças)
+O modelo Timeoff mantém a funcionalidade para licenças específicas:
+
+- **Tipos Detalhados**: Parental (inicial, mãe, pai, alargada), Adopção, Saúde (doença, acidente laboral, profissional), Família (assistência a filho/neto/agregado), Formação, Obrigações legais.
+- **Sem Restrições de Saldo**: Ao contrário de férias, licenças não consomem um saldo centralizado.
+- **Categorização**: Cada licença deve ser categorizada através do campo category_id para rastreamento e reporting.
+
+### Workflows de Aprovação
+Ambos (Vacation e Timeoff) suportam workflows de aprovação com three states:
+- **Pending**: Aguardando revisão de RH/Admin.
+- **Approved**: Aprovado e efectivo.
+- **Rejected**: Rejeitado com motivo.
+
+O sistema implementa políticas de autorização que garantem:
+- HR/Admin podem visualizar, criar, editar e aprovar (excepto os seus próprios pedidos).
+- Employees podem apenas visualizar e criar os seus próprios pedidos.
+- O auto-aprovação é bloqueada em ambos os recursos.
+
+### Dashboard do Funcionário - Widgets Otimizados
+O painel de funcionário foi refatorizado para exibir cinco widgets compilados em formato StatsOverviewWidget:
+
+1. **EmployeeInfoWidget**: Mostra informações pessoais (nome completo, cargo, departamento, data de admissão) com cálculo automático e formatação PT-PT.
+
+2. **MyVacationBalanceWidget**: Exibe o saldo de férias do ano actual, dias aprovados, dias pendentes e data da última renovação, com cores dinamicamente ajustadas ao saldo.
+
+3. **MyTimeoffHistoryWidget**: Estatísticas de licenças com contagem de pedidos pendentes, aprovados e rejeitados.
+
+4. **MyAttendanceWidget**: Taxa de presença mensal, número de faltas e atrasos.
+
+5. **HourBankDetailWidget**: Saldo actual, total acumulado e última atualização do banco de horas.
+
+Todos os widgets foram **refatorizados para eliminar dependências de Blade views**, utilizando apenas PHP puro com o padrão StatsOverviewWidget, alinhados com a arquitetura dos painéis Admin e HR.
+
+### Otimizações de Performance e Código
+Durante o desenvolvimento final, foram implementadas várias otimizações:
+
+- **Query Scopes**: Adição de scopes reutilizáveis (pending(), approved(), rejected()) aos modelos Timeoff e Vacation para eliminar duplicação de where('status', '...').
+- **Helper Methods**: Criação de métodos no Employee model (getPendingTimeoffsCount(), getLatestHourBankBalance()) para centralizar cálculos utilizados em múltiplas vistas e widgets.
+- **Eliminação de N+1 Queries**: Refactor da dashboard blade para utilizar helper methods em vez de queries inline em templates.
+- **Eager Loading**: Implementação de with(['employee', 'approvedBy']) em VacationResource table queries para evitar carregamento lazy unnecessário.
+- **Layout Responsivo**: Dashboard com grid adaptativo (1 coluna em dispositivos móveis, 3 colunas em desktop screens).
+
 
 
 Conclusão
