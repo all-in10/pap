@@ -22,9 +22,11 @@ use Filament\Support\Facades\FilamentAsset;
 
 // Employee Resources
 use App\Filament\Resources\TimeoffResource;
+use App\Filament\Resources\VacationResource;
 use App\Filament\Widgets\Employee\MyTimeoffHistoryWidget;
 use App\Filament\Widgets\Employee\MyAttendanceWidget;
 use App\Filament\Widgets\Employee\HourBankDetailWidget;
+use App\Filament\Widgets\Employee\MyVacationBalanceWidget;
 
 class EmployeePanelProvider extends PanelProvider
 {
@@ -50,9 +52,10 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->favicon(asset('images/Document.svg'))
 
-            // Employee pode aceder apenas ao TimeoffResource
+            // Employee pode aceder apenas ao TimeoffResource e VacationResource
             ->resources([
                 TimeoffResource::class,
+                VacationResource::class,
             ])
             ->discoverPages(in: app_path('Filament/Employee/Pages'), for: 'App\\Filament\\Employee\\Pages')
             ->pages([
@@ -61,9 +64,10 @@ class EmployeePanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Employee/Widgets'), for: 'App\\Filament\\Employee\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                //Widgets\AccountWidget::class,
+                //Widgets\FilamentInfoWidget::class,
                 \App\Filament\Widgets\EmployeeInfoWidget::class,
+                MyVacationBalanceWidget::class,
                 MyTimeoffHistoryWidget::class,
                 MyAttendanceWidget::class,
                 HourBankDetailWidget::class,

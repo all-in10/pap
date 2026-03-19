@@ -6,6 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\RecordsActivity;
 
+/**
+ * Modelo para Licenças (não para férias)
+ *
+ * Este modelo gerencia APENAS licenças específicas como:
+ * - Licença parental (inicial, mãe, pai, alargada)
+ * - Licença por adopção
+ * - Licença por saúde (doença, acidente de trabalho, doença profissional)
+ * - Licença por família (assistência a filho/neto/agregado)
+ * - Licença para formação e vida pessoal
+ * - Licença para obrigações legais
+ *
+ * Para FÉRIAS (período de descanso remunerado, 22 dias anuais):
+ * @see Vacation model
+ */
 class Timeoff extends Model
 {
     use HasFactory, RecordsActivity;
@@ -27,6 +41,21 @@ class Timeoff extends Model
         'end_date' => 'date',
         'hours' => 'float',
     ];
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('status', 'approved');
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('status', 'rejected');
+    }
 
     // Tipos de licença
     public function category()

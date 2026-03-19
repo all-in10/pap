@@ -2,51 +2,68 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Widgets\Widget;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Models\Employee;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\EnforceEmployeeRole;
+use Carbon\Carbon;
 
-class EmployeeInfoWidget extends Widget
+class EmployeeInfoWidget extends BaseWidget
 {
     use EnforceEmployeeRole;
-    protected static string $view = 'filament.widgets.employee-info-widget';
-    protected static ?string $heading = 'Informações do Funcionário';
-    
+
+    protected ?string $heading = 'Minhas Informações';
+    protected static ?int $sort = -1;
+
     public function getColumnSpan(): int | string | array
     {
-        return 2;
+        return 3;
     }
 
-    public ?Employee $employee = null;
-    public ?string $hourBankBalance = null;
-    public $timeoffs = [];
-
-    public function mount(): void
+    protected function getStats(): array
     {
         // Verificar se o usuário é employee
         if (!$this->isAuthenticatedAsEmployee()) {
-            return;
+            return [];
         }
 
         $user = Auth::user();
-        
-        if ($user && $user->employee_id) {
-            $this->employee = Employee::find($user->employee_id);
-            
-            if ($this->employee) {
-                // Obter saldo de horas do banco de horas mais recente
-                $hourbank = $this->employee->hourbanks()
-                    ->latest()
-                    ->first();
-                $this->hourBankBalance = $hourbank ? $hourbank->balance_hours . ' horas' : 'N/A';
 
-                // Carregar todos os pedidos de férias/licenças
-                $this->timeoffs = $this->employee->timeoffs()
-                    ->with(['category'])
-                    ->orderByDesc('created_at')
-                    ->get();
-            }
+        if (!$user || !$user->employee_id) {
+            return [
+                Stat::make('Erro', 'Funcionário não encontrado')
+                    ->icon('heroicon-o-exclamation-triangle')
+                    ->color('danger'),
+            ];
         }
+
+        $employee = $user->employee;
+
+        // Informações pessoais
+        $fullName = "{$employee->first_name} {$employee->last_name}";
+        $department = $employee->department?->name ?? 'N/A';
+        $designation = $employee->designation?->name ?? 'N/A';
+        $hiredDate = $employee->date_hired
+            ? Carbon::parse($employee->date_hired)->format('d/m/Y')
+            : 'N/A';
+
+        return [
+            Stat::make('Nome Completo', $fullName)
+                ->icon('heroicon-o-user')
+                ->color('primary'),
+
+            Stat::make('Cargo', $designation)
+                ->icon('heroicon-o-briefcase')
+                ->color('info'),
+
+            Stat::make('Departamento', $department)
+                ->icon('heroicon-o-building-office')
+                ->color('success'),
+
+            Stat::make('Data de Admissão', $hiredDate)
+                ->icon('heroicon-o-calendar')
+                ->color('warning'),
+        ];
     }
 }

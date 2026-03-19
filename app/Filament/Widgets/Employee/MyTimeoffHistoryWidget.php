@@ -12,7 +12,12 @@ class MyTimeoffHistoryWidget extends BaseWidget
     use EnforceEmployeeRole;
     public function getColumnSpan(): int | string | array
     {
-        return 1;
+        return 2;
+    }
+
+        public function getHeading(): ?string
+    {
+        return $this->isAuthenticatedAsEmployee() ? 'Histórico de Licenças' : null;
     }
 
     protected function getStats(): array
@@ -33,19 +38,11 @@ class MyTimeoffHistoryWidget extends BaseWidget
         }
         
         $employee = $user->employee;
-        
+
         // Estatísticas de licenças/férias
-        $pendingTimeoffs = $employee->timeoffs()
-            ->where('status', 'pending')
-            ->count();
-        
-        $approvedTimeoffs = $employee->timeoffs()
-            ->where('status', 'approved')
-            ->count();
-        
-        $rejectedTimeoffs = $employee->timeoffs()
-            ->where('status', 'rejected')
-            ->count();
+        $pendingTimeoffs = $employee->timeoffs()->pending()->count();
+        $approvedTimeoffs = $employee->timeoffs()->approved()->count();
+        $rejectedTimeoffs = $employee->timeoffs()->rejected()->count();
         
         return [
             Stat::make('Solicitações Pendentes', $pendingTimeoffs)

@@ -117,7 +117,7 @@ class TimeoffResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            TextColumn::make('id')->label('ID'),
+            TextColumn::make('id')->label('ID')->sortable()->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('employee.first_name')->label('Funcionário'),
             TextColumn::make('category.label')->label('Categoria')->sortable(),
             TextColumn::make('type')->label('Tipo de Licença')->sortable()

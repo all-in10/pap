@@ -88,6 +88,11 @@ class Employee extends Model
         return $this->hasMany(Timeoff::class);
     }
 
+    public function vacations()
+    {
+        return $this->hasMany(Vacation::class);
+    }
+
     public function benefits()
     {
         return $this->hasMany(Benefit::class);
@@ -102,5 +107,19 @@ class Employee extends Model
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    // Métodos auxiliares para dashboard
+    public function getPendingTimeoffsCount(): int
+    {
+        return $this->timeoffs()->pending()->count();
+    }
+
+    public function getLatestHourBankBalance(): float
+    {
+        return $this->hourbanks()
+            ->latest()
+            ->first()
+            ?->balance_hours ?? 0;
     }
 }

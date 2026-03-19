@@ -3,6 +3,7 @@
 namespace App\Filament\Employee\Pages;
 
 use Filament\Pages\Dashboard as BaseDashboard;
+use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends BaseDashboard
 {
@@ -10,6 +11,16 @@ class Dashboard extends BaseDashboard
 
     public function getColumns(): int | string | array
     {
-        return 1;
+        return [
+            'default' => 1,
+            'lg' => 3,
+        ];
+    }
+
+    public function getViewData(): array
+    {
+        return [
+            'employee' => Auth::user()?->employee,
+        ];
     }
 }
